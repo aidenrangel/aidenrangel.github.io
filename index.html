@@ -1350,32 +1350,22 @@
         </div>
 
         <div class="nav-tabs">
-            <button class="tab active" onclick="showTab('standings')">STANDINGS</button>
+            <button class="tab active" onclick="showTab('standings')">NEWS</button>
             <button class="tab" onclick="showTab('drivers')">DRIVERS</button>
             <button class="tab" onclick="showTab('teams')">TEAMS</button>
             <button class="tab" onclick="showTab('schedule')">SCHEDULE</button>
-            <button class="tab" onclick="showTab('stats')">STATISTICS</button>
+            <button class="tab" onclick="showTab('stats')">STANDINGS</button>
             <button class="tab" onclick="showTab('records')">RECORDS</button>
         </div>
 
-        <!-- Standings Tab -->
+        <!-- Standings Tab (Now News) -->
         <div id="standings" class="tab-content active">
-            <div class="standings-table">
-                <div class="table-header">DRIVER STANDINGS</div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>POS</th>
-                            <th>DRIVER</th>
-                            <th>TEAM</th>
-                            <th>WINS</th>
-                            <th>PODIUMS</th>
-                            <th>POINTS</th>
-                        </tr>
-                    </thead>
-                    <tbody id="standingsBody">
-                    </tbody>
-                </table>
+            <div style="text-align: center; padding: 100px 20px;">
+                <h2 style="font-family: 'Bebas Neue', cursive; font-size: 3rem; color: var(--accent-yellow); margin-bottom: 20px;">NEWS</h2>
+                <p style="font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 30px;">Check out the Standings tab for Driver and Constructor Standings</p>
+                <button onclick="showTab('stats')" style="background: var(--primary-red); color: white; border: none; padding: 15px 40px; font-family: 'Bebas Neue', cursive; font-size: 1.5rem; cursor: pointer; letter-spacing: 2px;">
+                    GO TO STANDINGS
+                </button>
             </div>
         </div>
 
@@ -1407,7 +1397,7 @@
             </div>
         </div>
 
-        <!-- Stats Tab -->
+        <!-- Stats Tab (Now Standings) -->
         <div id="stats" class="tab-content">
             <div class="stats-grid">
                 <div class="stat-card">
@@ -1428,21 +1418,51 @@
                 </div>
             </div>
 
-            <div class="standings-table">
-                <div class="table-header">CONSTRUCTOR STANDINGS</div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>POS</th>
-                            <th>TEAM</th>
-                            <th>WINS</th>
-                            <th>PODIUMS</th>
-                            <th>POINTS</th>
-                        </tr>
-                    </thead>
-                    <tbody id="constructorStandingsBody">
-                    </tbody>
-                </table>
+            <!-- Standings Type Selector -->
+            <div class="record-type-selector">
+                <button class="record-type-btn active" onclick="showStandingsType('driver')">DRIVER STANDINGS</button>
+                <button class="record-type-btn" onclick="showStandingsType('constructor')">CONSTRUCTOR STANDINGS</button>
+            </div>
+
+            <!-- Driver Standings -->
+            <div id="driverStandingsSection" class="record-type-content active">
+                <div class="standings-table">
+                    <div class="table-header">DRIVER STANDINGS</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>POS</th>
+                                <th>DRIVER</th>
+                                <th>TEAM</th>
+                                <th>WINS</th>
+                                <th>PODIUMS</th>
+                                <th>POINTS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="standingsBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Constructor Standings -->
+            <div id="constructorStandingsSection" class="record-type-content">
+                <div class="standings-table">
+                    <div class="table-header">CONSTRUCTOR STANDINGS</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>POS</th>
+                                <th>TEAM</th>
+                                <th>WINS</th>
+                                <th>PODIUMS</th>
+                                <th>POINTS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="constructorStandingsBody">
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -1529,6 +1549,43 @@
                 </div>
 
                 <div class="records-table-wrapper">
+                    <div class="standings-table" id="recordsRaceStartsTable">
+                        <div class="table-header" onclick="openRecordsModal('raceStarts')" style="cursor: pointer;">MOST RACE STARTS</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>POS</th>
+                                    <th>DRIVER</th>
+                                    <th>SEASONS</th>
+                                    <th>STARTS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recordsRaceStartsBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="records-table-wrapper">
+                    <div class="standings-table" id="recordsWinPercentageTable">
+                        <div class="table-header" onclick="openRecordsModal('winPercentage')" style="cursor: pointer;">WIN PERCENTAGE (MIN. 9 STARTS)</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>POS</th>
+                                    <th>DRIVER</th>
+                                    <th>STARTS</th>
+                                    <th>WINS</th>
+                                    <th>%</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recordsWinPercentageBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="records-table-wrapper">
                     <div class="standings-table" id="recordsAvgFinishTable">
                         <div class="table-header" onclick="openRecordsModal('avgFinish')" style="cursor: pointer;">BEST AVERAGE FINISH</div>
                         <table>
@@ -1547,18 +1604,18 @@
                 </div>
 
                 <div class="records-table-wrapper">
-                    <div class="standings-table" id="recordsBestRaceTable">
-                        <div class="table-header" onclick="openRecordsModal('bestRace')" style="cursor: pointer;">MOST POINTS IN A SINGLE RACE</div>
+                    <div class="standings-table" id="recordsYoungestStartTable">
+                        <div class="table-header" onclick="openRecordsModal('youngestStart')" style="cursor: pointer;">YOUNGEST TO START A RACE</div>
                         <table>
                             <thead>
                                 <tr>
                                     <th>DRIVER</th>
                                     <th>RACE</th>
-                                    <th>POSITION</th>
-                                    <th>POINTS</th>
+                                    <th>AGE</th>
+                                    <th>DATE</th>
                                 </tr>
                             </thead>
-                            <tbody id="recordsBestRaceBody">
+                            <tbody id="recordsYoungestStartBody">
                             </tbody>
                         </table>
                     </div>
@@ -1572,8 +1629,8 @@
                                 <tr>
                                     <th>POS</th>
                                     <th>DRIVER</th>
-                                    <th>TEAM</th>
                                     <th>CHAMPIONSHIPS</th>
+                                    <th>YEARS</th>
                                 </tr>
                             </thead>
                             <tbody id="recordsChampionshipsBody">
@@ -1595,6 +1652,24 @@
                                 </tr>
                             </thead>
                             <tbody id="recordsTotalPointsBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="records-table-wrapper">
+                    <div class="standings-table" id="recordsMostSeasonWinsTable">
+                        <div class="table-header" onclick="openRecordsModal('mostSeasonWins')" style="cursor: pointer;">MOST WINS IN A SEASON</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>POS</th>
+                                    <th>DRIVER</th>
+                                    <th>SEASON</th>
+                                    <th>WINS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recordsMostSeasonWinsBody">
                             </tbody>
                         </table>
                     </div>
@@ -1714,6 +1789,24 @@
             <!-- Constructor Records -->
             <div id="constructorRecords" class="record-type-content">
                 <div class="records-table-wrapper">
+                    <div class="standings-table" id="constructorTotalRacesTable">
+                        <div class="table-header" onclick="openRecordsModal('constructorTotalRaces')" style="cursor: pointer;">TOTAL RACES</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>POS</th>
+                                    <th>CONSTRUCTOR</th>
+                                    <th>RACES</th>
+                                    <th>SEASONS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="constructorTotalRacesBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="records-table-wrapper">
                     <div class="standings-table" id="constructorWinsTable">
                         <div class="table-header" onclick="openRecordsModal('constructorWins')" style="cursor: pointer;">MOST WINS</div>
                         <table>
@@ -1765,14 +1858,32 @@
                 </div>
 
                 <div class="records-table-wrapper">
+                    <div class="standings-table" id="constructorOneTwoTable">
+                        <div class="table-header" onclick="openRecordsModal('constructorOneTwo')" style="cursor: pointer;">TOTAL 1-2 FINISHES</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>POS</th>
+                                    <th>CONSTRUCTOR</th>
+                                    <th>1-2s</th>
+                                </tr>
+                            </thead>
+                            <tbody id="constructorOneTwoBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="records-table-wrapper">
                     <div class="standings-table" id="constructorChampionshipsTable">
                         <div class="table-header" onclick="openRecordsModal('constructorChampionships')" style="cursor: pointer;">MOST CHAMPIONSHIPS</div>
                         <table>
                             <thead>
                                 <tr>
                                     <th>POS</th>
-                                    <th>TEAM</th>
+                                    <th>CONSTRUCTOR</th>
                                     <th>CHAMPIONSHIPS</th>
+                                    <th>YEARS</th>
                                 </tr>
                             </thead>
                             <tbody id="constructorChampionshipsBody">
@@ -1811,6 +1922,24 @@
                                 </tr>
                             </thead>
                             <tbody id="constructorSeasonPointsBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="records-table-wrapper">
+                    <div class="standings-table" id="constructorMostSeasonWinsTable">
+                        <div class="table-header" onclick="openRecordsModal('constructorMostSeasonWins')" style="cursor: pointer;">MOST WINS IN A SEASON</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>POS</th>
+                                    <th>CONSTRUCTOR</th>
+                                    <th>SEASON</th>
+                                    <th>WINS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="constructorMostSeasonWinsBody">
                             </tbody>
                         </table>
                     </div>
@@ -3547,6 +3676,27 @@
             }
         }
 
+        // Show specific standings type (driver or constructor) in Stats tab
+        function showStandingsType(type) {
+            // Hide all standings sections
+            document.getElementById('driverStandingsSection').classList.remove('active');
+            document.getElementById('constructorStandingsSection').classList.remove('active');
+            
+            // Remove active class from all buttons in stats tab
+            const statsTab = document.getElementById('stats');
+            const buttons = statsTab.querySelectorAll('.record-type-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected standings type
+            if (type === 'driver') {
+                document.getElementById('driverStandingsSection').classList.add('active');
+                event.target.classList.add('active');
+            } else if (type === 'constructor') {
+                document.getElementById('constructorStandingsSection').classList.add('active');
+                event.target.classList.add('active');
+            }
+        }
+
         // Calculate all-time records across all seasons
         function calculateAllTimeRecords() {
             if (!allSeasonsData || !allSeasonsData.seasons) {
@@ -3574,7 +3724,8 @@
                             finishedRaces: 0,
                             totalFinishPosition: 0,
                             totalPoints: 0,
-                            championships: 0
+                            championships: 0,
+                            championshipYears: []
                         });
                     }
 
@@ -3648,6 +3799,7 @@
 
                         if (seasonDriverStats[0]?.id === driver.id) {
                             driverStats.championships++;
+                            driverStats.championshipYears.push(season.year);
                         }
                     }
                 });
@@ -3679,15 +3831,39 @@
                             wins: 0,
                             podiums: 0,
                             poles: 0,
-                            championships: 0
+                            championships: 0,
+                            races: 0,
+                            oneTwoFinishes: 0,
+                            championshipYears: []
                         });
                     }
 
                     const teamStats = allTeams.get(teamName);
                     const teamDriverIds = season.drivers.filter(d => d.team === teamName).map(d => d.id);
 
+                    // Track races this team participated in (to avoid counting a race multiple times)
+                    const racesParticipated = new Set();
+
                     season.races.forEach(race => {
                         if (race.status !== 'completed' || !race.results) return;
+
+                        // Check if at least one team driver participated in this race
+                        const teamParticipated = race.results.some(result => teamDriverIds.includes(result.driverId));
+                        if (teamParticipated && !racesParticipated.has(race.name)) {
+                            racesParticipated.add(race.name);
+                        }
+
+                        // Check for 1-2 finish (both P1 and P2 are from the same team)
+                        if (race.results.length >= 2) {
+                            const p1Driver = race.results.find(r => r.position === 1);
+                            const p2Driver = race.results.find(r => r.position === 2);
+                            
+                            if (p1Driver && p2Driver && 
+                                teamDriverIds.includes(p1Driver.driverId) && 
+                                teamDriverIds.includes(p2Driver.driverId)) {
+                                teamStats.oneTwoFinishes++;
+                            }
+                        }
 
                         race.results.forEach(result => {
                             if (teamDriverIds.includes(result.driverId)) {
@@ -3711,6 +3887,9 @@
                             teamStats.poles++;
                         }
                     });
+
+                    // Add the count of races participated in this season
+                    teamStats.races += racesParticipated.size;
 
                     // Count championships (only if all races completed AND at least one race exists)
                     const allRacesCompleted = season.races.length > 0 && season.races.every(race => race.status === 'completed');
@@ -3750,6 +3929,7 @@
 
                         if (seasonTeamStats[0]?.name === teamName) {
                             teamStats.championships++;
+                            teamStats.championshipYears.push(season.year);
                         }
                     }
                 });
@@ -3876,6 +4056,109 @@
                 fastestLapsBody.appendChild(row);
             });
 
+            // Most Race Starts
+            const raceStartsSorted = [...allTimeDrivers].sort((a, b) => b.races - a.races);
+            
+            // Calculate seasons string for each driver
+            raceStartsSorted.forEach(driver => {
+                const seasonYears = [];
+                allSeasonsData.seasons.forEach(season => {
+                    if (season.drivers.some(d => d.id == driver.id)) {
+                        seasonYears.push(season.year);
+                    }
+                });
+                
+                // Convert years to ranges (e.g., "2001, 2003–2018, 2021–2025")
+                if (seasonYears.length > 0) {
+                    seasonYears.sort((a, b) => a - b);
+                    const ranges = [];
+                    let rangeStart = seasonYears[0];
+                    let rangeEnd = seasonYears[0];
+                    
+                    for (let i = 1; i < seasonYears.length; i++) {
+                        if (seasonYears[i] === rangeEnd + 1) {
+                            rangeEnd = seasonYears[i];
+                        } else {
+                            if (rangeStart === rangeEnd) {
+                                ranges.push(`${rangeStart}`);
+                            } else {
+                                ranges.push(`${rangeStart}–${rangeEnd}`);
+                            }
+                            rangeStart = seasonYears[i];
+                            rangeEnd = seasonYears[i];
+                        }
+                    }
+                    
+                    // Add the last range
+                    if (rangeStart === rangeEnd) {
+                        ranges.push(`${rangeStart}`);
+                    } else {
+                        ranges.push(`${rangeStart}–${rangeEnd}`);
+                    }
+                    
+                    driver.seasonsString = ranges.join(', ');
+                } else {
+                    driver.seasonsString = '';
+                }
+            });
+            
+            const raceStartsBody = document.getElementById('recordsRaceStartsBody');
+            raceStartsBody.innerHTML = '';
+            let raceStartsCount = 0;
+            raceStartsSorted.forEach((driver, index) => {
+                if (driver.races === 0) return;
+                raceStartsCount++;
+                const row = document.createElement('tr');
+                if (raceStartsCount > 5) row.classList.add('records-row-hidden');
+                const currentSeasonDriver = calculatedDriverStats.find(d => d.id == driver.id);
+                if (currentSeasonDriver) {
+                    row.onclick = () => openDriverModal(currentSeasonDriver);
+                    row.style.cursor = 'pointer';
+                }
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>
+                        <div class="driver-name">${driver.name}</div>
+                    </td>
+                    <td style="font-size: 0.9rem;">${driver.seasonsString}</td>
+                    <td><span class="points">${driver.races}</span></td>
+                `;
+                raceStartsBody.appendChild(row);
+            });
+
+            // Win Percentage (minimum 9 starts)
+            const winPercentageSorted = [...allTimeDrivers]
+                .filter(d => d.races >= 9)
+                .map(d => ({
+                    ...d,
+                    winPercentage: (d.wins / d.races) * 100
+                }))
+                .sort((a, b) => b.winPercentage - a.winPercentage);
+            
+            const winPercentageBody = document.getElementById('recordsWinPercentageBody');
+            winPercentageBody.innerHTML = '';
+            let winPercentageCount = 0;
+            winPercentageSorted.forEach((driver, index) => {
+                winPercentageCount++;
+                const row = document.createElement('tr');
+                if (winPercentageCount > 5) row.classList.add('records-row-hidden');
+                const currentSeasonDriver = calculatedDriverStats.find(d => d.id == driver.id);
+                if (currentSeasonDriver) {
+                    row.onclick = () => openDriverModal(currentSeasonDriver);
+                    row.style.cursor = 'pointer';
+                }
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>
+                        <div class="driver-name">${driver.name}</div>
+                    </td>
+                    <td>${driver.races}</td>
+                    <td>${driver.wins}</td>
+                    <td><span class="points">${driver.winPercentage.toFixed(1)}%</span></td>
+                `;
+                winPercentageBody.appendChild(row);
+            });
+
             // Best Average Finish (Career)
             const avgFinishSorted = [...allTimeDrivers]
                 .filter(d => d.finishedRaces > 0)
@@ -3905,49 +4188,101 @@
                 avgFinishBody.appendChild(row);
             });
 
-            // Most Points in a Single Race (across all seasons)
-            const bestRaces = [];
+            // Youngest to Start a Race
+            const youngestStarts = [];
             allSeasonsData.seasons.forEach(season => {
+                if (!season || !season.races || !season.drivers) return;
+                
                 season.races.forEach(race => {
-                    if (race.status !== 'completed' || !race.results) return;
+                    if (!race || race.status !== 'completed' || !race.grid || !race.date) return;
                     
-                    race.results.forEach(result => {
-                        const racePoints = season.pointsSystem.race[result.position] || 0;
-                        const isFastestLap = race.fastestLap && race.fastestLap.driverId == result.driverId;
-                        const fastestLapBonus = isFastestLap && result.position <= 10 && result.status === 'finished' ? season.pointsSystem.fastestLap : 0;
-                        const totalPoints = racePoints + fastestLapBonus;
+                    // Check all drivers in the grid (everyone who started the race)
+                    race.grid.forEach(gridEntry => {
+                        if (!gridEntry || !gridEntry.driverId) return;
                         
-                        if (totalPoints > 0) {
-                            const driver = season.drivers.find(d => d.id == result.driverId);
-                            bestRaces.push({
-                                driverId: result.driverId,
-                                driverName: driver.name,
-                                raceName: race.name,
-                                season: season.year,
-                                position: result.position,
-                                points: totalPoints
-                            });
+                        const driver = season.drivers.find(d => d && d.id == gridEntry.driverId);
+                        if (!driver || !driver.birthday || !driver.name || !driver.id) return;
+                        
+                        // Calculate age at time of race
+                        const raceDate = new Date(race.date);
+                        
+                        // Parse birthday without timezone conversion
+                        const [birthYear, birthMonth, birthDay] = driver.birthday.split('-').map(Number);
+                        const birthDate = new Date(birthYear, birthMonth - 1, birthDay);
+                        
+                        let years = raceDate.getFullYear() - birthDate.getFullYear();
+                        let months = raceDate.getMonth() - birthDate.getMonth();
+                        let days = raceDate.getDate() - birthDate.getDate();
+                        
+                        if (days < 0) {
+                            months--;
+                            const prevMonth = new Date(raceDate.getFullYear(), raceDate.getMonth(), 0);
+                            days += prevMonth.getDate();
                         }
+                        
+                        if (months < 0) {
+                            years--;
+                            months += 12;
+                        }
+                        
+                        // Convert to total days for sorting
+                        const totalDays = years * 365 + months * 30 + days;
+                        const ageDisplay = `${years}y ${days}d`;
+                        
+                        youngestStarts.push({
+                            driverId: driver.id,
+                            driverName: driver.name,
+                            raceName: race.name,
+                            season: season.year,
+                            age: ageDisplay,
+                            totalDays: totalDays,
+                            date: race.date,
+                            team: driver.team
+                        });
                     });
                 });
             });
-
-            bestRaces.sort((a, b) => b.points - a.points);
-            const bestRaceBody = document.getElementById('recordsBestRaceBody');
-            bestRaceBody.innerHTML = '';
-            bestRaces.forEach((record, index) => {
+            
+            // Keep only the youngest start for each driver
+            const driverYoungestStarts = new Map();
+            youngestStarts.forEach(start => {
+                if (!driverYoungestStarts.has(start.driverId) || 
+                    start.totalDays < driverYoungestStarts.get(start.driverId).totalDays) {
+                    driverYoungestStarts.set(start.driverId, start);
+                }
+            });
+            
+            // Convert back to array and sort by total days (youngest first)
+            const uniqueYoungestStarts = Array.from(driverYoungestStarts.values());
+            uniqueYoungestStarts.sort((a, b) => a.totalDays - b.totalDays);
+            
+            const youngestStartBody = document.getElementById('recordsYoungestStartBody');
+            youngestStartBody.innerHTML = '';
+            uniqueYoungestStarts.slice(0, 10).forEach((record, index) => {
                 const row = document.createElement('tr');
                 if (index >= 5) row.classList.add('records-row-hidden');
-                row.style.cursor = 'pointer';
+                const currentSeasonDriver = calculatedDriverStats.find(d => d.id == record.driverId);
+                if (currentSeasonDriver) {
+                    row.onclick = () => openDriverModal(currentSeasonDriver);
+                    row.style.cursor = 'pointer';
+                }
+                
+                const raceDate = new Date(record.date);
+                const formattedDate = raceDate.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric', 
+                    year: 'numeric' 
+                });
+                
                 row.innerHTML = `
                     <td>
                         <div class="driver-name">${record.driverName}</div>
                     </td>
                     <td>${record.raceName} ${record.season}</td>
-                    <td>P${record.position}</td>
-                    <td><span class="points">${record.points}</span></td>
+                    <td><span class="points">${record.age}</span></td>
+                    <td>${formattedDate}</td>
                 `;
-                bestRaceBody.appendChild(row);
+                youngestStartBody.appendChild(row);
             });
 
             // Driver Championships
@@ -3964,13 +4299,42 @@
                     row.onclick = () => openDriverModal(currentSeasonDriver);
                     row.style.cursor = 'pointer';
                 }
+                
+                // Format years as ranges
+                const years = driver.championshipYears.sort((a, b) => a - b);
+                const yearRanges = [];
+                if (years.length > 0) {
+                    let rangeStart = years[0];
+                    let rangeEnd = years[0];
+                    
+                    for (let i = 1; i < years.length; i++) {
+                        if (years[i] === rangeEnd + 1) {
+                            rangeEnd = years[i];
+                        } else {
+                            if (rangeStart === rangeEnd) {
+                                yearRanges.push(`${rangeStart}`);
+                            } else {
+                                yearRanges.push(`${rangeStart}–${rangeEnd}`);
+                            }
+                            rangeStart = years[i];
+                            rangeEnd = years[i];
+                        }
+                    }
+                    
+                    if (rangeStart === rangeEnd) {
+                        yearRanges.push(`${rangeStart}`);
+                    } else {
+                        yearRanges.push(`${rangeStart}–${rangeEnd}`);
+                    }
+                }
+                
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>
                         <div class="driver-name">${driver.name}</div>
                     </td>
-                    <td>${driver.currentTeam}</td>
                     <td><span class="points">${driver.championships}</span></td>
+                    <td style="font-size: 0.9rem;">${yearRanges.join(', ')}</td>
                 `;
                 championshipsBody.appendChild(row);
             });
@@ -4152,6 +4516,59 @@
                     <td><span class="points">${record.points}</span></td>
                 `;
                 seasonPointsBody.appendChild(row);
+            });
+
+            // Most Wins in a Season (Driver)
+            const driverSeasonWins = [];
+            allSeasonsData.seasons.forEach(season => {
+                if (!season || !season.drivers || !season.races) return;
+                
+                season.drivers.forEach(driver => {
+                    if (!driver || !driver.id || !driver.name) return;
+                    
+                    let wins = 0;
+                    
+                    season.races.forEach(race => {
+                        if (!race || race.status !== 'completed' || !race.results) return;
+                        
+                        const result = race.results.find(r => r && r.driverId == driver.id);
+                        if (result && result.position === 1) {
+                            wins++;
+                        }
+                    });
+                    
+                    if (wins > 0) {
+                        driverSeasonWins.push({
+                            driverId: driver.id,
+                            driverName: driver.name,
+                            season: season.year,
+                            wins: wins
+                        });
+                    }
+                });
+            });
+            
+            driverSeasonWins.sort((a, b) => b.wins - a.wins);
+            
+            const mostSeasonWinsBody = document.getElementById('recordsMostSeasonWinsBody');
+            mostSeasonWinsBody.innerHTML = '';
+            driverSeasonWins.slice(0, 10).forEach((record, index) => {
+                const row = document.createElement('tr');
+                if (index >= 5) row.classList.add('records-row-hidden');
+                const currentSeasonDriver = calculatedDriverStats.find(d => d.id == record.driverId);
+                if (currentSeasonDriver) {
+                    row.onclick = () => openDriverModal(currentSeasonDriver);
+                    row.style.cursor = 'pointer';
+                }
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>
+                        <div class="driver-name">${record.driverName}</div>
+                    </td>
+                    <td>${record.season}</td>
+                    <td><span class="points">${record.wins}</span></td>
+                `;
+                mostSeasonWinsBody.appendChild(row);
             });
 
             // Championship Gaps (Driver)
@@ -4498,6 +4915,76 @@
 
             // ===== CONSTRUCTOR RECORDS =====
 
+            // Constructor Total Races
+            const constructorTotalRacesSorted = [...allTimeConstructors].sort((a, b) => b.races - a.races);
+            
+            // Calculate seasons string for each constructor
+            constructorTotalRacesSorted.forEach(team => {
+                const seasonYears = [];
+                allSeasonsData.seasons.forEach(season => {
+                    if (season.teams.some(t => t.name === team.name)) {
+                        seasonYears.push(season.year);
+                    }
+                });
+                
+                // Convert years to ranges (e.g., "1977–1985, 2002–2011, 2016–2020")
+                if (seasonYears.length > 0) {
+                    seasonYears.sort((a, b) => a - b);
+                    const ranges = [];
+                    let rangeStart = seasonYears[0];
+                    let rangeEnd = seasonYears[0];
+                    
+                    for (let i = 1; i < seasonYears.length; i++) {
+                        if (seasonYears[i] === rangeEnd + 1) {
+                            rangeEnd = seasonYears[i];
+                        } else {
+                            if (rangeStart === rangeEnd) {
+                                ranges.push(`${rangeStart}`);
+                            } else {
+                                ranges.push(`${rangeStart}–${rangeEnd}`);
+                            }
+                            rangeStart = seasonYears[i];
+                            rangeEnd = seasonYears[i];
+                        }
+                    }
+                    
+                    // Add the last range
+                    if (rangeStart === rangeEnd) {
+                        ranges.push(`${rangeStart}`);
+                    } else {
+                        ranges.push(`${rangeStart}–${rangeEnd}`);
+                    }
+                    
+                    team.seasonsString = ranges.join(', ');
+                } else {
+                    team.seasonsString = '';
+                }
+            });
+            
+            const constructorTotalRacesBody = document.getElementById('constructorTotalRacesBody');
+            constructorTotalRacesBody.innerHTML = '';
+            let constructorTotalRacesCount = 0;
+            constructorTotalRacesSorted.forEach((team, index) => {
+                if (team.races === 0) return;
+                constructorTotalRacesCount++;
+                const row = document.createElement('tr');
+                if (constructorTotalRacesCount > 5) row.classList.add('records-row-hidden');
+                const currentSeasonTeam = calculatedTeamStats.find(t => t.name === team.name);
+                if (currentSeasonTeam) {
+                    row.onclick = () => openTeamModal(currentSeasonTeam);
+                    row.style.cursor = 'pointer';
+                }
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>
+                        <div class="driver-name">${team.name}</div>
+                    </td>
+                    <td>${team.races}</td>
+                    <td style="font-size: 0.9rem;">${team.seasonsString}</td>
+                `;
+                constructorTotalRacesBody.appendChild(row);
+            });
+
             // Constructor Wins
             const constructorWinsSorted = [...allTimeConstructors].sort((a, b) => b.wins - a.wins);
             const constructorWinsBody = document.getElementById('constructorWinsBody');
@@ -4573,6 +5060,31 @@
                 constructorPolesBody.appendChild(row);
             });
 
+            // Constructor 1-2 Finishes
+            const constructorOneTwoSorted = [...allTimeConstructors].sort((a, b) => b.oneTwoFinishes - a.oneTwoFinishes);
+            const constructorOneTwoBody = document.getElementById('constructorOneTwoBody');
+            constructorOneTwoBody.innerHTML = '';
+            let constructorOneTwoCount = 0;
+            constructorOneTwoSorted.forEach((team, index) => {
+                if (team.oneTwoFinishes === 0) return;
+                constructorOneTwoCount++;
+                const row = document.createElement('tr');
+                if (constructorOneTwoCount > 5) row.classList.add('records-row-hidden');
+                const currentSeasonTeam = calculatedTeamStats.find(t => t.name === team.name);
+                if (currentSeasonTeam) {
+                    row.onclick = () => openTeamModal(currentSeasonTeam);
+                    row.style.cursor = 'pointer';
+                }
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>
+                        <div class="driver-name">${team.name}</div>
+                    </td>
+                    <td><span class="points">${team.oneTwoFinishes}</span></td>
+                `;
+                constructorOneTwoBody.appendChild(row);
+            });
+
             // Constructor Championships
             const constructorChampionshipsSorted = [...allTimeConstructors].sort((a, b) => b.championships - a.championships);
             const constructorChampionshipsBody = document.getElementById('constructorChampionshipsBody');
@@ -4588,12 +5100,42 @@
                     row.onclick = () => openTeamModal(currentSeasonTeam);
                     row.style.cursor = 'pointer';
                 }
+                
+                // Format years as ranges
+                const years = team.championshipYears.sort((a, b) => a - b);
+                const yearRanges = [];
+                if (years.length > 0) {
+                    let rangeStart = years[0];
+                    let rangeEnd = years[0];
+                    
+                    for (let i = 1; i < years.length; i++) {
+                        if (years[i] === rangeEnd + 1) {
+                            rangeEnd = years[i];
+                        } else {
+                            if (rangeStart === rangeEnd) {
+                                yearRanges.push(`${rangeStart}`);
+                            } else {
+                                yearRanges.push(`${rangeStart}–${rangeEnd}`);
+                            }
+                            rangeStart = years[i];
+                            rangeEnd = years[i];
+                        }
+                    }
+                    
+                    if (rangeStart === rangeEnd) {
+                        yearRanges.push(`${rangeStart}`);
+                    } else {
+                        yearRanges.push(`${rangeStart}–${rangeEnd}`);
+                    }
+                }
+                
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>
                         <div class="driver-name">${team.name}</div>
                     </td>
                     <td><span class="points">${team.championships}</span></td>
+                    <td style="font-size: 0.9rem;">${yearRanges.join(', ')}</td>
                 `;
                 constructorChampionshipsBody.appendChild(row);
             });
@@ -4678,6 +5220,60 @@
                     <td><span class="points">${record.points}</span></td>
                 `;
                 constructorSeasonPointsBody.appendChild(row);
+            });
+
+            // Most Wins in a Season (Constructor)
+            const constructorSeasonWins = [];
+            allSeasonsData.seasons.forEach(season => {
+                if (!season || !season.drivers || !season.races) return;
+                
+                const teamNames = [...new Set(season.drivers.map(d => d.team).filter(t => t))];
+                
+                teamNames.forEach(teamName => {
+                    const teamDriverIds = season.drivers.filter(d => d.team === teamName).map(d => d.id);
+                    let wins = 0;
+                    
+                    season.races.forEach(race => {
+                        if (!race || race.status !== 'completed' || !race.results) return;
+                        
+                        race.results.forEach(result => {
+                            if (result && teamDriverIds.includes(result.driverId) && result.position === 1) {
+                                wins++;
+                            }
+                        });
+                    });
+                    
+                    if (wins > 0) {
+                        constructorSeasonWins.push({
+                            team: teamName,
+                            season: season.year,
+                            wins: wins
+                        });
+                    }
+                });
+            });
+            
+            constructorSeasonWins.sort((a, b) => b.wins - a.wins);
+            
+            const constructorMostSeasonWinsBody = document.getElementById('constructorMostSeasonWinsBody');
+            constructorMostSeasonWinsBody.innerHTML = '';
+            constructorSeasonWins.slice(0, 10).forEach((record, index) => {
+                const row = document.createElement('tr');
+                if (index >= 5) row.classList.add('records-row-hidden');
+                const currentSeasonTeam = calculatedTeamStats.find(t => t.name === record.team);
+                if (currentSeasonTeam) {
+                    row.onclick = () => openTeamModal(currentSeasonTeam);
+                    row.style.cursor = 'pointer';
+                }
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>
+                        <div class="driver-name">${record.team}</div>
+                    </td>
+                    <td>${record.season}</td>
+                    <td><span class="points">${record.wins}</span></td>
+                `;
+                constructorMostSeasonWinsBody.appendChild(row);
             });
 
             // Championship Gaps (Constructor)
@@ -5092,6 +5688,77 @@
                         driver: calculatedDriverStats.find(d => d.id == driver.id),
                         values: [driver.name, driver.currentTeam, driver.fastestLaps]
                     }));
+            } else if (recordType === 'raceStarts') {
+                title = 'MOST RACE STARTS (ALL-TIME)';
+                headers = ['POS', 'DRIVER', 'SEASONS', 'STARTS'];
+                
+                // Calculate seasons for each driver
+                const driversWithSeasons = [...allTimeDrivers]
+                    .filter(d => d.races > 0)
+                    .map(driver => {
+                        const seasonYears = [];
+                        allSeasonsData.seasons.forEach(season => {
+                            if (season.drivers.some(d => d.id == driver.id)) {
+                                seasonYears.push(season.year);
+                            }
+                        });
+                        
+                        // Convert years to ranges
+                        if (seasonYears.length > 0) {
+                            seasonYears.sort((a, b) => a - b);
+                            const ranges = [];
+                            let rangeStart = seasonYears[0];
+                            let rangeEnd = seasonYears[0];
+                            
+                            for (let i = 1; i < seasonYears.length; i++) {
+                                if (seasonYears[i] === rangeEnd + 1) {
+                                    rangeEnd = seasonYears[i];
+                                } else {
+                                    if (rangeStart === rangeEnd) {
+                                        ranges.push(`${rangeStart}`);
+                                    } else {
+                                        ranges.push(`${rangeStart}–${rangeEnd}`);
+                                    }
+                                    rangeStart = seasonYears[i];
+                                    rangeEnd = seasonYears[i];
+                                }
+                            }
+                            
+                            if (rangeStart === rangeEnd) {
+                                ranges.push(`${rangeStart}`);
+                            } else {
+                                ranges.push(`${rangeStart}–${rangeEnd}`);
+                            }
+                            
+                            driver.seasonsString = ranges.join(', ');
+                        } else {
+                            driver.seasonsString = '';
+                        }
+                        
+                        return driver;
+                    })
+                    .sort((a, b) => b.races - a.races);
+                
+                data = driversWithSeasons.map((driver, index) => ({
+                    position: index + 1,
+                    driver: calculatedDriverStats.find(d => d.id == driver.id),
+                    values: [driver.name, driver.seasonsString, driver.races]
+                }));
+            } else if (recordType === 'winPercentage') {
+                title = 'WIN PERCENTAGE (ALL-TIME, MIN. 9 STARTS)';
+                headers = ['POS', 'DRIVER', 'STARTS', 'WINS', '%'];
+                data = [...allTimeDrivers]
+                    .filter(d => d.races >= 9)
+                    .map(d => ({
+                        ...d,
+                        winPercentage: (d.wins / d.races) * 100
+                    }))
+                    .sort((a, b) => b.winPercentage - a.winPercentage)
+                    .map((driver, index) => ({
+                        position: index + 1,
+                        driver: calculatedDriverStats.find(d => d.id == driver.id),
+                        values: [driver.name, driver.races, driver.wins, `${driver.winPercentage.toFixed(1)}%`]
+                    }));
             } else if (recordType === 'avgFinish') {
                 title = 'BEST AVERAGE FINISH (ALL-TIME)';
                 headers = ['POS', 'DRIVER', 'TEAM', 'AVG FINISH'];
@@ -5107,51 +5774,124 @@
                         driver: calculatedDriverStats.find(d => d.id == driver.id),
                         values: [driver.name, driver.currentTeam, driver.avgFinish.toFixed(2)]
                     }));
-            } else if (recordType === 'bestRace') {
-                title = 'MOST POINTS IN A SINGLE RACE (ALL-TIME)';
-                headers = ['DRIVER', 'RACE', 'POSITION', 'POINTS'];
-                const bestRaces = [];
+            } else if (recordType === 'youngestStart') {
+                title = 'YOUNGEST TO START A RACE (ALL-TIME)';
+                headers = ['DRIVER', 'RACE', 'AGE', 'DATE'];
+                
+                const youngestStarts = [];
                 allSeasonsData.seasons.forEach(season => {
+                    if (!season || !season.races || !season.drivers) return;
+                    
                     season.races.forEach(race => {
-                        if (race.status !== 'completed' || !race.results) return;
+                        if (!race || race.status !== 'completed' || !race.grid || !race.date) return;
                         
-                        race.results.forEach(result => {
-                            const racePoints = season.pointsSystem.race[result.position] || 0;
-                            const isFastestLap = race.fastestLap && race.fastestLap.driverId == result.driverId;
-                            const fastestLapBonus = isFastestLap && result.position <= 10 && result.status === 'finished' ? season.pointsSystem.fastestLap : 0;
-                            const totalPoints = racePoints + fastestLapBonus;
+                        race.grid.forEach(gridEntry => {
+                            if (!gridEntry || !gridEntry.driverId) return;
                             
-                            if (totalPoints > 0) {
-                                const driver = season.drivers.find(d => d.id == result.driverId);
-                                bestRaces.push({
-                                    driverId: result.driverId,
-                                    driverName: driver.name,
-                                    raceName: race.name,
-                                    season: season.year,
-                                    position: result.position,
-                                    points: totalPoints
-                                });
+                            const driver = season.drivers.find(d => d && d.id == gridEntry.driverId);
+                            if (!driver || !driver.birthday || !driver.name || !driver.id) return;
+                            
+                            const raceDate = new Date(race.date);
+                            
+                            // Parse birthday without timezone conversion
+                            const [birthYear, birthMonth, birthDay] = driver.birthday.split('-').map(Number);
+                            const birthDate = new Date(birthYear, birthMonth - 1, birthDay);
+                            
+                            let years = raceDate.getFullYear() - birthDate.getFullYear();
+                            let months = raceDate.getMonth() - birthDate.getMonth();
+                            let days = raceDate.getDate() - birthDate.getDate();
+                            
+                            if (days < 0) {
+                                months--;
+                                const prevMonth = new Date(raceDate.getFullYear(), raceDate.getMonth(), 0);
+                                days += prevMonth.getDate();
                             }
+                            
+                            if (months < 0) {
+                                years--;
+                                months += 12;
+                            }
+                            
+                            const totalDays = years * 365 + months * 30 + days;
+                            const ageDisplay = `${years}y ${days}d`;
+                            
+                            const formattedDate = raceDate.toLocaleDateString('en-US', { 
+                                month: 'short', 
+                                day: 'numeric', 
+                                year: 'numeric' 
+                            });
+                            
+                            youngestStarts.push({
+                                driverId: driver.id,
+                                driverName: driver.name,
+                                raceName: race.name,
+                                season: season.year,
+                                age: ageDisplay,
+                                totalDays: totalDays,
+                                date: formattedDate
+                            });
                         });
                     });
                 });
-                bestRaces.sort((a, b) => b.points - a.points);
-                data = bestRaces.map(record => ({
+                
+                // Keep only the youngest start for each driver
+                const driverYoungestStarts = new Map();
+                youngestStarts.forEach(start => {
+                    if (!driverYoungestStarts.has(start.driverId) || 
+                        start.totalDays < driverYoungestStarts.get(start.driverId).totalDays) {
+                        driverYoungestStarts.set(start.driverId, start);
+                    }
+                });
+                
+                const uniqueYoungestStarts = Array.from(driverYoungestStarts.values());
+                uniqueYoungestStarts.sort((a, b) => a.totalDays - b.totalDays);
+                
+                data = uniqueYoungestStarts.map(record => ({
                     position: null,
-                    driver: null,
-                    values: [record.driverName, `${record.raceName} ${record.season}`, `P${record.position}`, record.points]
+                    driver: calculatedDriverStats.find(d => d.id == record.driverId),
+                    values: [record.driverName, `${record.raceName} ${record.season}`, record.age, record.date]
                 }));
             } else if (recordType === 'championships') {
                 title = 'MOST CHAMPIONSHIPS (ALL-TIME)';
-                headers = ['POS', 'DRIVER', 'TEAM', 'CHAMPIONSHIPS'];
+                headers = ['POS', 'DRIVER', 'CHAMPIONSHIPS', 'YEARS'];
                 data = [...allTimeDrivers]
                     .filter(d => d.championships > 0)
                     .sort((a, b) => b.championships - a.championships)
-                    .map((driver, index) => ({
-                        position: index + 1,
-                        driver: calculatedDriverStats.find(d => d.id == driver.id),
-                        values: [driver.name, driver.currentTeam, driver.championships]
-                    }));
+                    .map((driver, index) => {
+                        // Format years as ranges
+                        const years = driver.championshipYears.sort((a, b) => a - b);
+                        const yearRanges = [];
+                        if (years.length > 0) {
+                            let rangeStart = years[0];
+                            let rangeEnd = years[0];
+                            
+                            for (let i = 1; i < years.length; i++) {
+                                if (years[i] === rangeEnd + 1) {
+                                    rangeEnd = years[i];
+                                } else {
+                                    if (rangeStart === rangeEnd) {
+                                        yearRanges.push(`${rangeStart}`);
+                                    } else {
+                                        yearRanges.push(`${rangeStart}–${rangeEnd}`);
+                                    }
+                                    rangeStart = years[i];
+                                    rangeEnd = years[i];
+                                }
+                            }
+                            
+                            if (rangeStart === rangeEnd) {
+                                yearRanges.push(`${rangeStart}`);
+                            } else {
+                                yearRanges.push(`${rangeStart}–${rangeEnd}`);
+                            }
+                        }
+                        
+                        return {
+                            position: index + 1,
+                            driver: calculatedDriverStats.find(d => d.id == driver.id),
+                            values: [driver.name, driver.championships, yearRanges.join(', ')]
+                        };
+                    });
             } else if (recordType === 'totalPoints') {
                 title = 'MOST TOTAL POINTS (ALL-TIME)';
                 headers = ['POS', 'DRIVER', 'TEAM', 'POINTS'];
@@ -5283,6 +6023,42 @@
                     position: null,
                     driver: calculatedDriverStats.find(d => d.id == record.driverId),
                     values: [record.driverName, record.team, record.season, record.points]
+                }));
+            } else if (recordType === 'mostSeasonWins') {
+                title = 'MOST WINS IN A SEASON (ALL-TIME)';
+                headers = ['POS', 'DRIVER', 'SEASON', 'WINS'];
+                
+                const driverSeasonWins = [];
+                allSeasonsData.seasons.forEach(season => {
+                    season.drivers.forEach(driver => {
+                        let wins = 0;
+                        
+                        season.races.forEach(race => {
+                            if (race.status !== 'completed' || !race.results) return;
+                            
+                            const result = race.results.find(r => r.driverId == driver.id);
+                            if (result && result.position === 1) {
+                                wins++;
+                            }
+                        });
+                        
+                        if (wins > 0) {
+                            driverSeasonWins.push({
+                                driverId: driver.id,
+                                driverName: driver.name,
+                                season: season.year,
+                                wins: wins
+                            });
+                        }
+                    });
+                });
+                
+                driverSeasonWins.sort((a, b) => b.wins - a.wins);
+                
+                data = driverSeasonWins.map((record, index) => ({
+                    position: index + 1,
+                    driver: calculatedDriverStats.find(d => d.id == record.driverId),
+                    values: [record.driverName, record.season, record.wins]
                 }));
             } else if (recordType === 'largestGap') {
                 title = 'LARGEST CHAMPIONSHIP GAP (ALL-TIME)';
@@ -5591,6 +6367,63 @@
                     driver: calculatedDriverStats.find(d => d.id == record.championId),
                     values: [record.championName, record.clinchRace, record.remainingRaces, record.season]
                 }));
+            } else if (recordType === 'constructorTotalRaces') {
+                title = 'TOTAL RACES (ALL-TIME)';
+                headers = ['POS', 'CONSTRUCTOR', 'RACES', 'SEASONS'];
+                
+                // Calculate seasons for each constructor
+                const constructorsWithSeasons = [...allTimeConstructors]
+                    .filter(t => t.races > 0)
+                    .map(team => {
+                        const seasonYears = [];
+                        allSeasonsData.seasons.forEach(season => {
+                            if (season.teams.some(t => t.name === team.name)) {
+                                seasonYears.push(season.year);
+                            }
+                        });
+                        
+                        // Convert years to ranges
+                        if (seasonYears.length > 0) {
+                            seasonYears.sort((a, b) => a - b);
+                            const ranges = [];
+                            let rangeStart = seasonYears[0];
+                            let rangeEnd = seasonYears[0];
+                            
+                            for (let i = 1; i < seasonYears.length; i++) {
+                                if (seasonYears[i] === rangeEnd + 1) {
+                                    rangeEnd = seasonYears[i];
+                                } else {
+                                    if (rangeStart === rangeEnd) {
+                                        ranges.push(`${rangeStart}`);
+                                    } else {
+                                        ranges.push(`${rangeStart}–${rangeEnd}`);
+                                    }
+                                    rangeStart = seasonYears[i];
+                                    rangeEnd = seasonYears[i];
+                                }
+                            }
+                            
+                            if (rangeStart === rangeEnd) {
+                                ranges.push(`${rangeStart}`);
+                            } else {
+                                ranges.push(`${rangeStart}–${rangeEnd}`);
+                            }
+                            
+                            team.seasonsString = ranges.join(', ');
+                        } else {
+                            team.seasonsString = '';
+                        }
+                        
+                        return team;
+                    })
+                    .sort((a, b) => b.races - a.races);
+                
+                data = constructorsWithSeasons.map((team, index) => ({
+                    position: index + 1,
+                    driver: null,
+                    team: calculatedTeamStats.find(t => t.name === team.name),
+                    values: [team.name, team.races, team.seasonsString]
+                }));
             } else if (recordType === 'constructorWins') {
                 title = 'MOST WINS (ALL-TIME)';
                 headers = ['POS', 'TEAM', 'WINS'];
@@ -5627,18 +6460,60 @@
                         team: calculatedTeamStats.find(t => t.name === team.name),
                         values: [team.name, team.poles]
                     }));
-            } else if (recordType === 'constructorChampionships') {
-                title = 'MOST CHAMPIONSHIPS (ALL-TIME)';
-                headers = ['POS', 'TEAM', 'CHAMPIONSHIPS'];
+            } else if (recordType === 'constructorOneTwo') {
+                title = 'TOTAL 1-2 FINISHES (ALL-TIME)';
+                headers = ['POS', 'CONSTRUCTOR', '1-2s'];
                 data = [...allTimeConstructors]
-                    .filter(t => t.championships > 0)
-                    .sort((a, b) => b.championships - a.championships)
+                    .filter(t => t.oneTwoFinishes > 0)
+                    .sort((a, b) => b.oneTwoFinishes - a.oneTwoFinishes)
                     .map((team, index) => ({
                         position: index + 1,
                         driver: null,
                         team: calculatedTeamStats.find(t => t.name === team.name),
-                        values: [team.name, team.championships]
+                        values: [team.name, team.oneTwoFinishes]
                     }));
+            } else if (recordType === 'constructorChampionships') {
+                title = 'MOST CHAMPIONSHIPS (ALL-TIME)';
+                headers = ['POS', 'CONSTRUCTOR', 'CHAMPIONSHIPS', 'YEARS'];
+                data = [...allTimeConstructors]
+                    .filter(t => t.championships > 0)
+                    .sort((a, b) => b.championships - a.championships)
+                    .map((team, index) => {
+                        // Format years as ranges
+                        const years = team.championshipYears.sort((a, b) => a - b);
+                        const yearRanges = [];
+                        if (years.length > 0) {
+                            let rangeStart = years[0];
+                            let rangeEnd = years[0];
+                            
+                            for (let i = 1; i < years.length; i++) {
+                                if (years[i] === rangeEnd + 1) {
+                                    rangeEnd = years[i];
+                                } else {
+                                    if (rangeStart === rangeEnd) {
+                                        yearRanges.push(`${rangeStart}`);
+                                    } else {
+                                        yearRanges.push(`${rangeStart}–${rangeEnd}`);
+                                    }
+                                    rangeStart = years[i];
+                                    rangeEnd = years[i];
+                                }
+                            }
+                            
+                            if (rangeStart === rangeEnd) {
+                                yearRanges.push(`${rangeStart}`);
+                            } else {
+                                yearRanges.push(`${rangeStart}–${rangeEnd}`);
+                            }
+                        }
+                        
+                        return {
+                            position: index + 1,
+                            driver: null,
+                            team: calculatedTeamStats.find(t => t.name === team.name),
+                            values: [team.name, team.championships, yearRanges.join(', ')]
+                        };
+                    });
             } else if (recordType === 'constructorPoints') {
                 title = 'MOST TOTAL POINTS (ALL-TIME)';
                 headers = ['POS', 'TEAM', 'POINTS'];
@@ -5697,6 +6572,46 @@
                     driver: null,
                     team: calculatedTeamStats.find(t => t.name === record.team),
                     values: [record.team, record.drivers, record.season, record.points]
+                }));
+            } else if (recordType === 'constructorMostSeasonWins') {
+                title = 'MOST WINS IN A SEASON (ALL-TIME)';
+                headers = ['POS', 'CONSTRUCTOR', 'SEASON', 'WINS'];
+                
+                const constructorSeasonWins = [];
+                allSeasonsData.seasons.forEach(season => {
+                    const teamNames = [...new Set(season.drivers.map(d => d.team).filter(t => t))];
+                    
+                    teamNames.forEach(teamName => {
+                        const teamDriverIds = season.drivers.filter(d => d.team === teamName).map(d => d.id);
+                        let wins = 0;
+                        
+                        season.races.forEach(race => {
+                            if (race.status !== 'completed' || !race.results) return;
+                            
+                            race.results.forEach(result => {
+                                if (teamDriverIds.includes(result.driverId) && result.position === 1) {
+                                    wins++;
+                                }
+                            });
+                        });
+                        
+                        if (wins > 0) {
+                            constructorSeasonWins.push({
+                                team: teamName,
+                                season: season.year,
+                                wins: wins
+                            });
+                        }
+                    });
+                });
+                
+                constructorSeasonWins.sort((a, b) => b.wins - a.wins);
+                
+                data = constructorSeasonWins.map((record, index) => ({
+                    position: index + 1,
+                    driver: null,
+                    team: calculatedTeamStats.find(t => t.name === record.team),
+                    values: [record.team, record.season, record.wins]
                 }));
             } else if (recordType === 'constructorLargestGap') {
                 title = 'LARGEST CHAMPIONSHIP GAP (ALL-TIME)';
