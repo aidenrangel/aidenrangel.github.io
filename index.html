@@ -1401,16 +1401,16 @@
         <div id="stats" class="tab-content">
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-label">TOTAL RACES</div>
+                    <div class="stat-label">COMPLETED RACES</div>
                     <div class="stat-value">0</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">FASTEST LAPS</div>
+                    <div class="stat-label">DIFFERENT WINNERS</div>
                     <div class="stat-value">0</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">DNF COUNT</div>
-                    <div class="stat-value">0</div>
+                    <div class="stat-label">NEXT RACE</div>
+                    <div class="stat-value" id="nextRace" style="font-size: 1.5rem;">TBA</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">POLE POSITIONS</div>
@@ -3602,7 +3602,11 @@
             const completedRaces = racingData.races.filter(r => r.status === 'completed').length;
             const totalPoles = calculatedDriverStats.reduce((sum, d) => sum + d.poles, 0);
             const totalFastestLaps = calculatedDriverStats.reduce((sum, d) => sum + d.fastestLaps, 0);
-            const totalDnfs = calculatedDriverStats.reduce((sum, d) => sum + d.dnfs, 0);
+            
+            // Find next upcoming race
+            const nextRace = racingData.races.find(r => r.status === 'upcoming');
+            const nextRaceDisplay = nextRace ? nextRace.name : 'TBA';
+            
             const differentWinners = new Set(
                 racingData.races
                     .filter(r => r.status === 'completed' && r.results)
@@ -3620,8 +3624,8 @@
                     <div class="stat-value">${differentWinners}</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">TOTAL DNFs</div>
-                    <div class="stat-value">${totalDnfs}</div>
+                    <div class="stat-label">NEXT RACE</div>
+                    <div class="stat-value" style="font-size: 1.5rem;">${nextRaceDisplay}</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">POLE POSITIONS</div>
