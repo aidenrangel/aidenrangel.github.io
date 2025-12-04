@@ -2843,7 +2843,7 @@
       "location": "West Kingsdown, England",
       "circuit": "Brands Hatch",
       "date": "2028-10-13",
-      "status": "incomplete",
+      "status": "upcoming",
       "grid": [
         {"driverId": 4, "position": 1},
         {"driverId": 16, "position": 2},
@@ -2901,7 +2901,7 @@
       "location": "Hall County, Georgia",
       "circuit": "Michelin Raceway Road Atlanta",
       "date": "2028-11-15",
-      "status": "incomplete",
+      "status": "upcoming",
       "grid": [
         { "driverId": 9,  "position": 1 },
         { "driverId": 3,  "position": 2 },
@@ -2959,7 +2959,7 @@
       "location": "Alsace, France",
       "circuit": "Alsace Circuit",
       "date": "2028-12-07",
-      "status": "incomplete",
+      "status": "upcoming",
       "grid": [
         { "driverId": 18, "position": 1 },
         { "driverId": 12, "position": 2 },
