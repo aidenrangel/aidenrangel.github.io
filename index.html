@@ -1897,10 +1897,10 @@
                             <thead>
                                 <tr>
                                     <th>CHAMPION</th>
+                                    <th>YEAR</th>
                                     <th>POINTS</th>
                                     <th>RUNNER-UP</th>
                                     <th>GAP</th>
-                                    <th>YEAR</th>
                                 </tr>
                             </thead>
                             <tbody id="recordsLargestGapBody">
@@ -1916,10 +1916,10 @@
                             <thead>
                                 <tr>
                                     <th>CHAMPION</th>
+                                    <th>YEAR</th>
                                     <th>POINTS</th>
                                     <th>RUNNER-UP</th>
                                     <th>GAP</th>
-                                    <th>YEAR</th>
                                 </tr>
                             </thead>
                             <tbody id="recordsSmallestGapBody">
@@ -1935,9 +1935,9 @@
                             <thead>
                                 <tr>
                                     <th>CHAMPION</th>
+                                    <th>YEAR</th>
                                     <th>AFTER RACE</th>
                                     <th>MAX DEFICIT</th>
-                                    <th>YEAR</th>
                                 </tr>
                             </thead>
                             <tbody id="recordsComebackBody">
@@ -1953,9 +1953,9 @@
                             <thead>
                                 <tr>
                                     <th>CHAMPION</th>
+                                    <th>YEAR</th>
                                     <th>REMAINING</th>
                                     <th>CLINCHED</th>
-                                    <th>YEAR</th>
                                 </tr>
                             </thead>
                             <tbody id="recordsEarliestClinchBody">
@@ -2131,10 +2131,10 @@
                             <thead>
                                 <tr>
                                     <th>CHAMPION</th>
+                                    <th>YEAR</th>
                                     <th>POINTS</th>
                                     <th>RUNNER-UP</th>
                                     <th>GAP</th>
-                                    <th>YEAR</th>
                                 </tr>
                             </thead>
                             <tbody id="constructorLargestGapBody">
@@ -2150,10 +2150,10 @@
                             <thead>
                                 <tr>
                                     <th>CHAMPION</th>
+                                    <th>YEAR</th>
                                     <th>POINTS</th>
                                     <th>RUNNER-UP</th>
                                     <th>GAP</th>
-                                    <th>YEAR</th>
                                 </tr>
                             </thead>
                             <tbody id="constructorSmallestGapBody">
@@ -2169,9 +2169,9 @@
                             <thead>
                                 <tr>
                                     <th>CHAMPION</th>
+                                    <th>YEAR</th>
                                     <th>AFTER RACE</th>
                                     <th>MAX DEFICIT</th>
-                                    <th>YEAR</th>
                                 </tr>
                             </thead>
                             <tbody id="constructorComebackBody">
@@ -2187,9 +2187,9 @@
                             <thead>
                                 <tr>
                                     <th>CHAMPION</th>
+                                    <th>YEAR</th>
                                     <th>REMAINING</th>
                                     <th>CLINCHED</th>
-                                    <th>YEAR</th>
                                 </tr>
                             </thead>
                             <tbody id="constructorEarliestClinchBody">
@@ -6673,10 +6673,10 @@
                     <td>
                         <div class="driver-name">${record.championName}</div>
                     </td>
+                    <td>${record.season}</td>
                     <td>${record.championPoints}-${record.runnerUpPoints}</td>
                     <td>${record.runnerUpName}</td>
                     <td><span class="points">${record.gap}</span></td>
-                    <td>${record.season}</td>
                 `;
                 largestGapBody.appendChild(row);
             });
@@ -6692,10 +6692,10 @@
                     <td>
                         <div class="driver-name">${record.championName}</div>
                     </td>
+                    <td>${record.season}</td>
                     <td>${record.championPoints}-${record.runnerUpPoints}</td>
                     <td>${record.runnerUpName}</td>
                     <td><span class="points">${record.gap}</span></td>
-                    <td>${record.season}</td>
                 `;
                 smallestGapBody.appendChild(row);
             });
@@ -6818,9 +6818,9 @@
                     <td>
                         <div class="driver-name">${record.championName}</div>
                     </td>
+                    <td>${record.season}</td>
                     <td>${record.deficitRace}</td>
                     <td><span class="points">-${record.maxDeficit}</span></td>
-                    <td>${record.season}</td>
                 `;
                 comebackBody.appendChild(row);
             });
@@ -6941,9 +6941,9 @@
                     <td>
                         <div class="driver-name">${record.championName}</div>
                     </td>
+                    <td>${record.season}</td>
                     <td><span class="points">${record.remainingRaces}</span></td>
                     <td>${record.clinchRace}</td>
-                    <td>${record.season}</td>
                 `;
                 earliestClinchBody.appendChild(row);
             });
@@ -7378,10 +7378,10 @@
                     <td>
                         <div class="driver-name">${record.championName}</div>
                     </td>
+                    <td>${record.season}</td>
                     <td>${record.championPoints}-${record.runnerUpPoints}</td>
                     <td>${record.runnerUpName}</td>
                     <td><span class="points">${record.gap}</span></td>
-                    <td>${record.season}</td>
                 `;
                 constructorLargestGapBody.appendChild(row);
             });
@@ -7397,10 +7397,10 @@
                     <td>
                         <div class="driver-name">${record.championName}</div>
                     </td>
+                    <td>${record.season}</td>
                     <td>${record.championPoints}-${record.runnerUpPoints}</td>
                     <td>${record.runnerUpName}</td>
                     <td><span class="points">${record.gap}</span></td>
-                    <td>${record.season}</td>
                 `;
                 constructorSmallestGapBody.appendChild(row);
             });
@@ -7525,9 +7525,9 @@
                     <td>
                         <div class="driver-name">${record.championName}</div>
                     </td>
+                    <td>${record.season}</td>
                     <td>${record.deficitRace}</td>
                     <td><span class="points">-${record.maxDeficit}</span></td>
-                    <td>${record.season}</td>
                 `;
                 constructorComebackBody.appendChild(row);
             });
@@ -7649,9 +7649,9 @@
                     <td>
                         <div class="driver-name">${record.championName}</div>
                     </td>
+                    <td>${record.season}</td>
                     <td><span class="points">${record.remainingRaces}</span></td>
                     <td>${record.clinchRace}</td>
-                    <td>${record.season}</td>
                 `;
                 constructorEarliestClinchBody.appendChild(row);
             });
