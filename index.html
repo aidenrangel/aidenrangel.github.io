@@ -1789,9 +1789,9 @@
                             <thead>
                                 <tr>
                                     <th>DRIVER</th>
+                                    <th>DATE</th>
                                     <th>RACE</th>
                                     <th>AGE</th>
-                                    <th>DATE</th>
                                 </tr>
                             </thead>
                             <tbody id="recordsYoungestStartBody">
@@ -1808,8 +1808,8 @@
                                 <tr>
                                     <th>POS</th>
                                     <th>DRIVER</th>
-                                    <th>CHAMPIONSHIPS</th>
                                     <th>YEARS</th>
+                                    <th>CHAMPIONSHIPS</th>
                                 </tr>
                             </thead>
                             <tbody id="recordsChampionshipsBody">
@@ -1861,9 +1861,9 @@
                             <thead>
                                 <tr>
                                     <th>DRIVER</th>
+                                    <th>DATE</th>
                                     <th>RACE</th>
                                     <th>AGE</th>
-                                    <th>DATE</th>
                                 </tr>
                             </thead>
                             <tbody id="recordsYoungestWinnerBody">
@@ -1879,8 +1879,8 @@
                             <thead>
                                 <tr>
                                     <th>DRIVER</th>
-                                    <th>TEAM</th>
                                     <th>SEASON</th>
+                                    <th>TEAM</th>
                                     <th>POINTS</th>
                                 </tr>
                             </thead>
@@ -1975,8 +1975,8 @@
                                 <tr>
                                     <th>POS</th>
                                     <th>CONSTRUCTOR</th>
-                                    <th>RACES</th>
                                     <th>SEASONS</th>
+                                    <th>RACES</th>
                                 </tr>
                             </thead>
                             <tbody id="constructorTotalRacesBody">
@@ -2061,8 +2061,8 @@
                                 <tr>
                                     <th>POS</th>
                                     <th>CONSTRUCTOR</th>
-                                    <th>CHAMPIONSHIPS</th>
                                     <th>YEARS</th>
+                                    <th>CHAMPIONSHIPS</th>
                                 </tr>
                             </thead>
                             <tbody id="constructorChampionshipsBody">
@@ -2095,8 +2095,8 @@
                             <thead>
                                 <tr>
                                     <th>TEAM</th>
-                                    <th>DRIVERS</th>
                                     <th>SEASON</th>
+                                    <th>DRIVERS</th>
                                     <th>POINTS</th>
                                 </tr>
                             </thead>
@@ -6313,9 +6313,9 @@
                     <td>
                         <div class="driver-name">${record.driverName}</div>
                     </td>
+                    <td>${formattedDate}</td>
                     <td>${record.raceName} ${record.season}</td>
                     <td><span class="points">${record.age}</span></td>
-                    <td>${formattedDate}</td>
                 `;
                 youngestStartBody.appendChild(row);
             });
@@ -6368,8 +6368,8 @@
                     <td>
                         <div class="driver-name">${driver.name}</div>
                     </td>
-                    <td><span class="points">${driver.championships}</span></td>
                     <td style="font-size: 0.9rem;">${yearRanges.join(', ')}</td>
+                    <td><span class="points">${driver.championships}</span></td>
                 `;
                 championshipsBody.appendChild(row);
             });
@@ -6485,9 +6485,9 @@
                     <td>
                         <div class="driver-name">${record.driverName}</div>
                     </td>
+                    <td>${formattedDate}</td>
                     <td>${record.raceName} ${record.season}</td>
                     <td><span class="points">${record.age}</span></td>
-                    <td>${formattedDate}</td>
                 `;
                 youngestWinnerBody.appendChild(row);
             });
@@ -6546,8 +6546,8 @@
                     <td>
                         <div class="driver-name">${record.driverName}</div>
                     </td>
-                    <td>${record.team}</td>
                     <td>${record.season}</td>
+                    <td>${record.team}</td>
                     <td><span class="points">${record.points}</span></td>
                 `;
                 seasonPointsBody.appendChild(row);
@@ -7014,8 +7014,8 @@
                     <td>
                         <div class="driver-name">${team.name}</div>
                     </td>
-                    <td>${team.races}</td>
                     <td style="font-size: 0.9rem;">${team.seasonsString}</td>
+                    <td>${team.races}</td>
                 `;
                 constructorTotalRacesBody.appendChild(row);
             });
@@ -7169,8 +7169,8 @@
                     <td>
                         <div class="driver-name">${team.name}</div>
                     </td>
-                    <td><span class="points">${team.championships}</span></td>
                     <td style="font-size: 0.9rem;">${yearRanges.join(', ')}</td>
+                    <td><span class="points">${team.championships}</span></td>
                 `;
                 constructorChampionshipsBody.appendChild(row);
             });
@@ -7250,8 +7250,8 @@
                     <td>
                         <div class="driver-name">${record.team}</div>
                     </td>
-                    <td style="font-size: 0.85rem;">${record.drivers}</td>
                     <td>${record.season}</td>
+                    <td style="font-size: 0.85rem;">${record.drivers}</td>
                     <td><span class="points">${record.points}</span></td>
                 `;
                 constructorSeasonPointsBody.appendChild(row);
