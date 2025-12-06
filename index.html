@@ -896,11 +896,60 @@
                 grid-template-columns: 1fr;
             }
 
+            /* General table rule: show position, name, and last column */
             thead th:not(:first-child):not(:nth-child(2)):not(:last-child) {
                 display: none;
             }
 
             tbody td:not(:first-child):not(:nth-child(2)):not(:last-child) {
+                display: none;
+            }
+
+            /* Override for Championship Gap tables - show champion, gap, and year */
+            #recordsLargestGapTable thead th:nth-child(2),
+            #recordsLargestGapTable thead th:nth-child(4),
+            #recordsLargestGapTable tbody td:nth-child(2),
+            #recordsLargestGapTable tbody td:nth-child(4),
+            #recordsSmallestGapTable thead th:nth-child(2),
+            #recordsSmallestGapTable thead th:nth-child(4),
+            #recordsSmallestGapTable tbody td:nth-child(2),
+            #recordsSmallestGapTable tbody td:nth-child(4),
+            #recordsConstructorLargestGapTable thead th:nth-child(2),
+            #recordsConstructorLargestGapTable thead th:nth-child(4),
+            #recordsConstructorLargestGapTable tbody td:nth-child(2),
+            #recordsConstructorLargestGapTable tbody td:nth-child(4),
+            #recordsConstructorSmallestGapTable thead th:nth-child(2),
+            #recordsConstructorSmallestGapTable thead th:nth-child(4),
+            #recordsConstructorSmallestGapTable tbody td:nth-child(2),
+            #recordsConstructorSmallestGapTable tbody td:nth-child(4) {
+                display: none;
+            }
+
+            /* Override for Comeback tables - show champion, max deficit, and year */
+            #recordsLargestComebackTable thead th:nth-child(2),
+            #recordsLargestComebackTable thead th:nth-child(3),
+            #recordsLargestComebackTable tbody td:nth-child(2),
+            #recordsLargestComebackTable tbody td:nth-child(3),
+            #recordsConstructorComebackTable thead th:nth-child(2),
+            #recordsConstructorComebackTable thead th:nth-child(3),
+            #recordsConstructorComebackTable tbody td:nth-child(2),
+            #recordsConstructorComebackTable tbody td:nth-child(3) {
+                display: none;
+            }
+
+            /* Override for Fewest Races tables - show champion, clinched, and year */
+            #recordsFewestRacesTable thead th:nth-child(2),
+            #recordsFewestRacesTable tbody td:nth-child(2),
+            #recordsConstructorFewestRacesTable thead th:nth-child(2),
+            #recordsConstructorFewestRacesTable tbody td:nth-child(2) {
+                display: none;
+            }
+
+            /* Override for Youngest Start/Winner tables - show driver, age, and date */
+            #recordsYoungestStartTable thead th:nth-child(2),
+            #recordsYoungestStartTable tbody td:nth-child(2),
+            #recordsYoungestWinnerTable thead th:nth-child(2),
+            #recordsYoungestWinnerTable tbody td:nth-child(2) {
                 display: none;
             }
         }
