@@ -1514,7 +1514,7 @@
                 <!-- Driver Standings -->
                 <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
                     <div style="background: var(--primary-red); padding: 15px; display: flex; justify-content: space-between; align-items: center;">
-                        <h3 style="font-family: 'Bebas Neue', cursive; font-size: 1.8rem; letter-spacing: 2px;">TOP 10 DRIVERS</h3>
+                        <h3 style="font-family: 'Bebas Neue', cursive; font-size: 1.8rem; letter-spacing: 2px;">TOP 5 DRIVERS</h3>
                         <button onclick="showTab('stats')" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 16px; font-family: 'Bebas Neue', cursive; font-size: 1rem; cursor: pointer; border-radius: 4px; letter-spacing: 1px;">
                             VIEW ALL
                         </button>
@@ -1527,7 +1527,7 @@
                 <!-- Constructor Standings -->
                 <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
                     <div style="background: var(--primary-red); padding: 15px; display: flex; justify-content: space-between; align-items: center;">
-                        <h3 style="font-family: 'Bebas Neue', cursive; font-size: 1.8rem; letter-spacing: 2px;">TOP 10 CONSTRUCTORS</h3>
+                        <h3 style="font-family: 'Bebas Neue', cursive; font-size: 1.8rem; letter-spacing: 2px;">TOP 5 CONSTRUCTORS</h3>
                         <button onclick="showTab('stats'); showStandingsType('constructor')" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 16px; font-family: 'Bebas Neue', cursive; font-size: 1rem; cursor: pointer; border-radius: 4px; letter-spacing: 1px;">
                             VIEW ALL
                         </button>
@@ -2446,11 +2446,11 @@
             
             document.getElementById('homeChampionshipStatus').textContent = statusText;
 
-            // Update top 10 driver standings
+            // Update top 5 driver standings
             const homeDriverStandings = document.getElementById('homeDriverStandings');
             homeDriverStandings.innerHTML = '';
             
-            calculatedDriverStats.slice(0, 10).forEach((driver, index) => {
+            calculatedDriverStats.slice(0, 5).forEach((driver, index) => {
                 const team = racingData.teams.find(t => t.name === driver.team);
                 const teamColor = team ? team.color : '#E10600';
                 
@@ -2482,11 +2482,11 @@
                 `;
             });
 
-            // Update top 10 constructor standings
+            // Update top 5 constructor standings
             const homeConstructorStandings = document.getElementById('homeConstructorStandings');
             homeConstructorStandings.innerHTML = '';
             
-            calculatedTeamStats.slice(0, 10).forEach((team, index) => {
+            calculatedTeamStats.slice(0, 5).forEach((team, index) => {
                 const teamInfo = racingData.teams.find(t => t.name === team.name);
                 const teamColor = teamInfo ? teamInfo.color : '#E10600';
                 
