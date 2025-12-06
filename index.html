@@ -1147,6 +1147,33 @@
             margin-left: 8px;
         }
 
+        .records-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+        }
+
+        .record-item {
+            background: rgba(255, 215, 0, 0.05);
+            border-left: 3px solid var(--accent-yellow);
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .record-name {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .record-value {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.8rem;
+            color: var(--accent-yellow);
+            line-height: 1;
+        }
+
         .podium-badge {
             background: rgba(192, 192, 192, 0.3);
             border: 1px solid #C0C0C0;
@@ -1350,7 +1377,7 @@
         </div>
 
         <div class="nav-tabs">
-            <button class="tab active" onclick="showTab('standings')">NEWS</button>
+            <button class="tab active" onclick="showTab('standings')">HOME</button>
             <button class="tab" onclick="showTab('drivers')">DRIVERS</button>
             <button class="tab" onclick="showTab('teams')">TEAMS</button>
             <button class="tab" onclick="showTab('schedule')">SCHEDULE</button>
@@ -1360,12 +1387,48 @@
 
         <!-- Standings Tab (Now News) -->
         <div id="standings" class="tab-content active">
-            <div style="text-align: center; padding: 100px 20px;">
-                <h2 style="font-family: 'Bebas Neue', cursive; font-size: 3rem; color: var(--accent-yellow); margin-bottom: 20px;">NEWS</h2>
-                <p style="font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 30px;">Check out the Standings tab for Driver and Constructor Standings</p>
-                <button onclick="showTab('stats')" style="background: var(--primary-red); color: white; border: none; padding: 15px 40px; font-family: 'Bebas Neue', cursive; font-size: 1.5rem; cursor: pointer; letter-spacing: 2px;">
-                    GO TO STANDINGS
-                </button>
+            <!-- Hero Section -->
+            <div style="background: linear-gradient(135deg, rgba(225, 6, 0, 0.2) 0%, rgba(255, 215, 0, 0.1) 100%); border: 2px solid var(--primary-red); border-radius: 10px; padding: 40px; margin-bottom: 30px; text-align: center;">
+                <h2 style="font-family: 'Bebas Neue', cursive; font-size: 3.5rem; color: var(--accent-yellow); margin-bottom: 10px;" id="homeSeasonTitle">2025 SEASON</h2>
+                <p style="font-size: 1.3rem; color: var(--text-secondary); margin-bottom: 5px;" id="homeSeasonSubtitle">Round 6 of 9 • 3 Races Remaining</p>
+                <p style="font-size: 1.1rem; color: var(--text-primary);" id="homeChampionshipStatus">Championship Battle Intensifies</p>
+            </div>
+
+            <!-- Top 10 Standings Preview -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                <!-- Driver Standings -->
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+                    <div style="background: var(--primary-red); padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="font-family: 'Bebas Neue', cursive; font-size: 1.8rem; letter-spacing: 2px;">TOP 10 DRIVERS</h3>
+                        <button onclick="showTab('stats')" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 16px; font-family: 'Bebas Neue', cursive; font-size: 1rem; cursor: pointer; border-radius: 4px; letter-spacing: 1px;">
+                            VIEW ALL
+                        </button>
+                    </div>
+                    <div id="homeDriverStandings" style="padding: 10px;">
+                        <!-- Top 10 drivers will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Constructor Standings -->
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+                    <div style="background: var(--primary-red); padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="font-family: 'Bebas Neue', cursive; font-size: 1.8rem; letter-spacing: 2px;">TOP 10 CONSTRUCTORS</h3>
+                        <button onclick="showTab('stats'); showStandingsType('constructor')" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 16px; font-family: 'Bebas Neue', cursive; font-size: 1rem; cursor: pointer; border-radius: 4px; letter-spacing: 1px;">
+                            VIEW ALL
+                        </button>
+                    </div>
+                    <div id="homeConstructorStandings" style="padding: 10px;">
+                        <!-- Top 10 constructors will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- News Articles -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="font-family: 'Bebas Neue', cursive; font-size: 2.5rem; color: var(--accent-yellow); margin-bottom: 20px; border-bottom: 2px solid var(--primary-red); padding-bottom: 10px;">LATEST NEWS</h3>
+                <div id="newsArticles" style="display: grid; gap: 20px;">
+                    <!-- News articles will be populated here -->
+                </div>
             </div>
         </div>
 
@@ -1412,9 +1475,9 @@
                     <div class="stat-label">NEXT RACE</div>
                     <div class="stat-value" id="nextRace" style="font-size: 1.5rem;">TBA</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">POLE POSITIONS</div>
-                    <div class="stat-value">0</div>
+                <div class="stat-card" onclick="openRecordsBrokenModal()" style="cursor: pointer;">
+                    <div class="stat-label">RECORDS BROKEN</div>
+                    <div class="stat-value" id="recordsBroken">0</div>
                 </div>
             </div>
 
@@ -2036,6 +2099,31 @@
         </div>
     </div>
 
+    <div id="recordsBrokenModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close-modal" onclick="closeRecordsBrokenModal()">&times;</button>
+                <div class="modal-title" id="recordsBrokenModalTitle">RECORDS BROKEN</div>
+            </div>
+            <div class="modal-body" id="recordsBrokenModalBody">
+                <!-- Content will be dynamically inserted -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Career Detail Modal -->
+    <div id="careerDetailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close-modal" onclick="closeCareerDetailModal()">&times;</button>
+                <div class="modal-title" id="careerDetailModalTitle">CAREER DETAILS</div>
+            </div>
+            <div class="modal-body" id="careerDetailModalBody">
+                <!-- Content will be dynamically inserted -->
+            </div>
+        </div>
+    </div>
+
     <script>
         let allSeasonsData = null;
         let currentSeasonIndex = 0;
@@ -2214,10 +2302,218 @@
         }
 
         // Update all sections of the page with data
+        // Update Home Page with current season info, standings preview, and news
+        function updateHomePage() {
+            if (!racingData || !calculatedDriverStats || !calculatedTeamStats) return;
+
+            // Update hero section
+            const completedRaces = racingData.races.filter(r => r.status === 'completed').length;
+            const totalRaces = racingData.races.length;
+            const remainingRaces = totalRaces - completedRaces;
+            
+            document.getElementById('homeSeasonTitle').textContent = `${racingData.season.year} SEASON`;
+            document.getElementById('homeSeasonSubtitle').textContent = 
+                `Round ${completedRaces} of ${totalRaces} • ${remainingRaces} Race${remainingRaces !== 1 ? 's' : ''} Remaining`;
+            
+            // Update championship status
+            const driverLeader = calculatedDriverStats[0];
+            const constructorLeader = calculatedTeamStats[0];
+            let statusText = '';
+            
+            if (completedRaces === 0) {
+                statusText = 'Season About to Begin';
+            } else if (remainingRaces === 0) {
+                statusText = `${driverLeader.name} Wins the Championship!`;
+            } else if (calculatedDriverStats.length > 1) {
+                const pointsGap = driverLeader.points - calculatedDriverStats[1].points;
+                statusText = `${driverLeader.name} leads by ${pointsGap} point${pointsGap !== 1 ? 's' : ''}`;
+            }
+            
+            document.getElementById('homeChampionshipStatus').textContent = statusText;
+
+            // Update top 10 driver standings
+            const homeDriverStandings = document.getElementById('homeDriverStandings');
+            homeDriverStandings.innerHTML = '';
+            
+            calculatedDriverStats.slice(0, 10).forEach((driver, index) => {
+                const team = racingData.teams.find(t => t.name === driver.team);
+                const teamColor = team ? team.color : '#E10600';
+                
+                let posClass = '';
+                if (index === 0) posClass = 'background: rgba(255, 215, 0, 0.2); border-left: 4px solid var(--accent-yellow);';
+                else if (index === 1) posClass = 'background: rgba(192, 192, 192, 0.1); border-left: 4px solid #C0C0C0;';
+                else if (index === 2) posClass = 'background: rgba(205, 127, 50, 0.1); border-left: 4px solid #CD7F32;';
+                
+                homeDriverStandings.innerHTML += `
+                    <div onclick="openDriverModal(calculatedDriverStats[${index}])" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; ${posClass} cursor: pointer; transition: all 0.2s;" 
+                         onmouseover="this.style.background='rgba(225, 6, 0, 0.1)'" 
+                         onmouseout="this.style.background='${posClass ? posClass.split('background:')[1].split(';')[0] : 'transparent'}'">
+                        <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                            <span style="font-family: 'Bebas Neue', cursive; font-size: 1.5rem; color: var(--text-secondary); min-width: 30px;">${index + 1}</span>
+                            <div style="width: 4px; height: 30px; background: ${teamColor}; border-radius: 2px;"></div>
+                            <div>
+                                <div style="font-weight: 600; font-size: 1.05rem;">${driver.name}</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary);">${driver.team}</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 20px;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 0.75rem; color: var(--text-secondary);">WINS</div>
+                                <div style="font-weight: 700; color: var(--accent-yellow);">${driver.wins}</div>
+                            </div>
+                            <div style="font-family: 'Bebas Neue', cursive; font-size: 1.8rem; color: var(--accent-yellow); min-width: 50px; text-align: right;">${driver.points}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Update top 10 constructor standings
+            const homeConstructorStandings = document.getElementById('homeConstructorStandings');
+            homeConstructorStandings.innerHTML = '';
+            
+            calculatedTeamStats.slice(0, 10).forEach((team, index) => {
+                const teamInfo = racingData.teams.find(t => t.name === team.name);
+                const teamColor = teamInfo ? teamInfo.color : '#E10600';
+                
+                let posClass = '';
+                if (index === 0) posClass = 'background: rgba(255, 215, 0, 0.2); border-left: 4px solid var(--accent-yellow);';
+                else if (index === 1) posClass = 'background: rgba(192, 192, 192, 0.1); border-left: 4px solid #C0C0C0;';
+                else if (index === 2) posClass = 'background: rgba(205, 127, 50, 0.1); border-left: 4px solid #CD7F32;';
+                
+                homeConstructorStandings.innerHTML += `
+                    <div onclick="openConstructorModal(calculatedTeamStats[${index}])" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; ${posClass} cursor: pointer; transition: all 0.2s;" 
+                         onmouseover="this.style.background='rgba(225, 6, 0, 0.1)'" 
+                         onmouseout="this.style.background='${posClass ? posClass.split('background:')[1].split(';')[0] : 'transparent'}'">
+                        <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                            <span style="font-family: 'Bebas Neue', cursive; font-size: 1.5rem; color: var(--text-secondary); min-width: 30px;">${index + 1}</span>
+                            <div style="width: 4px; height: 30px; background: ${teamColor}; border-radius: 2px;"></div>
+                            <div>
+                                <div style="font-weight: 600; font-size: 1.05rem;">${team.name}</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 20px;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 0.75rem; color: var(--text-secondary);">WINS</div>
+                                <div style="font-weight: 700; color: var(--accent-yellow);">${team.wins}</div>
+                            </div>
+                            <div style="font-family: 'Bebas Neue', cursive; font-size: 1.8rem; color: var(--accent-yellow); min-width: 50px; text-align: right;">${team.points}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Generate news articles
+            generateNewsArticles();
+        }
+
+        // Generate news articles based on current season data
+        function generateNewsArticles() {
+            const newsArticles = document.getElementById('newsArticles');
+            const articles = [];
+            
+            const completedRaces = racingData.races.filter(r => r.status === 'completed');
+            const upcomingRaces = racingData.races.filter(r => r.status === 'upcoming');
+            const totalRaces = racingData.races.length;
+            
+            // Article 1: Championship leader story
+            if (calculatedDriverStats.length > 0 && completedRaces.length > 0) {
+                const leader = calculatedDriverStats[0];
+                const runnerUp = calculatedDriverStats[1];
+                const pointsGap = runnerUp ? leader.points - runnerUp.points : leader.points;
+                
+                articles.push({
+                    title: `${leader.name} ${pointsGap > 20 ? 'Dominates' : 'Leads'} Championship After ${completedRaces.length} Rounds`,
+                    content: `${leader.name} (${leader.team}) currently sits atop the driver standings with ${leader.points} points${runnerUp ? `, ${pointsGap} points ahead of ${runnerUp.name}` : ''}. With ${leader.wins} win${leader.wins !== 1 ? 's' : ''} and ${leader.podiums} podium${leader.podiums !== 1 ? 's' : ''} so far this season, ${leader.name} has been ${pointsGap > 20 ? 'the dominant force' : 'in impressive form'}.`,
+                    type: 'championship'
+                });
+            }
+            
+            // Article 2: Last race recap
+            if (completedRaces.length > 0) {
+                const lastRace = completedRaces[completedRaces.length - 1];
+                if (lastRace.results && lastRace.results.length > 0) {
+                    const winner = lastRace.results.find(r => r.position === 1);
+                    if (winner) {
+                        const winnerDriver = racingData.drivers.find(d => d.id == winner.driverId);
+                        if (winnerDriver) {
+                            const poleDriver = lastRace.grid && lastRace.grid.length > 0 ? 
+                                racingData.drivers.find(d => d.id == lastRace.grid[0].driverId) : null;
+                            
+                            articles.push({
+                                title: `${winnerDriver.name} Triumphs at ${lastRace.name}`,
+                                content: `${winnerDriver.name} (${winnerDriver.team}) took victory at ${lastRace.location} in Round ${lastRace.round}${poleDriver && poleDriver.id === winnerDriver.id ? ', converting pole position into a dominant win' : ''}. ${lastRace.fastestLap && lastRace.fastestLap.driverId == winnerDriver.id ? 'The win was complemented by the fastest lap of the race.' : ''}`,
+                                type: 'race-recap'
+                            });
+                        }
+                    }
+                }
+            }
+            
+            // Article 3: Constructor championship
+            if (calculatedTeamStats.length > 0 && completedRaces.length > 0) {
+                const teamLeader = calculatedTeamStats[0];
+                const teamRunnerUp = calculatedTeamStats[1];
+                const teamGap = teamRunnerUp ? teamLeader.points - teamRunnerUp.points : teamLeader.points;
+                
+                articles.push({
+                    title: `${teamLeader.name} ${teamGap > 30 ? 'Commands' : 'Leads'} Constructor Standings`,
+                    content: `In the constructor championship, ${teamLeader.name} leads with ${teamLeader.points} points${teamRunnerUp ? `, holding a ${teamGap}-point advantage over ${teamRunnerUp.name}` : ''}. The team has secured ${teamLeader.wins} victory${teamLeader.wins !== 1 ? 'victories' : ''} and ${teamLeader.podiums} podium finish${teamLeader.podiums !== 1 ? 'es' : ''} this season.`,
+                    type: 'constructor'
+                });
+            }
+            
+            // Article 4: Next race preview
+            if (upcomingRaces.length > 0) {
+                const nextRace = upcomingRaces[0];
+                const raceDate = new Date(nextRace.date);
+                const options = { month: 'long', day: 'numeric', year: 'numeric' };
+                const formattedDate = raceDate.toLocaleDateString('en-US', options);
+                
+                articles.push({
+                    title: `Next Up: ${nextRace.name}`,
+                    content: `The ${racingData.season.year} season continues at ${nextRace.circuit} on ${formattedDate}. Round ${nextRace.round} at ${nextRace.location} promises to be a crucial battleground as the championship fight intensifies with just ${upcomingRaces.length} race${upcomingRaces.length !== 1 ? 's' : ''} remaining.`,
+                    type: 'preview'
+                });
+            }
+            
+            // Article 5: Records broken
+            const recordsCount = calculateRecordsBroken();
+            if (recordsCount > 0) {
+                articles.push({
+                    title: `${recordsCount} Record${recordsCount !== 1 ? 's' : ''} Broken This Season`,
+                    content: `The ${racingData.season.year} season has already seen ${recordsCount} championship record${recordsCount !== 1 ? 's' : ''} broken. Click here to see which drivers and teams have etched their names into the history books.`,
+                    type: 'records'
+                });
+            }
+            
+            // Render articles
+            newsArticles.innerHTML = '';
+            articles.forEach((article, index) => {
+                const typeColors = {
+                    'championship': 'var(--accent-yellow)',
+                    'race-recap': 'var(--primary-red)',
+                    'constructor': '#00A19B',
+                    'preview': '#FF8000',
+                    'records': '#FFD700'
+                };
+                
+                newsArticles.innerHTML += `
+                    <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-left: 4px solid ${typeColors[article.type] || 'var(--primary-red)'}; border-radius: 8px; padding: 25px; transition: all 0.3s; cursor: pointer;"
+                         onmouseover="this.style.background='rgba(225, 6, 0, 0.05)'; this.style.borderColor='${typeColors[article.type] || 'var(--primary-red)'}'"
+                         onmouseout="this.style.background='var(--card-bg)'; this.style.borderColor='var(--border-color)'"
+                         onclick="${article.type === 'records' ? 'openRecordsBrokenModal()' : article.type === 'preview' ? 'showTab(\'schedule\')' : '\'\''}">
+                        <h4 style="font-family: 'Bebas Neue', cursive; font-size: 1.6rem; color: ${typeColors[article.type] || 'var(--accent-yellow)'}; margin-bottom: 10px; letter-spacing: 1px;">${article.title}</h4>
+                        <p style="color: var(--text-secondary); line-height: 1.6; font-size: 1.05rem;">${article.content}</p>
+                    </div>
+                `;
+            });
+        }
+
         function updatePage() {
             if (!racingData || !calculatedDriverStats) return;
 
             updateHeader();
+            updateHomePage();
             updateDriverStandings();
             updateDriversGrid();
             updateTeamsGrid();
@@ -2637,6 +2933,811 @@
         }
 
         // Open driver details modal
+        // Calculate final driver standings for a season
+        function calculateDriverStandings(season) {
+            const driverPoints = new Map();
+            
+            // Initialize all drivers with 0 points
+            season.drivers.forEach(driver => {
+                driverPoints.set(driver.id, {
+                    id: driver.id,
+                    name: driver.name,
+                    team: driver.team,
+                    points: 0,
+                    wins: 0,
+                    podiums: 0
+                });
+            });
+            
+            // Calculate points from all completed races
+            season.races.forEach(race => {
+                if (race.status === 'completed' && race.results) {
+                    race.results.forEach(result => {
+                        const driver = driverPoints.get(result.driverId);
+                        if (driver) {
+                            const racePoints = season.pointsSystem.race[result.position] || 0;
+                            driver.points += racePoints;
+                            
+                            if (result.position === 1) driver.wins++;
+                            if (result.position <= 3) driver.podiums++;
+                            
+                            // Add fastest lap point if applicable
+                            if (race.fastestLap && race.fastestLap.driverId == result.driverId) {
+                                if (result.position <= 10 && result.status === 'finished') {
+                                    driver.points += season.pointsSystem.fastestLap || 0;
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+            
+            // Convert to array and sort
+            const standings = Array.from(driverPoints.values());
+            standings.sort((a, b) => {
+                if (b.points !== a.points) return b.points - a.points;
+                if (b.wins !== a.wins) return b.wins - a.wins;
+                return b.podiums - a.podiums;
+            });
+            
+            return standings;
+        }
+
+        // Calculate final constructor standings for a season
+        function calculateConstructorStandings(season) {
+            const teamPoints = new Map();
+            
+            // Initialize all teams with 0 points
+            const teams = [...new Set(season.drivers.map(d => d.team))];
+            teams.forEach(team => {
+                teamPoints.set(team, {
+                    name: team,
+                    points: 0,
+                    wins: 0,
+                    podiums: 0
+                });
+            });
+            
+            // Calculate points from all completed races
+            season.races.forEach(race => {
+                if (race.status === 'completed' && race.results) {
+                    race.results.forEach(result => {
+                        const driver = season.drivers.find(d => d.id == result.driverId);
+                        if (driver) {
+                            const team = teamPoints.get(driver.team);
+                            if (team) {
+                                const racePoints = season.pointsSystem.race[result.position] || 0;
+                                team.points += racePoints;
+                                
+                                if (result.position === 1) team.wins++;
+                                if (result.position <= 3) team.podiums++;
+                                
+                                // Add fastest lap point if applicable
+                                if (race.fastestLap && race.fastestLap.driverId == result.driverId) {
+                                    if (result.position <= 10 && result.status === 'finished') {
+                                        team.points += season.pointsSystem.fastestLap || 0;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+            
+            // Convert to array and sort
+            const standings = Array.from(teamPoints.values());
+            standings.sort((a, b) => {
+                if (b.points !== a.points) return b.points - a.points;
+                if (b.wins !== a.wins) return b.wins - a.wins;
+                return b.podiums - a.podiums;
+            });
+            
+            return standings;
+        }
+
+        // Calculate constructor standings up to a specific race index
+        function calculateConstructorStandingsUpToRace(season, raceIndex) {
+            const teamPoints = new Map();
+            
+            // Initialize all teams with 0 points
+            const teams = [...new Set(season.drivers.map(d => d.team))];
+            teams.forEach(team => {
+                teamPoints.set(team, {
+                    name: team,
+                    points: 0,
+                    wins: 0,
+                    podiums: 0
+                });
+            });
+            
+            // Calculate points only up to raceIndex (inclusive)
+            for (let i = 0; i <= raceIndex && i < season.races.length; i++) {
+                const race = season.races[i];
+                if (race.status === 'completed' && race.results) {
+                    race.results.forEach(result => {
+                        const driver = season.drivers.find(d => d.id == result.driverId);
+                        if (driver) {
+                            const team = teamPoints.get(driver.team);
+                            if (team) {
+                                const racePoints = season.pointsSystem.race[result.position] || 0;
+                                team.points += racePoints;
+                                
+                                if (result.position === 1) team.wins++;
+                                if (result.position <= 3) team.podiums++;
+                                
+                                // Add fastest lap point if applicable
+                                if (race.fastestLap && race.fastestLap.driverId == result.driverId) {
+                                    if (result.position <= 10 && result.status === 'finished') {
+                                        team.points += season.pointsSystem.fastestLap || 0;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+            
+            // Convert to array and sort
+            const standings = Array.from(teamPoints.values());
+            standings.sort((a, b) => {
+                if (b.points !== a.points) return b.points - a.points;
+                if (b.wins !== a.wins) return b.wins - a.wins;
+                return b.podiums - a.podiums;
+            });
+            
+            return standings;
+        }
+
+        // Calculate driver standings up to a specific race index
+        function calculateDriverStandingsUpToRace(season, raceIndex) {
+            const driverPoints = new Map();
+            
+            // Initialize all drivers with 0 points
+            season.drivers.forEach(driver => {
+                driverPoints.set(driver.id, {
+                    id: driver.id,
+                    name: driver.name,
+                    team: driver.team,
+                    points: 0,
+                    wins: 0,
+                    podiums: 0
+                });
+            });
+            
+            // Calculate points only up to raceIndex (inclusive)
+            for (let i = 0; i <= raceIndex && i < season.races.length; i++) {
+                const race = season.races[i];
+                if (race.status === 'completed' && race.results) {
+                    race.results.forEach(result => {
+                        const driver = driverPoints.get(result.driverId);
+                        if (driver) {
+                            const racePoints = season.pointsSystem.race[result.position] || 0;
+                            driver.points += racePoints;
+                            
+                            if (result.position === 1) driver.wins++;
+                            if (result.position <= 3) driver.podiums++;
+                            
+                            // Add fastest lap point if applicable
+                            if (race.fastestLap && race.fastestLap.driverId == result.driverId) {
+                                if (result.position <= 10 && result.status === 'finished') {
+                                    driver.points += season.pointsSystem.fastestLap || 0;
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+            
+            // Convert to array and sort
+            const standings = Array.from(driverPoints.values());
+            standings.sort((a, b) => {
+                if (b.points !== a.points) return b.points - a.points;
+                if (b.wins !== a.wins) return b.wins - a.wins;
+                return b.podiums - a.podiums;
+            });
+            
+            return standings;
+        }
+
+        // Get all records held by a specific driver
+        function getDriverRecordsHeld(driverId) {
+            if (!allSeasonsData || !allSeasonsData.seasons) return [];
+            
+            const allTimeDrivers = calculateAllTimeRecords();
+            const driver = allTimeDrivers.find(d => d.id === driverId);
+            if (!driver) return [];
+            
+            const records = [];
+            
+            // CAREER RECORDS - Find max values across all drivers
+            const maxWins = Math.max(...allTimeDrivers.map(d => d.wins));
+            const maxPoints = Math.max(...allTimeDrivers.map(d => d.points));
+            const maxPodiums = Math.max(...allTimeDrivers.map(d => d.podiums));
+            const maxPoles = Math.max(...allTimeDrivers.map(d => d.poles));
+            const maxFastestLaps = Math.max(...allTimeDrivers.map(d => d.fastestLaps));
+            const maxRaces = Math.max(...allTimeDrivers.map(d => d.races));
+            const maxChampionships = Math.max(...allTimeDrivers.map(d => d.championships));
+            
+            // Win Percentage (only if they have wins)
+            const winPercentages = allTimeDrivers
+                .filter(d => d.races > 0)
+                .map(d => ({ id: d.id, percentage: (d.wins / d.races) * 100 }));
+            const maxWinPercentage = winPercentages.length > 0 ? Math.max(...winPercentages.map(w => w.percentage)) : 0;
+            const driverWinPercentage = driver.races > 0 ? (driver.wins / driver.races) * 100 : 0;
+            
+            // Best Average Finish
+            const allAvgFinishes = allTimeDrivers
+                .filter(d => d.races > 0 && d.avgFinish > 0)
+                .map(d => d.avgFinish);
+            const bestAvgFinish = allAvgFinishes.length > 0 ? Math.min(...allAvgFinishes) : 999;
+            
+            // Check if driver holds any career records
+            if (driver.wins > 0 && driver.wins === maxWins) {
+                records.push({ name: 'Most Career Wins', value: driver.wins });
+            }
+            if (driver.points > 0 && driver.points === maxPoints) {
+                records.push({ name: 'Most Career Points', value: driver.points });
+            }
+            if (driver.podiums > 0 && driver.podiums === maxPodiums) {
+                records.push({ name: 'Most Career Podiums', value: driver.podiums });
+            }
+            if (driver.poles > 0 && driver.poles === maxPoles) {
+                records.push({ name: 'Most Career Poles', value: driver.poles });
+            }
+            if (driver.fastestLaps > 0 && driver.fastestLaps === maxFastestLaps) {
+                records.push({ name: 'Most Career Fastest Laps', value: driver.fastestLaps });
+            }
+            if (driver.races > 0 && driver.races === maxRaces) {
+                records.push({ name: 'Most Race Starts', value: driver.races });
+            }
+            if (driver.championships > 0 && driver.championships === maxChampionships) {
+                records.push({ name: 'Most Championships', value: driver.championships });
+            }
+            if (driver.wins > 0 && driverWinPercentage > 0 && Math.abs(driverWinPercentage - maxWinPercentage) < 0.01) {
+                records.push({ name: 'Best Win Percentage', value: driverWinPercentage.toFixed(1) + '%' });
+            }
+            if (driver.races > 0 && driver.avgFinish > 0 && Math.abs(driver.avgFinish - bestAvgFinish) < 0.01) {
+                records.push({ name: 'Best Average Finish', value: driver.avgFinish.toFixed(1) });
+            }
+            
+            // Youngest Race Winner - need to check all drivers who have won
+            let youngestWinnerAge = 999;
+            let youngestWinnerName = '';
+            allSeasonsData.seasons.forEach(season => {
+                season.races.forEach(race => {
+                    if (race.status === 'completed' && race.results && race.results.length > 0) {
+                        const winner = race.results.find(r => r.position === 1);
+                        if (winner) {
+                            const winnerDriver = season.drivers.find(d => d.id == winner.driverId);
+                            if (winnerDriver && winnerDriver.birthday) {
+                                const raceDate = new Date(race.date);
+                                const age = calculateAgeAtDate(winnerDriver.birthday, raceDate);
+                                if (age !== null && age < youngestWinnerAge) {
+                                    youngestWinnerAge = age;
+                                    youngestWinnerName = winnerDriver.id;
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+            
+            if (youngestWinnerName === driverId && youngestWinnerAge < 999) {
+                records.push({ name: 'Youngest Race Winner', value: youngestWinnerAge + ' years' });
+            }
+            
+            // SINGLE-SEASON RECORDS - Check across all seasons
+            let maxSeasonWins = 0;
+            let maxSeasonPoints = 0;
+            let maxSeasonPodiums = 0;
+            
+            // Calculate max single-season values for this driver
+            allSeasonsData.seasons.forEach(season => {
+                const seasonDriver = season.drivers.find(d => d.id === driverId);
+                if (!seasonDriver) return;
+                
+                let seasonWins = 0;
+                let seasonPoints = 0;
+                let seasonPodiums = 0;
+                
+                season.races.forEach(race => {
+                    if (race.status === 'completed' && race.results) {
+                        const result = race.results.find(r => r.driverId == driverId);
+                        if (result) {
+                            if (result.position === 1) seasonWins++;
+                            if (result.position <= 3) seasonPodiums++;
+                            seasonPoints += season.pointsSystem.race[result.position] || 0;
+                            
+                            if (race.fastestLap && race.fastestLap.driverId == driverId) {
+                                if (result.position <= 10 && result.status === 'finished') {
+                                    seasonPoints += season.pointsSystem.fastestLap;
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                maxSeasonWins = Math.max(maxSeasonWins, seasonWins);
+                maxSeasonPoints = Math.max(maxSeasonPoints, seasonPoints);
+                maxSeasonPodiums = Math.max(maxSeasonPodiums, seasonPodiums);
+            });
+            
+            // Find the all-time max for single-season records (across ALL drivers)
+            let allTimeMaxSeasonWins = 0;
+            let allTimeMaxSeasonPoints = 0;
+            let allTimeMaxSeasonPodiums = 0;
+            
+            allSeasonsData.seasons.forEach(season => {
+                const driverSeasonStats = new Map();
+                
+                season.races.forEach(race => {
+                    if (race.status === 'completed' && race.results) {
+                        race.results.forEach(result => {
+                            if (!driverSeasonStats.has(result.driverId)) {
+                                driverSeasonStats.set(result.driverId, { wins: 0, points: 0, podiums: 0 });
+                            }
+                            const stats = driverSeasonStats.get(result.driverId);
+                            
+                            if (result.position === 1) stats.wins++;
+                            if (result.position <= 3) stats.podiums++;
+                            stats.points += season.pointsSystem.race[result.position] || 0;
+                            
+                            if (race.fastestLap && race.fastestLap.driverId == result.driverId) {
+                                if (result.position <= 10 && result.status === 'finished') {
+                                    stats.points += season.pointsSystem.fastestLap;
+                                }
+                            }
+                        });
+                    }
+                });
+                
+                driverSeasonStats.forEach(stats => {
+                    allTimeMaxSeasonWins = Math.max(allTimeMaxSeasonWins, stats.wins);
+                    allTimeMaxSeasonPoints = Math.max(allTimeMaxSeasonPoints, stats.points);
+                    allTimeMaxSeasonPodiums = Math.max(allTimeMaxSeasonPodiums, stats.podiums);
+                });
+            });
+            
+            // Check if this driver holds any single-season records
+            if (maxSeasonWins > 0 && maxSeasonWins === allTimeMaxSeasonWins) {
+                records.push({ name: 'Most Wins in a Season', value: maxSeasonWins });
+            }
+            if (maxSeasonPoints > 0 && maxSeasonPoints === allTimeMaxSeasonPoints) {
+                records.push({ name: 'Most Points in a Season', value: maxSeasonPoints });
+            }
+            if (maxSeasonPodiums > 0 && maxSeasonPodiums === allTimeMaxSeasonPodiums) {
+                records.push({ name: 'Most Podiums in a Season', value: maxSeasonPodiums });
+            }
+            
+            // CHAMPIONSHIP RECORDS - only for drivers who have won championships
+            if (driver.championships > 0) {
+                // Largest Championship Gap
+                let largestGap = 0;
+                let largestGapSeason = '';
+                
+                // Largest Comeback (from behind to win)
+                let largestComeback = 0;
+                let largestComebackSeason = '';
+                
+                // Fewest Races to Secure Championship
+                let fewestRaces = 999;
+                let fewestRacesSeason = '';
+                
+                allSeasonsData.seasons.forEach(season => {
+                    // Only process COMPLETED seasons for championship records
+                    const completedRaces = season.races.filter(r => r.status === 'completed').length;
+                    const totalRaces = season.races.length;
+                    const isSeasonComplete = completedRaces === totalRaces;
+                    
+                    if (!isSeasonComplete) return; // Skip incomplete seasons
+                    
+                    const championshipStandings = calculateDriverStandings(season);
+                    if (championshipStandings.length > 0 && championshipStandings[0].id === driverId) {
+                        // This driver won this championship
+                        const champion = championshipStandings[0];
+                        const runnerUp = championshipStandings[1];
+                        
+                        if (runnerUp) {
+                            const gap = champion.points - runnerUp.points;
+                            if (gap > largestGap) {
+                                largestGap = gap;
+                                largestGapSeason = season.year;
+                            }
+                        }
+                        
+                        // Calculate if championship was mathematically secured before final race
+                        let championshipSecuredAt = completedRaces;
+                        for (let i = 0; i < completedRaces; i++) {
+                            const racesRemaining = totalRaces - (i + 1);
+                            const maxPointsRemaining = racesRemaining * (Math.max(...Object.values(season.pointsSystem.race)) + (season.pointsSystem.fastestLap || 0));
+                            
+                            // Recalculate standings up to this race
+                            const standingsAtRace = calculateDriverStandingsUpToRace(season, i);
+                            if (standingsAtRace.length > 1 && standingsAtRace[0].id === driverId) {
+                                const gapAtRace = standingsAtRace[0].points - standingsAtRace[1].points;
+                                if (gapAtRace > maxPointsRemaining) {
+                                    championshipSecuredAt = i + 1;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        if (championshipSecuredAt < fewestRaces) {
+                            fewestRaces = championshipSecuredAt;
+                            fewestRacesSeason = season.year;
+                        }
+                        
+                        // Check for largest comeback (comparing standings throughout season)
+                        // Find the largest deficit this driver overcame during the season
+                        let maxDeficit = 0;
+                        for (let i = 0; i < completedRaces - 1; i++) {
+                            const standingsAtRace = calculateDriverStandingsUpToRace(season, i);
+                            const driverPos = standingsAtRace.findIndex(d => d.id === driverId);
+                            if (driverPos > 0) {
+                                const leader = standingsAtRace[0];
+                                const thisDriver = standingsAtRace[driverPos];
+                                const deficit = leader.points - thisDriver.points;
+                                maxDeficit = Math.max(maxDeficit, deficit);
+                            }
+                        }
+                        
+                        if (maxDeficit > largestComeback) {
+                            largestComeback = maxDeficit;
+                            largestComebackSeason = season.year;
+                        }
+                    }
+                });
+                
+                // Find the all-time records for these championship stats
+                let allTimeLargestGap = 0;
+                let allTimeLargestComeback = 0;
+                let allTimeFewestRaces = 999;
+                
+                allSeasonsData.seasons.forEach(season => {
+                    // Only process COMPLETED seasons
+                    const completedRaces = season.races.filter(r => r.status === 'completed').length;
+                    const totalRaces = season.races.length;
+                    const isSeasonComplete = completedRaces === totalRaces;
+                    
+                    if (!isSeasonComplete) return; // Skip incomplete seasons
+                    
+                    const championshipStandings = calculateDriverStandings(season);
+                    if (championshipStandings.length > 1) {
+                        const champion = championshipStandings[0];
+                        const runnerUp = championshipStandings[1];
+                        const gap = champion.points - runnerUp.points;
+                        allTimeLargestGap = Math.max(allTimeLargestGap, gap);
+                        
+                        // Check championship secured date
+                        let championshipSecuredAt = completedRaces;
+                            for (let i = 0; i < completedRaces; i++) {
+                                const racesRemaining = totalRaces - (i + 1);
+                                const maxPointsRemaining = racesRemaining * (Math.max(...Object.values(season.pointsSystem.race)) + (season.pointsSystem.fastestLap || 0));
+                                
+                                const standingsAtRace = calculateDriverStandingsUpToRace(season, i);
+                                if (standingsAtRace.length > 1 && standingsAtRace[0].id === champion.id) {
+                                    const gapAtRace = standingsAtRace[0].points - standingsAtRace[1].points;
+                                    if (gapAtRace > maxPointsRemaining) {
+                                        championshipSecuredAt = i + 1;
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            allTimeFewestRaces = Math.min(allTimeFewestRaces, championshipSecuredAt);
+                        
+                        // Check comeback
+                        const completedCount = completedRaces;
+                        let maxDeficit = 0;
+                        for (let i = 0; i < completedCount - 1; i++) {
+                            const standingsAtRace = calculateDriverStandingsUpToRace(season, i);
+                            const championPos = standingsAtRace.findIndex(d => d.id === champion.id);
+                            if (championPos > 0) {
+                                const leader = standingsAtRace[0];
+                                const thisDriver = standingsAtRace[championPos];
+                                const deficit = leader.points - thisDriver.points;
+                                maxDeficit = Math.max(maxDeficit, deficit);
+                            }
+                        }
+                        allTimeLargestComeback = Math.max(allTimeLargestComeback, maxDeficit);
+                    }
+                });
+                
+                // Add championship records if this driver holds them
+                if (largestGap > 0 && largestGap === allTimeLargestGap) {
+                    records.push({ name: 'Largest Championship Gap', value: largestGap + ' pts (' + largestGapSeason + ')' });
+                }
+                if (largestComeback > 0 && largestComeback === allTimeLargestComeback) {
+                    records.push({ name: 'Largest Championship Comeback', value: largestComeback + ' pts (' + largestComebackSeason + ')' });
+                }
+                if (fewestRaces < 999 && fewestRaces === allTimeFewestRaces) {
+                    records.push({ name: 'Fewest Races to Secure Championship', value: fewestRaces + ' races (' + fewestRacesSeason + ')' });
+                }
+            }
+            
+            return records;
+        }
+
+        // Get all records held by a specific constructor
+        function getConstructorRecordsHeld(teamName) {
+            if (!allSeasonsData || !allSeasonsData.seasons) return [];
+            
+            const allTimeConstructors = calculateAllTimeConstructorRecords();
+            const team = allTimeConstructors.find(t => t.name === teamName);
+            if (!team) return [];
+            
+            const records = [];
+            
+            // CAREER RECORDS - Find max values across all constructors
+            const maxWins = Math.max(...allTimeConstructors.map(t => t.wins));
+            const maxPoints = Math.max(...allTimeConstructors.map(t => t.points));
+            const maxPodiums = Math.max(...allTimeConstructors.map(t => t.podiums));
+            const maxPoles = Math.max(...allTimeConstructors.map(t => t.poles));
+            const maxOneTwos = Math.max(...allTimeConstructors.map(t => t.oneTwoFinishes));
+            const maxChampionships = Math.max(...allTimeConstructors.map(t => t.championships));
+            
+            // Check if constructor holds any career records
+            if (team.wins > 0 && team.wins === maxWins) {
+                records.push({ name: 'Most Total Wins', value: team.wins });
+            }
+            if (team.points > 0 && team.points === maxPoints) {
+                records.push({ name: 'Most Total Points', value: team.points });
+            }
+            if (team.podiums > 0 && team.podiums === maxPodiums) {
+                records.push({ name: 'Most Total Podiums', value: team.podiums });
+            }
+            if (team.poles > 0 && team.poles === maxPoles) {
+                records.push({ name: 'Most Total Poles', value: team.poles });
+            }
+            if (team.oneTwoFinishes > 0 && team.oneTwoFinishes === maxOneTwos) {
+                records.push({ name: 'Most Total 1-2 Finishes', value: team.oneTwoFinishes });
+            }
+            if (team.championships > 0 && team.championships === maxChampionships) {
+                records.push({ name: 'Most Championships', value: team.championships });
+            }
+            
+            // SINGLE-SEASON RECORDS - Check across all seasons
+            let maxSeasonWins = 0;
+            let maxSeasonPoints = 0;
+            let maxSeasonPodiums = 0;
+            
+            // Calculate max single-season values for this constructor
+            allSeasonsData.seasons.forEach(season => {
+                const teamDrivers = season.drivers.filter(d => d.team === teamName).map(d => d.id);
+                if (teamDrivers.length === 0) return;
+                
+                let seasonWins = 0;
+                let seasonPoints = 0;
+                let seasonPodiums = 0;
+                
+                season.races.forEach(race => {
+                    if (race.status === 'completed' && race.results) {
+                        race.results.forEach(result => {
+                            if (teamDrivers.includes(result.driverId)) {
+                                if (result.position === 1) seasonWins++;
+                                if (result.position <= 3) seasonPodiums++;
+                                seasonPoints += season.pointsSystem.race[result.position] || 0;
+                                
+                                if (race.fastestLap && race.fastestLap.driverId == result.driverId) {
+                                    if (result.position <= 10 && result.status === 'finished') {
+                                        seasonPoints += season.pointsSystem.fastestLap;
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+                
+                maxSeasonWins = Math.max(maxSeasonWins, seasonWins);
+                maxSeasonPoints = Math.max(maxSeasonPoints, seasonPoints);
+                maxSeasonPodiums = Math.max(maxSeasonPodiums, seasonPodiums);
+            });
+            
+            // Find the all-time max for single-season records (across ALL constructors)
+            let allTimeMaxSeasonWins = 0;
+            let allTimeMaxSeasonPoints = 0;
+            let allTimeMaxSeasonPodiums = 0;
+            
+            allSeasonsData.seasons.forEach(season => {
+                const teamSeasonStats = new Map();
+                
+                season.races.forEach(race => {
+                    if (race.status === 'completed' && race.results) {
+                        race.results.forEach(result => {
+                            const driver = season.drivers.find(d => d.id == result.driverId);
+                            if (!driver) return;
+                            
+                            if (!teamSeasonStats.has(driver.team)) {
+                                teamSeasonStats.set(driver.team, { wins: 0, points: 0, podiums: 0 });
+                            }
+                            const stats = teamSeasonStats.get(driver.team);
+                            
+                            if (result.position === 1) stats.wins++;
+                            if (result.position <= 3) stats.podiums++;
+                            stats.points += season.pointsSystem.race[result.position] || 0;
+                            
+                            if (race.fastestLap && race.fastestLap.driverId == result.driverId) {
+                                if (result.position <= 10 && result.status === 'finished') {
+                                    stats.points += season.pointsSystem.fastestLap;
+                                }
+                            }
+                        });
+                    }
+                });
+                
+                teamSeasonStats.forEach(stats => {
+                    allTimeMaxSeasonWins = Math.max(allTimeMaxSeasonWins, stats.wins);
+                    allTimeMaxSeasonPoints = Math.max(allTimeMaxSeasonPoints, stats.points);
+                    allTimeMaxSeasonPodiums = Math.max(allTimeMaxSeasonPodiums, stats.podiums);
+                });
+            });
+            
+            // Check if this constructor holds any single-season records
+            if (maxSeasonWins > 0 && maxSeasonWins === allTimeMaxSeasonWins) {
+                records.push({ name: 'Most Wins in a Season', value: maxSeasonWins });
+            }
+            if (maxSeasonPoints > 0 && maxSeasonPoints === allTimeMaxSeasonPoints) {
+                records.push({ name: 'Most Points in a Season', value: maxSeasonPoints });
+            }
+            if (maxSeasonPodiums > 0 && maxSeasonPodiums === allTimeMaxSeasonPodiums) {
+                records.push({ name: 'Most Podiums in a Season', value: maxSeasonPodiums });
+            }
+            
+            // CHAMPIONSHIP RECORDS - Total Races
+            const maxTotalRaces = Math.max(...allTimeConstructors.map(t => t.races));
+            if (team.races > 0 && team.races === maxTotalRaces) {
+                records.push({ name: 'Most Total Races', value: team.races });
+            }
+            
+            // Championship-specific records (only for teams that have won)
+            if (team.championships > 0) {
+                // Largest Championship Gap
+                let largestGap = 0;
+                let largestGapSeason = '';
+                
+                // Largest Comeback
+                let largestComeback = 0;
+                let largestComebackSeason = '';
+                
+                // Fewest Races to Secure Championship
+                let fewestRaces = 999;
+                let fewestRacesSeason = '';
+                
+                allSeasonsData.seasons.forEach(season => {
+                    // Only process COMPLETED seasons for championship records
+                    const completedRaces = season.races.filter(r => r.status === 'completed').length;
+                    const totalRaces = season.races.length;
+                    const isSeasonComplete = completedRaces === totalRaces;
+                    
+                    if (!isSeasonComplete) return; // Skip incomplete seasons
+                    
+                    const constructorStandings = calculateConstructorStandings(season);
+                    if (constructorStandings.length > 0 && constructorStandings[0].name === teamName) {
+                        // This team won this championship
+                        const champion = constructorStandings[0];
+                        const runnerUp = constructorStandings[1];
+                        
+                        if (runnerUp) {
+                            const gap = champion.points - runnerUp.points;
+                            if (gap > largestGap) {
+                                largestGap = gap;
+                                largestGapSeason = season.year;
+                            }
+                        }
+                        
+                        // Calculate when championship was secured
+                        let championshipSecuredAt = completedRaces;
+                        for (let i = 0; i < completedRaces; i++) {
+                            const racesRemaining = totalRaces - (i + 1);
+                            const maxPointsPerRace = Math.max(...Object.values(season.pointsSystem.race)) + (season.pointsSystem.fastestLap || 0);
+                            const maxPointsRemaining = racesRemaining * maxPointsPerRace * 2; // 2 drivers per team
+                            
+                            const standingsAtRace = calculateConstructorStandingsUpToRace(season, i);
+                            if (standingsAtRace.length > 1 && standingsAtRace[0].name === teamName) {
+                                const gapAtRace = standingsAtRace[0].points - standingsAtRace[1].points;
+                                if (gapAtRace > maxPointsRemaining) {
+                                    championshipSecuredAt = i + 1;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        if (championshipSecuredAt < fewestRaces) {
+                            fewestRaces = championshipSecuredAt;
+                            fewestRacesSeason = season.year;
+                        }
+                        
+                        // Check for largest comeback
+                        let maxDeficit = 0;
+                        for (let i = 0; i < completedRaces - 1; i++) {
+                            const standingsAtRace = calculateConstructorStandingsUpToRace(season, i);
+                            const teamPos = standingsAtRace.findIndex(t => t.name === teamName);
+                            if (teamPos > 0) {
+                                const leader = standingsAtRace[0];
+                                const thisTeam = standingsAtRace[teamPos];
+                                const deficit = leader.points - thisTeam.points;
+                                maxDeficit = Math.max(maxDeficit, deficit);
+                            }
+                        }
+                        
+                        if (maxDeficit > largestComeback) {
+                            largestComeback = maxDeficit;
+                            largestComebackSeason = season.year;
+                        }
+                    }
+                });
+                
+                // Find all-time records for championship stats
+                let allTimeLargestGap = 0;
+                let allTimeLargestComeback = 0;
+                let allTimeFewestRaces = 999;
+                
+                allSeasonsData.seasons.forEach(season => {
+                    // Only process COMPLETED seasons
+                    const completedRaces = season.races.filter(r => r.status === 'completed').length;
+                    const totalRaces = season.races.length;
+                    const isSeasonComplete = completedRaces === totalRaces;
+                    
+                    if (!isSeasonComplete) return; // Skip incomplete seasons
+                    
+                    const constructorStandings = calculateConstructorStandings(season);
+                    if (constructorStandings.length > 1) {
+                        const champion = constructorStandings[0];
+                        const runnerUp = constructorStandings[1];
+                        const gap = champion.points - runnerUp.points;
+                        allTimeLargestGap = Math.max(allTimeLargestGap, gap);
+                        
+                        // Check championship secured date
+                        let championshipSecuredAt = completedRaces;
+                        for (let i = 0; i < completedRaces; i++) {
+                            const racesRemaining = totalRaces - (i + 1);
+                            const maxPointsPerRace = Math.max(...Object.values(season.pointsSystem.race)) + (season.pointsSystem.fastestLap || 0);
+                            const maxPointsRemaining = racesRemaining * maxPointsPerRace * 2;
+                            
+                            const standingsAtRace = calculateConstructorStandingsUpToRace(season, i);
+                            if (standingsAtRace.length > 1 && standingsAtRace[0].name === champion.name) {
+                                const gapAtRace = standingsAtRace[0].points - standingsAtRace[1].points;
+                                if (gapAtRace > maxPointsRemaining) {
+                                    championshipSecuredAt = i + 1;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        allTimeFewestRaces = Math.min(allTimeFewestRaces, championshipSecuredAt);
+                        
+                        // Check comeback
+                        const completedCount = season.races.filter(r => r.status === 'completed').length;
+                        let maxDeficit = 0;
+                        for (let i = 0; i < completedCount - 1; i++) {
+                            const standingsAtRace = calculateConstructorStandingsUpToRace(season, i);
+                            const championPos = standingsAtRace.findIndex(t => t.name === champion.name);
+                            if (championPos > 0) {
+                                const leader = standingsAtRace[0];
+                                const thisTeam = standingsAtRace[championPos];
+                                const deficit = leader.points - thisTeam.points;
+                                maxDeficit = Math.max(maxDeficit, deficit);
+                            }
+                        }
+                        allTimeLargestComeback = Math.max(allTimeLargestComeback, maxDeficit);
+                    }
+                });
+                
+                // Add championship records if this team holds them
+                if (largestGap > 0 && largestGap === allTimeLargestGap) {
+                    records.push({ name: 'Largest Championship Gap', value: largestGap + ' pts (' + largestGapSeason + ')' });
+                }
+                if (largestComeback > 0 && largestComeback === allTimeLargestComeback) {
+                    records.push({ name: 'Largest Championship Comeback', value: largestComeback + ' pts (' + largestComebackSeason + ')' });
+                }
+                if (fewestRaces < 999 && fewestRaces === allTimeFewestRaces) {
+                    records.push({ name: 'Fewest Races to Secure Championship', value: fewestRaces + ' races (' + fewestRacesSeason + ')' });
+                }
+            }
+            
+            return records;
+        }
+
         function openDriverModal(driver) {
             const modal = document.getElementById('raceModal');
             const modalBody = document.getElementById('modalBody');
@@ -2839,23 +3940,23 @@
                 <div class="race-info-section">
                     <div class="section-title">Career Statistics</div>
                     <div class="driver-stats-grid">
-                        <div class="driver-stat-card">
+                        <div class="driver-stat-card" style="cursor: pointer;" onclick="openCareerDetailModal('${driver.id}', 'points', 'driver')">
                             <div class="driver-stat-label">Total Points</div>
                             <div class="driver-stat-value">${careerStats.totalPoints}</div>
                         </div>
-                        <div class="driver-stat-card">
+                        <div class="driver-stat-card" style="cursor: pointer;" onclick="openCareerDetailModal('${driver.id}', 'wins', 'driver')">
                             <div class="driver-stat-label">Total Wins</div>
                             <div class="driver-stat-value">${careerStats.totalWins}</div>
                         </div>
-                        <div class="driver-stat-card">
+                        <div class="driver-stat-card" style="cursor: pointer;" onclick="openCareerDetailModal('${driver.id}', 'podiums', 'driver')">
                             <div class="driver-stat-label">Total Podiums</div>
                             <div class="driver-stat-value">${careerStats.totalPodiums}</div>
                         </div>
-                        <div class="driver-stat-card">
+                        <div class="driver-stat-card" style="cursor: pointer;" onclick="openCareerDetailModal('${driver.id}', 'poles', 'driver')">
                             <div class="driver-stat-label">Total Poles</div>
                             <div class="driver-stat-value">${careerStats.totalPoles}</div>
                         </div>
-                        <div class="driver-stat-card">
+                        <div class="driver-stat-card" style="cursor: pointer;" onclick="openCareerDetailModal('${driver.id}', 'fastestLaps', 'driver')">
                             <div class="driver-stat-label">Total Fastest Laps</div>
                             <div class="driver-stat-value">${careerStats.totalFastestLaps}</div>
                         </div>
@@ -2915,6 +4016,36 @@
                 content += `
                             </tbody>
                         </table>
+                    </div>
+                `;
+            }
+
+            // Driver Records Held
+            let driverRecords = [];
+            try {
+                driverRecords = getDriverRecordsHeld(driver.id);
+                console.log('Driver records for', driver.name, ':', driverRecords);
+            } catch (error) {
+                console.error('Error getting driver records:', error);
+            }
+            if (driverRecords.length > 0) {
+                content += `
+                    <div class="race-info-section">
+                        <div class="section-title">Records Held</div>
+                        <div class="records-list">
+                `;
+                
+                driverRecords.forEach(record => {
+                    content += `
+                        <div class="record-item">
+                            <div class="record-name">${record.name}</div>
+                            <div class="record-value">${record.value}</div>
+                        </div>
+                    `;
+                });
+                
+                content += `
+                        </div>
                     </div>
                 `;
             }
@@ -3308,23 +4439,23 @@
                 <div class="race-info-section">
                     <div class="section-title">All-Time Team Statistics</div>
                     <div class="driver-stats-grid">
-                        <div class="driver-stat-card">
+                        <div class="driver-stat-card" style="cursor: pointer;" onclick="openCareerDetailModal('${team.name}', 'points', 'constructor')">
                             <div class="driver-stat-label">Total Points</div>
                             <div class="driver-stat-value">${teamCareerStats.totalPoints}</div>
                         </div>
-                        <div class="driver-stat-card">
+                        <div class="driver-stat-card" style="cursor: pointer;" onclick="openCareerDetailModal('${team.name}', 'wins', 'constructor')">
                             <div class="driver-stat-label">Total Wins</div>
                             <div class="driver-stat-value">${teamCareerStats.totalWins}</div>
                         </div>
-                        <div class="driver-stat-card">
+                        <div class="driver-stat-card" style="cursor: pointer;" onclick="openCareerDetailModal('${team.name}', 'podiums', 'constructor')">
                             <div class="driver-stat-label">Total Podiums</div>
                             <div class="driver-stat-value">${teamCareerStats.totalPodiums}</div>
                         </div>
-                        <div class="driver-stat-card">
+                        <div class="driver-stat-card" style="cursor: pointer;" onclick="openCareerDetailModal('${team.name}', 'poles', 'constructor')">
                             <div class="driver-stat-label">Total Poles</div>
                             <div class="driver-stat-value">${teamCareerStats.totalPoles}</div>
                         </div>
-                        <div class="driver-stat-card">
+                        <div class="driver-stat-card" style="cursor: pointer;" onclick="openCareerDetailModal('${team.name}', 'fastestLaps', 'constructor')">
                             <div class="driver-stat-label">Total Fastest Laps</div>
                             <div class="driver-stat-value">${teamCareerStats.totalFastestLaps}</div>
                         </div>
@@ -3384,6 +4515,35 @@
                 content += `
                             </tbody>
                         </table>
+                    </div>
+                `;
+            }
+
+            // Constructor Records Held
+            let teamRecords = [];
+            try {
+                teamRecords = getConstructorRecordsHeld(team.name);
+            } catch (error) {
+                console.error('Error getting constructor records:', error);
+            }
+            if (teamRecords.length > 0) {
+                content += `
+                    <div class="race-info-section">
+                        <div class="section-title">Records Held</div>
+                        <div class="records-list">
+                `;
+                
+                teamRecords.forEach(record => {
+                    content += `
+                        <div class="record-item">
+                            <div class="record-name">${record.name}</div>
+                            <div class="record-value">${record.value}</div>
+                        </div>
+                    `;
+                });
+                
+                content += `
+                        </div>
                     </div>
                 `;
             }
@@ -3603,15 +4763,18 @@
             const totalPoles = calculatedDriverStats.reduce((sum, d) => sum + d.poles, 0);
             const totalFastestLaps = calculatedDriverStats.reduce((sum, d) => sum + d.fastestLaps, 0);
             
-            // Find next upcoming race
-            const nextRace = racingData.races.find(r => r.status === 'upcoming');
-            const nextRaceDisplay = nextRace ? nextRace.name : 'TBA';
+            // Find next upcoming race (first race that's not completed)
+            const nextRace = racingData.races.find(r => r.status !== 'completed');
+            const nextRaceDisplay = nextRace ? nextRace.name : 'Season Complete';
             
             const differentWinners = new Set(
                 racingData.races
                     .filter(r => r.status === 'completed' && r.results)
                     .map(r => r.results.find(res => res.position === 1)?.driverId)
             ).size;
+
+            // Calculate records broken (will be populated by calculateRecordsBroken function)
+            const recordsBrokenCount = calculateRecordsBroken();
 
             const statsGrid = document.querySelector('.stats-grid');
             statsGrid.innerHTML = `
@@ -3627,11 +4790,763 @@
                     <div class="stat-label">NEXT RACE</div>
                     <div class="stat-value" style="font-size: 1.5rem;">${nextRaceDisplay}</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">POLE POSITIONS</div>
-                    <div class="stat-value">${totalPoles}</div>
+                <div class="stat-card" onclick="openRecordsBrokenModal()" style="cursor: pointer;">
+                    <div class="stat-label">RECORDS BROKEN</div>
+                    <div class="stat-value">${recordsBrokenCount}</div>
                 </div>
             `;
+        }
+
+        // Store records broken for the current season
+        let seasonRecordsBroken = [];
+
+        // Calculate records broken this season
+        function calculateRecordsBroken() {
+            seasonRecordsBroken = [];
+
+            if (!allSeasonsData || !allSeasonsData.seasons || !racingData) {
+                return 0;
+            }
+
+            const currentYear = racingData.season.year;
+            const currentSeasonStats = calculatedDriverStats;
+            const currentTeamStats = calculatedTeamStats;
+
+            // Calculate all-time records from previous seasons (only seasons BEFORE current year chronologically)
+            const previousSeasons = allSeasonsData.seasons.filter(s => s.year < currentYear);
+
+            // If no previous seasons, no records can be broken
+            if (previousSeasons.length === 0) {
+                return 0;
+            }
+
+            // Check if current season is complete (all races finished)
+            const isSeasonComplete = racingData.races.every(race => race.status === 'completed');
+
+            // SINGLE-SEASON RECORDS (always check these)
+            
+            // DRIVER RECORDS - Most Wins in a Season
+            const allTimeWinsInSeasonRecord = Math.max(...previousSeasons.map(s => {
+                const driverWins = new Map();
+                s.races.forEach(race => {
+                    if (race.status === 'completed' && race.results) {
+                        race.results.forEach(result => {
+                            if (result.position === 1) {
+                                driverWins.set(result.driverId, (driverWins.get(result.driverId) || 0) + 1);
+                            }
+                        });
+                    }
+                });
+                return Math.max(...Array.from(driverWins.values()), 0);
+            }), 0);
+
+            currentSeasonStats.forEach(driver => {
+                if (driver.wins > allTimeWinsInSeasonRecord) {
+                    seasonRecordsBroken.push({
+                        type: 'Driver',
+                        record: 'Most Wins in a Season',
+                        holder: driver.name,
+                        value: driver.wins,
+                        previous: allTimeWinsInSeasonRecord
+                    });
+                }
+            });
+
+            // DRIVER RECORDS - Most Points in a Season
+            const allTimePointsInSeasonRecord = Math.max(...previousSeasons.map(s => {
+                const driverPoints = new Map();
+                s.races.forEach(race => {
+                    if (race.status === 'completed' && race.results) {
+                        race.results.forEach(result => {
+                            const points = s.pointsSystem.race[result.position] || 0;
+                            driverPoints.set(result.driverId, (driverPoints.get(result.driverId) || 0) + points);
+                            
+                            if (race.fastestLap && race.fastestLap.driverId == result.driverId) {
+                                if (result.position <= 10 && result.status === 'finished') {
+                                    driverPoints.set(result.driverId, driverPoints.get(result.driverId) + s.pointsSystem.fastestLap);
+                                }
+                            }
+                        });
+                    }
+                });
+                return Math.max(...Array.from(driverPoints.values()), 0);
+            }), 0);
+
+            currentSeasonStats.forEach(driver => {
+                if (driver.points > allTimePointsInSeasonRecord) {
+                    seasonRecordsBroken.push({
+                        type: 'Driver',
+                        record: 'Most Points in a Season',
+                        holder: driver.name,
+                        value: driver.points,
+                        previous: allTimePointsInSeasonRecord
+                    });
+                }
+            });
+
+            // DRIVER RECORDS - Most Podiums in a Season
+            const allTimePodiumsInSeasonRecord = Math.max(...previousSeasons.map(s => {
+                const driverPodiums = new Map();
+                s.races.forEach(race => {
+                    if (race.status === 'completed' && race.results) {
+                        race.results.forEach(result => {
+                            if (result.position <= 3) {
+                                driverPodiums.set(result.driverId, (driverPodiums.get(result.driverId) || 0) + 1);
+                            }
+                        });
+                    }
+                });
+                return Math.max(...Array.from(driverPodiums.values()), 0);
+            }), 0);
+
+            currentSeasonStats.forEach(driver => {
+                if (driver.podiums > allTimePodiumsInSeasonRecord) {
+                    seasonRecordsBroken.push({
+                        type: 'Driver',
+                        record: 'Most Podiums in a Season',
+                        holder: driver.name,
+                        value: driver.podiums,
+                        previous: allTimePodiumsInSeasonRecord
+                    });
+                }
+            });
+
+            // CONSTRUCTOR RECORDS - Most Wins in a Season
+            const allTimeConstructorWinsRecord = Math.max(...previousSeasons.map(s => {
+                const teamWins = new Map();
+                s.races.forEach(race => {
+                    if (race.status === 'completed' && race.results) {
+                        race.results.forEach(result => {
+                            if (result.position === 1) {
+                                const driver = s.drivers.find(d => d.id == result.driverId);
+                                if (driver) {
+                                    teamWins.set(driver.team, (teamWins.get(driver.team) || 0) + 1);
+                                }
+                            }
+                        });
+                    }
+                });
+                return Math.max(...Array.from(teamWins.values()), 0);
+            }), 0);
+
+            currentTeamStats.forEach(team => {
+                if (team.wins > allTimeConstructorWinsRecord) {
+                    seasonRecordsBroken.push({
+                        type: 'Constructor',
+                        record: 'Most Wins in a Season',
+                        holder: team.name,
+                        value: team.wins,
+                        previous: allTimeConstructorWinsRecord
+                    });
+                }
+            });
+
+            // CONSTRUCTOR RECORDS - Most Points in a Season
+            const allTimeConstructorPointsRecord = Math.max(...previousSeasons.map(s => {
+                const teamPoints = new Map();
+                s.races.forEach(race => {
+                    if (race.status === 'completed' && race.results) {
+                        race.results.forEach(result => {
+                            const driver = s.drivers.find(d => d.id == result.driverId);
+                            if (driver) {
+                                const points = s.pointsSystem.race[result.position] || 0;
+                                teamPoints.set(driver.team, (teamPoints.get(driver.team) || 0) + points);
+                                
+                                if (race.fastestLap && race.fastestLap.driverId == result.driverId) {
+                                    if (result.position <= 10 && result.status === 'finished') {
+                                        teamPoints.set(driver.team, teamPoints.get(driver.team) + s.pointsSystem.fastestLap);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+                return Math.max(...Array.from(teamPoints.values()), 0);
+            }), 0);
+
+            currentTeamStats.forEach(team => {
+                if (team.points > allTimeConstructorPointsRecord) {
+                    seasonRecordsBroken.push({
+                        type: 'Constructor',
+                        record: 'Most Points in a Season',
+                        holder: team.name,
+                        value: team.points,
+                        previous: allTimeConstructorPointsRecord
+                    });
+                }
+            });
+
+            // ALL-TIME CAREER RECORDS (always check, even mid-season)
+            // Calculate all-time records including current season
+                const seasonsIncludingCurrent = allSeasonsData.seasons.filter(s => s.year <= currentYear);
+                const seasonsBeforeCurrent = allSeasonsData.seasons.filter(s => s.year < currentYear);
+                
+                // Calculate cumulative stats including current season
+                const currentCumulativeDrivers = new Map();
+                seasonsIncludingCurrent.forEach(season => {
+                    season.drivers.forEach(driver => {
+                        if (!currentCumulativeDrivers.has(driver.id)) {
+                            currentCumulativeDrivers.set(driver.id, {
+                                id: driver.id,
+                                name: driver.name,
+                                wins: 0,
+                                points: 0,
+                                podiums: 0,
+                                poles: 0
+                            });
+                        }
+                        const stats = currentCumulativeDrivers.get(driver.id);
+
+                        season.races.forEach(race => {
+                            if (race.status === 'completed' && race.results) {
+                                const result = race.results.find(r => r.driverId == driver.id);
+                                if (result) {
+                                    if (result.position === 1) stats.wins++;
+                                    if (result.position <= 3) stats.podiums++;
+                                    stats.points += season.pointsSystem.race[result.position] || 0;
+                                    
+                                    if (race.fastestLap && race.fastestLap.driverId == driver.id) {
+                                        if (result.position <= 10 && result.status === 'finished') {
+                                            stats.points += season.pointsSystem.fastestLap;
+                                        }
+                                    }
+                                }
+                            }
+                            if (race.grid) {
+                                const gridPos = race.grid.find(g => g.driverId == driver.id);
+                                if (gridPos && gridPos.position === 1) stats.poles++;
+                            }
+                        });
+                    });
+                });
+
+                // Calculate cumulative stats BEFORE current season
+                const previousCumulativeDrivers = new Map();
+                seasonsBeforeCurrent.forEach(season => {
+                    season.drivers.forEach(driver => {
+                        if (!previousCumulativeDrivers.has(driver.id)) {
+                            previousCumulativeDrivers.set(driver.id, {
+                                id: driver.id,
+                                name: driver.name,
+                                wins: 0,
+                                points: 0,
+                                podiums: 0,
+                                poles: 0
+                            });
+                        }
+                        const stats = previousCumulativeDrivers.get(driver.id);
+
+                        season.races.forEach(race => {
+                            if (race.status === 'completed' && race.results) {
+                                const result = race.results.find(r => r.driverId == driver.id);
+                                if (result) {
+                                    if (result.position === 1) stats.wins++;
+                                    if (result.position <= 3) stats.podiums++;
+                                    stats.points += season.pointsSystem.race[result.position] || 0;
+                                    
+                                    if (race.fastestLap && race.fastestLap.driverId == driver.id) {
+                                        if (result.position <= 10 && result.status === 'finished') {
+                                            stats.points += season.pointsSystem.fastestLap;
+                                        }
+                                    }
+                                }
+                            }
+                            if (race.grid) {
+                                const gridPos = race.grid.find(g => g.driverId == driver.id);
+                                if (gridPos && gridPos.position === 1) stats.poles++;
+                            }
+                        });
+                    });
+                });
+
+                // Find the all-time records from BEFORE current season (across all drivers)
+                const prevMaxDriverWins = previousCumulativeDrivers.size > 0 ? Math.max(...Array.from(previousCumulativeDrivers.values()).map(d => d.wins)) : 0;
+                const prevMaxDriverPoints = previousCumulativeDrivers.size > 0 ? Math.max(...Array.from(previousCumulativeDrivers.values()).map(d => d.points)) : 0;
+                const prevMaxDriverPodiums = previousCumulativeDrivers.size > 0 ? Math.max(...Array.from(previousCumulativeDrivers.values()).map(d => d.podiums)) : 0;
+                const prevMaxDriverPoles = previousCumulativeDrivers.size > 0 ? Math.max(...Array.from(previousCumulativeDrivers.values()).map(d => d.poles)) : 0;
+
+                // Track the best NEW record holder for each record type
+                let bestCareerWins = { driver: null, value: 0 };
+                let bestCareerPoints = { driver: null, value: 0 };
+                let bestCareerPodiums = { driver: null, value: 0 };
+                let bestCareerPoles = { driver: null, value: 0 };
+
+                // Find the driver with the highest value for each record (only if it beats the previous record)
+                currentCumulativeDrivers.forEach(driver => {
+                    if (driver.wins > prevMaxDriverWins && driver.wins > bestCareerWins.value) {
+                        bestCareerWins = { driver: driver.name, value: driver.wins };
+                    }
+                    if (driver.points > prevMaxDriverPoints && driver.points > bestCareerPoints.value) {
+                        bestCareerPoints = { driver: driver.name, value: driver.points };
+                    }
+                    if (driver.podiums > prevMaxDriverPodiums && driver.podiums > bestCareerPodiums.value) {
+                        bestCareerPodiums = { driver: driver.name, value: driver.podiums };
+                    }
+                    if (driver.poles > prevMaxDriverPoles && driver.poles > bestCareerPoles.value) {
+                        bestCareerPoles = { driver: driver.name, value: driver.poles };
+                    }
+                });
+
+                // Only add the single best record holder for each record type
+                if (bestCareerWins.driver) {
+                    seasonRecordsBroken.push({
+                        type: 'Driver',
+                        record: 'Most Career Wins',
+                        holder: bestCareerWins.driver,
+                        value: bestCareerWins.value,
+                        previous: prevMaxDriverWins
+                    });
+                }
+                if (bestCareerPoints.driver) {
+                    seasonRecordsBroken.push({
+                        type: 'Driver',
+                        record: 'Most Career Points',
+                        holder: bestCareerPoints.driver,
+                        value: bestCareerPoints.value,
+                        previous: prevMaxDriverPoints
+                    });
+                }
+                if (bestCareerPodiums.driver) {
+                    seasonRecordsBroken.push({
+                        type: 'Driver',
+                        record: 'Most Career Podiums',
+                        holder: bestCareerPodiums.driver,
+                        value: bestCareerPodiums.value,
+                        previous: prevMaxDriverPodiums
+                    });
+                }
+                if (bestCareerPoles.driver) {
+                    seasonRecordsBroken.push({
+                        type: 'Driver',
+                        record: 'Most Career Poles',
+                        holder: bestCareerPoles.driver,
+                        value: bestCareerPoles.value,
+                        previous: prevMaxDriverPoles
+                    });
+                }
+
+                // Same for constructors
+                const currentCumulativeConstructors = new Map();
+                seasonsIncludingCurrent.forEach(season => {
+                    season.teams.forEach(team => {
+                        if (!currentCumulativeConstructors.has(team.name)) {
+                            currentCumulativeConstructors.set(team.name, {
+                                name: team.name,
+                                wins: 0,
+                                points: 0,
+                                podiums: 0,
+                                poles: 0,
+                                oneTwoFinishes: 0
+                            });
+                        }
+                        const stats = currentCumulativeConstructors.get(team.name);
+                        const teamDrivers = season.drivers.filter(d => d.team === team.name).map(d => d.id);
+
+                        season.races.forEach(race => {
+                            if (race.status === 'completed' && race.results) {
+                                // Check for 1-2 finish
+                                if (race.results.length >= 2) {
+                                    const p1Driver = race.results.find(r => r.position === 1);
+                                    const p2Driver = race.results.find(r => r.position === 2);
+                                    if (p1Driver && p2Driver && 
+                                        teamDrivers.includes(p1Driver.driverId) && 
+                                        teamDrivers.includes(p2Driver.driverId)) {
+                                        stats.oneTwoFinishes++;
+                                    }
+                                }
+                                
+                                race.results.forEach(result => {
+                                    if (teamDrivers.includes(result.driverId)) {
+                                        if (result.position === 1) stats.wins++;
+                                        if (result.position <= 3) stats.podiums++;
+                                        stats.points += season.pointsSystem.race[result.position] || 0;
+                                        if (race.fastestLap && race.fastestLap.driverId == result.driverId) {
+                                            if (result.position <= 10 && result.status === 'finished') {
+                                                stats.points += season.pointsSystem.fastestLap;
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                            if (race.grid) {
+                                race.grid.forEach(gridPos => {
+                                    if (teamDrivers.includes(gridPos.driverId) && gridPos.position === 1) {
+                                        stats.poles++;
+                                    }
+                                });
+                            }
+                        });
+                    });
+                });
+
+                const previousCumulativeConstructors = new Map();
+                seasonsBeforeCurrent.forEach(season => {
+                    season.teams.forEach(team => {
+                        if (!previousCumulativeConstructors.has(team.name)) {
+                            previousCumulativeConstructors.set(team.name, {
+                                name: team.name,
+                                wins: 0,
+                                points: 0,
+                                podiums: 0,
+                                poles: 0,
+                                oneTwoFinishes: 0
+                            });
+                        }
+                        const stats = previousCumulativeConstructors.get(team.name);
+                        const teamDrivers = season.drivers.filter(d => d.team === team.name).map(d => d.id);
+
+                        season.races.forEach(race => {
+                            if (race.status === 'completed' && race.results) {
+                                // Check for 1-2 finish
+                                if (race.results.length >= 2) {
+                                    const p1Driver = race.results.find(r => r.position === 1);
+                                    const p2Driver = race.results.find(r => r.position === 2);
+                                    if (p1Driver && p2Driver && 
+                                        teamDrivers.includes(p1Driver.driverId) && 
+                                        teamDrivers.includes(p2Driver.driverId)) {
+                                        stats.oneTwoFinishes++;
+                                    }
+                                }
+                                
+                                race.results.forEach(result => {
+                                    if (teamDrivers.includes(result.driverId)) {
+                                        if (result.position === 1) stats.wins++;
+                                        if (result.position <= 3) stats.podiums++;
+                                        stats.points += season.pointsSystem.race[result.position] || 0;
+                                        if (race.fastestLap && race.fastestLap.driverId == result.driverId) {
+                                            if (result.position <= 10 && result.status === 'finished') {
+                                                stats.points += season.pointsSystem.fastestLap;
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                            if (race.grid) {
+                                race.grid.forEach(gridPos => {
+                                    if (teamDrivers.includes(gridPos.driverId) && gridPos.position === 1) {
+                                        stats.poles++;
+                                    }
+                                });
+                            }
+                        });
+                    });
+                });
+
+                const prevMaxConstructorWins = previousCumulativeConstructors.size > 0 ? Math.max(...Array.from(previousCumulativeConstructors.values()).map(t => t.wins)) : 0;
+                const prevMaxConstructorPoints = previousCumulativeConstructors.size > 0 ? Math.max(...Array.from(previousCumulativeConstructors.values()).map(t => t.points)) : 0;
+                const prevMaxConstructorPodiums = previousCumulativeConstructors.size > 0 ? Math.max(...Array.from(previousCumulativeConstructors.values()).map(t => t.podiums)) : 0;
+                const prevMaxConstructorPoles = previousCumulativeConstructors.size > 0 ? Math.max(...Array.from(previousCumulativeConstructors.values()).map(t => t.poles)) : 0;
+                const prevMaxConstructorOneTwos = previousCumulativeConstructors.size > 0 ? Math.max(...Array.from(previousCumulativeConstructors.values()).map(t => t.oneTwoFinishes)) : 0;
+
+                // Track the best NEW record holder for each constructor record type
+                let bestConstructorWins = { team: null, value: 0 };
+                let bestConstructorPoints = { team: null, value: 0 };
+                let bestConstructorPodiums = { team: null, value: 0 };
+                let bestConstructorPoles = { team: null, value: 0 };
+                let bestConstructorOneTwos = { team: null, value: 0 };
+
+                // Find the constructor with the highest value for each record
+                currentCumulativeConstructors.forEach(team => {
+                    if (team.wins > prevMaxConstructorWins && team.wins > bestConstructorWins.value) {
+                        bestConstructorWins = { team: team.name, value: team.wins };
+                    }
+                    if (team.points > prevMaxConstructorPoints && team.points > bestConstructorPoints.value) {
+                        bestConstructorPoints = { team: team.name, value: team.points };
+                    }
+                    if (team.podiums > prevMaxConstructorPodiums && team.podiums > bestConstructorPodiums.value) {
+                        bestConstructorPodiums = { team: team.name, value: team.podiums };
+                    }
+                    if (team.poles > prevMaxConstructorPoles && team.poles > bestConstructorPoles.value) {
+                        bestConstructorPoles = { team: team.name, value: team.poles };
+                    }
+                    if (team.oneTwoFinishes > prevMaxConstructorOneTwos && team.oneTwoFinishes > bestConstructorOneTwos.value) {
+                        bestConstructorOneTwos = { team: team.name, value: team.oneTwoFinishes };
+                    }
+                });
+
+                // Only add the single best record holder for each record type
+                if (bestConstructorWins.team) {
+                    seasonRecordsBroken.push({
+                        type: 'Constructor',
+                        record: 'Most Total Wins',
+                        holder: bestConstructorWins.team,
+                        value: bestConstructorWins.value,
+                        previous: prevMaxConstructorWins
+                    });
+                }
+                if (bestConstructorPoints.team) {
+                    seasonRecordsBroken.push({
+                        type: 'Constructor',
+                        record: 'Most Total Points',
+                        holder: bestConstructorPoints.team,
+                        value: bestConstructorPoints.value,
+                        previous: prevMaxConstructorPoints
+                    });
+                }
+                if (bestConstructorPodiums.team) {
+                    seasonRecordsBroken.push({
+                        type: 'Constructor',
+                        record: 'Most Total Podiums',
+                        holder: bestConstructorPodiums.team,
+                        value: bestConstructorPodiums.value,
+                        previous: prevMaxConstructorPodiums
+                    });
+                }
+                if (bestConstructorPoles.team) {
+                    seasonRecordsBroken.push({
+                        type: 'Constructor',
+                        record: 'Most Total Poles',
+                        holder: bestConstructorPoles.team,
+                        value: bestConstructorPoles.value,
+                        previous: prevMaxConstructorPoles
+                    });
+                }
+                if (bestConstructorOneTwos.team) {
+                    seasonRecordsBroken.push({
+                        type: 'Constructor',
+                        record: 'Most Total 1-2 Finishes',
+                        holder: bestConstructorOneTwos.team,
+                        value: bestConstructorOneTwos.value,
+                        previous: prevMaxConstructorOneTwos
+                    });
+                }
+
+            return seasonRecordsBroken.length;
+        }
+
+
+        // Open modal showing records broken this season
+        function openRecordsBrokenModal() {
+            const modal = document.getElementById('recordsBrokenModal');
+            const modalBody = document.getElementById('recordsBrokenModalBody');
+            const modalTitle = document.getElementById('recordsBrokenModalTitle');
+
+            modalTitle.textContent = `RECORDS BROKEN - ${racingData.season.year} SEASON`;
+
+            if (seasonRecordsBroken.length === 0) {
+                modalBody.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--text-secondary);">No records broken this season yet.</p>';
+            } else {
+                modalBody.innerHTML = `
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border-color);">
+                                <th style="padding: 15px; text-align: left; font-family: 'Bebas Neue', cursive; color: var(--accent-yellow);">TYPE</th>
+                                <th style="padding: 15px; text-align: left; font-family: 'Bebas Neue', cursive; color: var(--accent-yellow);">RECORD</th>
+                                <th style="padding: 15px; text-align: left; font-family: 'Bebas Neue', cursive; color: var(--accent-yellow);">HOLDER</th>
+                                <th style="padding: 15px; text-align: left; font-family: 'Bebas Neue', cursive; color: var(--accent-yellow);">NEW</th>
+                                <th style="padding: 15px; text-align: left; font-family: 'Bebas Neue', cursive; color: var(--accent-yellow);">PREVIOUS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${seasonRecordsBroken.map(record => `
+                                <tr style="border-bottom: 1px solid var(--border-color);">
+                                    <td style="padding: 15px; color: var(--text-primary);">${record.type}</td>
+                                    <td style="padding: 15px; color: var(--text-primary);">${record.record}</td>
+                                    <td style="padding: 15px; color: var(--text-primary); font-weight: 700;">${record.holder}</td>
+                                    <td style="padding: 15px; color: var(--primary-red); font-weight: 700;">${record.value}</td>
+                                    <td style="padding: 15px; color: var(--text-secondary);">${record.previous}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
+
+            modal.classList.add('active');
+        }
+
+        // Close records broken modal
+        function closeRecordsBrokenModal() {
+            const modal = document.getElementById('recordsBrokenModal');
+            modal.classList.remove('active');
+        }
+
+        // Open Career Detail Modal
+        function openCareerDetailModal(entityId, statType, entityType) {
+            const modal = document.getElementById('careerDetailModal');
+            const modalTitle = document.getElementById('careerDetailModalTitle');
+            const modalBody = document.getElementById('careerDetailModalBody');
+            
+            // Get entity name
+            let entityName = '';
+            if (entityType === 'driver') {
+                const allTimeDrivers = calculateAllTimeRecords();
+                const driver = allTimeDrivers.find(d => d.id === entityId);
+                entityName = driver ? driver.name : entityId;
+            } else {
+                entityName = entityId; // Team name
+            }
+            
+            // Set title based on stat type
+            const statTitles = {
+                'wins': 'WINS',
+                'podiums': 'PODIUMS',
+                'poles': 'POLE POSITIONS',
+                'fastestLaps': 'FASTEST LAPS',
+                'points': 'POINTS BY RACE'
+            };
+            
+            modalTitle.textContent = `${entityName.toUpperCase()} - ${statTitles[statType]}`;
+            
+            // Build content
+            let content = `
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>SEASON</th>
+                            <th>ROUND</th>
+                            <th>RACE</th>
+                            ${statType === 'points' ? '<th>POSITION</th>' : ''}
+                            ${statType === 'points' ? '<th>POINTS</th>' : '<th>RESULT</th>'}
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            let totalCount = 0;
+            let totalPoints = 0;
+            
+            // Loop through all seasons
+            allSeasonsData.seasons.forEach(season => {
+                season.races.forEach(race => {
+                    if (race.status !== 'completed' || !race.results) return;
+                    
+                    if (entityType === 'driver') {
+                        // Driver stats
+                        const result = race.results.find(r => r.driverId == entityId);
+                        if (!result) return;
+                        
+                        let shouldInclude = false;
+                        let resultText = '';
+                        let pointsEarned = 0;
+                        
+                        if (statType === 'wins' && result.position === 1) {
+                            shouldInclude = true;
+                            resultText = '1st';
+                        } else if (statType === 'podiums' && result.position <= 3) {
+                            shouldInclude = true;
+                            resultText = result.position === 1 ? '1st' : result.position === 2 ? '2nd' : '3rd';
+                        } else if (statType === 'poles') {
+                            const poleDriver = race.grid && race.grid.length > 0 ? race.grid[0].driverId : null;
+                            if (poleDriver == entityId) {
+                                shouldInclude = true;
+                                resultText = `Finished P${result.position}`;
+                            }
+                        } else if (statType === 'fastestLaps') {
+                            if (race.fastestLap && race.fastestLap.driverId == entityId) {
+                                shouldInclude = true;
+                                resultText = `P${result.position} (${race.fastestLap.time})`;
+                            }
+                        } else if (statType === 'points') {
+                            pointsEarned = season.pointsSystem.race[result.position] || 0;
+                            if (race.fastestLap && race.fastestLap.driverId == entityId) {
+                                if (result.position <= 10 && result.status === 'finished') {
+                                    pointsEarned += season.pointsSystem.fastestLap || 0;
+                                }
+                            }
+                            if (pointsEarned > 0) {
+                                shouldInclude = true;
+                                resultText = `P${result.position}`;
+                            }
+                        }
+                        
+                        if (shouldInclude) {
+                            totalCount++;
+                            if (statType === 'points') totalPoints += pointsEarned;
+                            
+                            content += `
+                                <tr>
+                                    <td><strong>${season.year}</strong></td>
+                                    <td>R${race.round}</td>
+                                    <td>${race.name}</td>
+                                    ${statType === 'points' ? `<td>${resultText}</td>` : ''}
+                                    ${statType === 'points' ? `<td><strong>${pointsEarned}</strong></td>` : `<td>${resultText}</td>`}
+                                </tr>
+                            `;
+                        }
+                    } else {
+                        // Constructor stats
+                        const teamDrivers = season.drivers.filter(d => d.team === entityId).map(d => d.id);
+                        if (teamDrivers.length === 0) return;
+                        
+                        race.results.forEach(result => {
+                            if (!teamDrivers.includes(result.driverId)) return;
+                            
+                            const driver = season.drivers.find(d => d.id == result.driverId);
+                            let shouldInclude = false;
+                            let resultText = '';
+                            let pointsEarned = 0;
+                            
+                            if (statType === 'wins' && result.position === 1) {
+                                shouldInclude = true;
+                                resultText = `${driver.name} - 1st`;
+                            } else if (statType === 'podiums' && result.position <= 3) {
+                                shouldInclude = true;
+                                const pos = result.position === 1 ? '1st' : result.position === 2 ? '2nd' : '3rd';
+                                resultText = `${driver.name} - ${pos}`;
+                            } else if (statType === 'poles') {
+                                const poleDriver = race.grid && race.grid.length > 0 ? race.grid[0].driverId : null;
+                                if (poleDriver == result.driverId) {
+                                    shouldInclude = true;
+                                    resultText = `${driver.name} - Finished P${result.position}`;
+                                }
+                            } else if (statType === 'fastestLaps') {
+                                if (race.fastestLap && race.fastestLap.driverId == result.driverId) {
+                                    shouldInclude = true;
+                                    resultText = `${driver.name} - P${result.position} (${race.fastestLap.time})`;
+                                }
+                            } else if (statType === 'points') {
+                                pointsEarned = season.pointsSystem.race[result.position] || 0;
+                                if (race.fastestLap && race.fastestLap.driverId == result.driverId) {
+                                    if (result.position <= 10 && result.status === 'finished') {
+                                        pointsEarned += season.pointsSystem.fastestLap || 0;
+                                    }
+                                }
+                                if (pointsEarned > 0) {
+                                    shouldInclude = true;
+                                    resultText = `${driver.name} - P${result.position}`;
+                                }
+                            }
+                            
+                            if (shouldInclude) {
+                                totalCount++;
+                                if (statType === 'points') totalPoints += pointsEarned;
+                                
+                                content += `
+                                    <tr>
+                                        <td><strong>${season.year}</strong></td>
+                                        <td>R${race.round}</td>
+                                        <td>${race.name}</td>
+                                        ${statType === 'points' ? `<td>${resultText}</td>` : ''}
+                                        ${statType === 'points' ? `<td><strong>${pointsEarned}</strong></td>` : `<td>${resultText}</td>`}
+                                    </tr>
+                                `;
+                            }
+                        });
+                    }
+                });
+            });
+            
+            content += `
+                    </tbody>
+                </table>
+            `;
+            
+            if (totalCount === 0) {
+                content = `<p style="text-align: center; padding: 40px; color: var(--text-secondary);">No ${statTitles[statType].toLowerCase()} found.</p>`;
+            } else if (statType === 'points') {
+                content = `<p style="text-align: center; padding: 20px; font-size: 1.2rem;"><strong>Total Points: ${totalPoints}</strong> across ${totalCount} race${totalCount > 1 ? 's' : ''}</p>` + content;
+            } else {
+                content = `<p style="text-align: center; padding: 20px; font-size: 1.2rem;"><strong>Total: ${totalCount}</strong></p>` + content;
+            }
+            
+            modalBody.innerHTML = content;
+            modal.classList.add('active');
+        }
+
+        function closeCareerDetailModal() {
+            const modal = document.getElementById('careerDetailModal');
+            modal.classList.remove('active');
         }
 
         // Update constructor standings
