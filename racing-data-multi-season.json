@@ -2449,43 +2449,54 @@
       "teams": [
         {
           "name": "Aston Martin",
-          "color": "#004225"
+          "color": "#004225",
+          "teamLogo": "images/aston_martin_logo.png"
         },
         {
           "name": "BMW",
-          "color": "#5BB4E5"
+          "color": "#5BB4E5",
+          "teamLogo": "images/bmw_logo.png"
         },
         {
           "name": "Chevrolet",
-          "color": "#D1AD57"
+          "color": "#D1AD57",
+          "teamLogo": "images/chevrolet_logo.png"
         },
         {
           "name": "Dodge",
-          "color": "#CF2D26"
+          "color": "#CF2D26",
+          "teamLogo": "images/dodge_logo.png"
         },
         {
           "name": "Scuderia Ferrari",
-          "color": "#EF1A2D"
+          "color": "#EF1A2D",
+          "teamLogo": "images/ferrari_logo.png"
         },
         {
           "name": "Honda",
-          "color": "#231f20"
+          "color": "#231f20",
+          "carImage": "images/honda-car.PNG",
+          "teamLogo": "images/honda_logo.png"
         },
         {
           "name": "Jaguar",
-          "color": "#BFBFBF"
+          "color": "#BFBFBF",
+          "teamLogo": "images/jaguar_logo.png"
         },
         {
           "name": "McLaren",
-          "color": "#FF8000"
+          "color": "#FF8000",
+          "teamLogo": "images/mclaren_logo.png"
         },
         {
           "name": "Mercedes-AMG",
-          "color": "#00A19B"
+          "color": "#00A19B",
+          "teamLogo": "images/mercedes-amg_logo.png"
         },
         {
           "name": "Porsche",
-          "color": "#E1BE78"
+          "color": "#E1BE78",
+          "teamLogo": "images/porsche_logo.png"
         }
       ],
       "races": [
