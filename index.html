@@ -367,6 +367,23 @@
             }
         }
 
+        /* News Grid - Responsive columns */
+        .news-grid {
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 769px) and (max-width: 1200px) {
+            .news-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1201px) {
+            .news-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
         .team-section {
             display: flex;
             flex-direction: column;
@@ -578,14 +595,19 @@
 
         .team-card-logo {
             position: absolute;
-            top: 25px;
+            top: 50%;
+            transform: translateY(-50%);
             right: 25px;
             width: 60px;
             height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
-            opacity: 0.5;
+            opacity: 0.8;
+        }
+        
+        .team-card-logo img {
+            filter: brightness(0) invert(1);
         }
 
         .team-card-drivers {
@@ -621,10 +643,32 @@
             height: 160px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-end;
             position: relative;
             overflow: hidden;
             margin-top: auto;
+        }
+        
+        .team-card-image img {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: none;
+            height: auto;
+            object-fit: contain;
+            transform: translateX(13%);
+        }
+        
+        .team-card-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at 60% 50%, currentColor 0%, transparent 55%);
+            opacity: 0.5;
+            z-index: 1;
         }
 
         .team-card-placeholder {
@@ -1542,7 +1586,7 @@
             <!-- News Articles -->
             <div style="margin-bottom: 30px;">
                 <h3 style="font-family: 'Bebas Neue', cursive; font-size: 2.5rem; color: var(--accent-yellow); margin-bottom: 20px; border-bottom: 2px solid var(--primary-red); padding-bottom: 10px;">LATEST NEWS</h3>
-                <div id="newsArticles" style="display: grid; gap: 20px;">
+                <div id="newsArticles" class="news-grid" style="display: grid; gap: 20px;">
                     <!-- News articles will be populated here -->
                 </div>
             </div>
@@ -2527,16 +2571,157 @@
             const newsArticles = document.getElementById('newsArticles');
             const articles = [];
             
+            // Safety check - exit if no data
+            if (!racingData || !racingData.races || !calculatedDriverStats || !calculatedTeamStats || 
+                calculatedDriverStats.length === 0 || calculatedTeamStats.length === 0) {
+                newsArticles.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 40px;">No news available yet. Complete some races to see stories!</p>';
+                return;
+            }
+            
             const completedRaces = racingData.races.filter(r => r.status === 'completed');
             const upcomingRaces = racingData.races.filter(r => r.status === 'upcoming');
             const totalRaces = racingData.races.length;
+            const seasonProgress = completedRaces.length / totalRaces;
             
-            // Article 1: Championship leader story
-            if (calculatedDriverStats.length > 0 && completedRaces.length > 0) {
-                const leader = calculatedDriverStats[0];
-                const runnerUp = calculatedDriverStats[1];
-                const pointsGap = runnerUp ? leader.points - runnerUp.points : leader.points;
+            // Get standings info with safety checks
+            const leader = calculatedDriverStats[0];
+            const runnerUp = calculatedDriverStats.length > 1 ? calculatedDriverStats[1] : null;
+            const third = calculatedDriverStats.length > 2 ? calculatedDriverStats[2] : null;
+            const pointsGap = runnerUp ? leader.points - runnerUp.points : 0;
+            const maxPointsPerRace = racingData.pointsSystem && racingData.pointsSystem.race ? 
+                Math.max(...Object.values(racingData.pointsSystem.race)) : 25;
+            const maxPointsRemaining = upcomingRaces.length * maxPointsPerRace;
+            
+            const teamLeader = calculatedTeamStats[0];
+            const teamRunnerUp = calculatedTeamStats.length > 1 ? calculatedTeamStats[1] : null;
+            const teamGap = teamRunnerUp ? teamLeader.points - teamRunnerUp.points : 0;
+            
+            // SEASON START (First 3 races)
+            if (completedRaces.length <= 3 && completedRaces.length > 0) {
+                // Early season leader story
+                articles.push({
+                    title: `${leader.name} Makes Strong Start to ${racingData.season.year} Season`,
+                    content: `After ${completedRaces.length} round${completedRaces.length > 1 ? 's' : ''}, ${leader.name} (${leader.team}) leads the championship with ${leader.points} points. ${leader.wins > 0 ? `With ${leader.wins} win${leader.wins > 1 ? 's' : ''} already, ${leader.name} has set the early pace.` : `Despite no wins yet, consistent point-scoring has ${leader.name} at the top.`} ${runnerUp ? `${runnerUp.name} trails by ${pointsGap} points in second place.` : ''}`,
+                    type: 'championship'
+                });
                 
+                // Team battle begins
+                if (calculatedTeamStats.length > 1) {
+                    articles.push({
+                        title: `Constructor Battle Takes Shape: ${teamLeader.name} vs ${teamRunnerUp ? teamRunnerUp.name : 'The Field'}`,
+                        content: `The early stages of the constructor championship see ${teamLeader.name} leading with ${teamLeader.points} points. ${teamRunnerUp ? `${teamRunnerUp.name} sits ${teamGap} points back, setting up what could be a season-long battle.` : `The team has established an early advantage over the competition.`}`,
+                        type: 'constructor'
+                    });
+                }
+            }
+            
+            // MID-SEASON (40-60% complete)
+            else if (seasonProgress >= 0.4 && seasonProgress <= 0.6) {
+                // Championship battle heating up
+                if (pointsGap <= 15 && runnerUp) {
+                    articles.push({
+                        title: `Title Fight Intensifies: ${leader.name} and ${runnerUp.name} Separated by Just ${pointsGap} Points`,
+                        content: `At the season's halfway point, the championship couldn't be closer. ${leader.name} (${leader.team}) holds a slender ${pointsGap}-point advantage over ${runnerUp.name} (${runnerUp.team}). ${third ? `${third.name} remains in contention in third, ${leader.points - third.points} points off the lead.` : ''} With ${upcomingRaces.length} races remaining, this championship is far from decided.`,
+                        type: 'tight-battle'
+                    });
+                } else if (pointsGap > 30) {
+                    articles.push({
+                        title: `${leader.name} Building Commanding Lead at Mid-Season`,
+                        content: `With half the season complete, ${leader.name} (${leader.team}) has opened up a ${pointsGap}-point gap to ${runnerUp ? runnerUp.name : 'the field'}. ${leader.wins} win${leader.wins !== 1 ? 's' : ''} and ${leader.podiums} podium${leader.podiums !== 1 ? 's' : ''} have established ${leader.name} as the championship favorite.`,
+                        type: 'championship'
+                    });
+                } else {
+                    articles.push({
+                        title: `Mid-Season Report: ${leader.name} Leads Competitive Field`,
+                        content: `At the halfway mark, ${leader.name} tops the standings with ${leader.points} points, holding a ${pointsGap}-point margin over ${runnerUp ? runnerUp.name : 'second place'}. The mid-season battle promises drama as ${upcomingRaces.length} races remain.`,
+                        type: 'championship'
+                    });
+                }
+            }
+            
+            // LATE SEASON (70%+ complete)
+            else if (seasonProgress > 0.7 && upcomingRaces.length > 0) {
+                // Title fight scenarios
+                const canClinch = pointsGap > maxPointsRemaining;
+                const veryTight = pointsGap <= 10;
+                
+                if (canClinch && leader) {
+                    articles.push({
+                        title: `${leader.name} on Brink of Championship Glory`,
+                        content: `With just ${upcomingRaces.length} race${upcomingRaces.length > 1 ? 's' : ''} remaining, ${leader.name} (${leader.team}) leads by ${pointsGap} points and could clinch the championship as early as the next race. ${runnerUp ? `${runnerUp.name} needs a miracle to deny ${leader.name} the title.` : ''}`,
+                        type: 'clinch-watch'
+                    });
+                } else if (veryTight && runnerUp) {
+                    articles.push({
+                        title: `Championship Goes Down to the Wire: ${pointsGap}-Point Gap with ${upcomingRaces.length} Race${upcomingRaces.length > 1 ? 's' : ''} Left`,
+                        content: `The ${racingData.season.year} title fight couldn't be tighter. ${leader.name} (${leader.team}) and ${runnerUp.name} (${runnerUp.team}) are separated by just ${pointsGap} points heading into the final ${upcomingRaces.length} round${upcomingRaces.length > 1 ? 's' : ''}. Every position matters in this epic championship showdown.`,
+                        type: 'finale-preview'
+                    });
+                } else if (pointsGap <= maxPointsRemaining && runnerUp) {
+                    articles.push({
+                        title: `Title Still Up for Grabs: ${runnerUp.name} Chasing ${leader.name}`,
+                        content: `${leader.name} holds a ${pointsGap}-point advantage, but with ${maxPointsRemaining} points still available, ${runnerUp.name} remains mathematically in contention. The championship battle heads into its final ${upcomingRaces.length} race${upcomingRaces.length > 1 ? 's' : ''} with everything to play for.`,
+                        type: 'championship'
+                    });
+                }
+            }
+            
+            // CHAMPIONSHIP CLINCHING SCENARIOS (when mathematically possible but not guaranteed)
+            if (upcomingRaces.length > 0 && upcomingRaces.length <= 3 && leader && runnerUp && pointsGap < maxPointsRemaining && pointsGap > 0) {
+                const nextRace = upcomingRaces[0];
+                
+                // Calculate what leader needs to clinch at next race
+                const pointsAfterNextRace = upcomingRaces.length - 1;
+                const maxPointsAfterNext = pointsAfterNextRace * maxPointsPerRace;
+                
+                let clinchScenarios = [];
+                
+                // If leader wins, calculate if they clinch
+                const leaderWinPoints = leader.points + maxPointsPerRace;
+                const runnerUpMaxPoints = runnerUp.points + maxPointsAfterNext;
+                
+                if (leaderWinPoints > runnerUpMaxPoints) {
+                    clinchScenarios.push(`wins ${nextRace.name}`);
+                } else {
+                    // Calculate what position leader needs with runner-up finishing where
+                    for (let leaderPos = 1; leaderPos <= 10; leaderPos++) {
+                        const leaderPosPoints = racingData.pointsSystem.race[leaderPos.toString()] || 0;
+                        const leaderTotalAfter = leader.points + leaderPosPoints;
+                        
+                        for (let runnerUpPos = leaderPos + 1; runnerUpPos <= 10; runnerUpPos++) {
+                            const runnerUpPosPoints = racingData.pointsSystem.race[runnerUpPos.toString()] || 0;
+                            const runnerUpTotalAfter = runnerUp.points + runnerUpPosPoints;
+                            const runnerUpMaxAfter = runnerUpTotalAfter + maxPointsAfterNext;
+                            
+                            if (leaderTotalAfter > runnerUpMaxAfter) {
+                                const positionName = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'][leaderPos];
+                                const runnerUpPosName = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'][runnerUpPos];
+                                clinchScenarios.push(`finishes ${positionName} if ${runnerUp.name} finishes ${runnerUpPosName} or lower`);
+                                break;
+                            }
+                        }
+                        if (clinchScenarios.length > 0) break;
+                    }
+                }
+                
+                if (clinchScenarios.length > 0) {
+                    articles.push({
+                        title: `Championship Clinching Scenarios: How ${leader.name} Can Seal the Title`,
+                        content: `With ${upcomingRaces.length} race${upcomingRaces.length > 1 ? 's' : ''} remaining and a ${pointsGap}-point lead, ${leader.name} could clinch the championship at ${nextRace.name}. The title is secured if ${leader.name} ${clinchScenarios[0]}. ${runnerUp.name} must outscore ${leader.name} significantly to keep the championship alive heading into the final round${upcomingRaces.length > 1 ? 's' : ''}.`,
+                        type: 'clinch-scenarios'
+                    });
+                } else if (upcomingRaces.length === 1) {
+                    // Season finale scenarios
+                    articles.push({
+                        title: `Season Finale Showdown: All Possible Championship Outcomes`,
+                        content: `It all comes down to ${nextRace.name}. ${leader.name} leads by ${pointsGap} points, meaning ${runnerUp.name} must win and hope ${leader.name} finishes ${pointsGap >= maxPointsPerRace ? 'outside the points' : `no higher than a certain position`} to steal the title. With ${pointsGap} points separating them, this finale will be decided on track.`,
+                        type: 'finale-scenarios'
+                    });
+                }
+            }
+            
+            // DEFAULT CHAMPIONSHIP STORY (if not covered above)
+            if (articles.length === 0 && completedRaces.length > 0 && leader) {
                 articles.push({
                     title: `${leader.name} ${pointsGap > 20 ? 'Dominates' : 'Leads'} Championship After ${completedRaces.length} Rounds`,
                     content: `${leader.name} (${leader.team}) currently sits atop the driver standings with ${leader.points} points${runnerUp ? `, ${pointsGap} points ahead of ${runnerUp.name}` : ''}. With ${leader.wins} win${leader.wins !== 1 ? 's' : ''} and ${leader.podiums} podium${leader.podiums !== 1 ? 's' : ''} so far this season, ${leader.name} has been ${pointsGap > 20 ? 'the dominant force' : 'in impressive form'}.`,
@@ -2544,20 +2729,38 @@
                 });
             }
             
-            // Article 2: Last race recap
+            // LAST RACE RECAP (varies by outcome)
             if (completedRaces.length > 0) {
                 const lastRace = completedRaces[completedRaces.length - 1];
                 if (lastRace.results && lastRace.results.length > 0) {
                     const winner = lastRace.results.find(r => r.position === 1);
+                    const second = lastRace.results.find(r => r.position === 2);
+                    const third = lastRace.results.find(r => r.position === 3);
+                    
                     if (winner) {
                         const winnerDriver = racingData.drivers.find(d => d.id == winner.driverId);
                         if (winnerDriver) {
                             const poleDriver = lastRace.grid && lastRace.grid.length > 0 ? 
                                 racingData.drivers.find(d => d.id == lastRace.grid[0].driverId) : null;
                             
+                            const winnerStats = calculatedDriverStats.find(d => d.id == winner.driverId);
+                            const isFirstWin = winnerStats && winnerStats.wins === 1;
+                            const dominantWin = poleDriver && lastRace.fastestLap && 
+                                                poleDriver.id === winnerDriver.id && 
+                                                lastRace.fastestLap.driverId == winnerDriver.id;
+                            
+                            let recap = '';
+                            if (isFirstWin) {
+                                recap = `${winnerDriver.name} (${winnerDriver.team}) claimed a maiden victory at ${lastRace.location}, breaking through for their first win of the season in Round ${lastRace.round}.`;
+                            } else if (dominantWin) {
+                                recap = `${winnerDriver.name} (${winnerDriver.team}) delivered a masterclass at ${lastRace.location}, dominating from pole position and setting the fastest lap en route to victory in Round ${lastRace.round}.`;
+                            } else {
+                                recap = `${winnerDriver.name} (${winnerDriver.team}) took victory at ${lastRace.location} in Round ${lastRace.round}${poleDriver && poleDriver.id === winnerDriver.id ? ', converting pole position into a race win' : ''}.`;
+                            }
+                            
                             articles.push({
-                                title: `${winnerDriver.name} Triumphs at ${lastRace.name}`,
-                                content: `${winnerDriver.name} (${winnerDriver.team}) took victory at ${lastRace.location} in Round ${lastRace.round}${poleDriver && poleDriver.id === winnerDriver.id ? ', converting pole position into a dominant win' : ''}. ${lastRace.fastestLap && lastRace.fastestLap.driverId == winnerDriver.id ? 'The win was complemented by the fastest lap of the race.' : ''}`,
+                                title: `${isFirstWin ? 'Breakthrough Victory' : 'Race Recap'}: ${winnerDriver.name} Wins ${lastRace.name}`,
+                                content: recap,
                                 type: 'race-recap'
                             });
                         }
@@ -2565,34 +2768,239 @@
                 }
             }
             
-            // Article 3: Constructor championship
-            if (calculatedTeamStats.length > 0 && completedRaces.length > 0) {
-                const teamLeader = calculatedTeamStats[0];
-                const teamRunnerUp = calculatedTeamStats[1];
-                const teamGap = teamRunnerUp ? teamLeader.points - teamRunnerUp.points : teamLeader.points;
+            // WINNING STREAK STORY
+            if (leader && leader.wins >= 3 && completedRaces.length > 0) {
+                const recentRaces = completedRaces.slice(-leader.wins);
+                let consecutiveWins = 0;
+                for (let i = recentRaces.length - 1; i >= 0; i--) {
+                    const winner = recentRaces[i].results?.find(r => r.position === 1);
+                    if (winner && winner.driverId == leader.id) {
+                        consecutiveWins++;
+                    } else {
+                        break;
+                    }
+                }
                 
-                articles.push({
-                    title: `${teamLeader.name} ${teamGap > 30 ? 'Commands' : 'Leads'} Constructor Standings`,
-                    content: `In the constructor championship, ${teamLeader.name} leads with ${teamLeader.points} points${teamRunnerUp ? `, holding a ${teamGap}-point advantage over ${teamRunnerUp.name}` : ''}. The team has secured ${teamLeader.wins} victory${teamLeader.wins !== 1 ? 'victories' : ''} and ${teamLeader.podiums} podium finish${teamLeader.podiums !== 1 ? 'es' : ''} this season.`,
-                    type: 'constructor'
-                });
+                if (consecutiveWins >= 3) {
+                    articles.push({
+                        title: `${leader.name} on Fire: ${consecutiveWins} Consecutive Victories`,
+                        content: `${leader.name} has been unstoppable, winning the last ${consecutiveWins} races in a dominant streak. This run of form has propelled ${leader.name} to the top of the championship with ${leader.points} points.`,
+                        type: 'hot-streak'
+                    });
+                }
             }
             
-            // Article 4: Next race preview
+            // UNDERDOG/SURPRISE STORY
+            if (completedRaces.length >= 3 && calculatedDriverStats.length >= 5) {
+                const topDriverOutsideTop3 = calculatedDriverStats.slice(3, 6).find(d => d.wins > 0);
+                if (topDriverOutsideTop3 && topDriverOutsideTop3.wins >= 1) {
+                    articles.push({
+                        title: `Dark Horse Alert: ${topDriverOutsideTop3.name} Making Noise`,
+                        content: `Currently ${calculatedDriverStats.findIndex(d => d.id === topDriverOutsideTop3.id) + 1}th in the standings, ${topDriverOutsideTop3.name} (${topDriverOutsideTop3.team}) has proven they can win with ${topDriverOutsideTop3.wins} victor${topDriverOutsideTop3.wins > 1 ? 'ies' : 'y'} this season. Don't count out this dark horse contender.`,
+                        type: 'dark-horse'
+                    });
+                }
+            }
+            
+            // CONSTRUCTOR CHAMPIONSHIP (if not already covered)
+            if (calculatedTeamStats.length > 0 && completedRaces.length > 0 && articles.filter(a => a.type === 'constructor').length === 0) {
+                const teamTight = teamGap <= 20 && teamRunnerUp;
+                
+                if (teamTight) {
+                    articles.push({
+                        title: `Constructor Battle Heats Up: ${teamLeader.name} and ${teamRunnerUp.name} Locked in Tight Fight`,
+                        content: `Just ${teamGap} points separate ${teamLeader.name} and ${teamRunnerUp.name} in the constructor standings. Both teams have been trading blows with ${teamLeader.wins} and ${teamRunnerUp.wins} wins respectively.`,
+                        type: 'constructor-battle'
+                    });
+                } else {
+                    articles.push({
+                        title: `${teamLeader.name} ${teamGap > 30 ? 'Commands' : 'Leads'} Constructor Standings`,
+                        content: `In the constructor championship, ${teamLeader.name} leads with ${teamLeader.points} points${teamRunnerUp ? `, holding a ${teamGap}-point advantage over ${teamRunnerUp.name}` : ''}. The team has secured ${teamLeader.wins} victor${teamLeader.wins !== 1 ? 'ies' : 'y'} and ${teamLeader.podiums} podium finish${teamLeader.podiums !== 1 ? 'es' : ''} this season.`,
+                        type: 'constructor'
+                    });
+                }
+            }
+            
+            // TEAMMATE BATTLE
+            if (completedRaces.length >= 3) {
+                let closestTeammateBattle = null;
+                let smallestGap = Infinity;
+                
+                calculatedTeamStats.forEach(team => {
+                    const teamDrivers = calculatedDriverStats.filter(d => d.team === team.name);
+                    if (teamDrivers.length >= 2) {
+                        teamDrivers.sort((a, b) => b.points - a.points);
+                        const gap = teamDrivers[0].points - teamDrivers[1].points;
+                        if (gap < smallestGap && gap <= 15) {
+                            smallestGap = gap;
+                            closestTeammateBattle = {
+                                driver1: teamDrivers[0],
+                                driver2: teamDrivers[1],
+                                team: team.name,
+                                gap: gap
+                            };
+                        }
+                    }
+                });
+                
+                if (closestTeammateBattle) {
+                    articles.push({
+                        title: `Teammate Rivalry Intensifies: ${closestTeammateBattle.driver1.name} vs ${closestTeammateBattle.driver2.name}`,
+                        content: `The ${closestTeammateBattle.team} garage is heating up as ${closestTeammateBattle.driver1.name} and ${closestTeammateBattle.driver2.name} are separated by just ${closestTeammateBattle.gap} point${closestTeammateBattle.gap !== 1 ? 's' : ''}. With ${closestTeammateBattle.driver1.wins} and ${closestTeammateBattle.driver2.wins} wins respectively, this intra-team battle is one to watch.`,
+                        type: 'teammate-battle'
+                    });
+                }
+            }
+            
+            // POINTS STREAK
+            if (completedRaces.length >= 3) {
+                let longestStreak = 0;
+                let streakDriver = null;
+                
+                calculatedDriverStats.forEach(driver => {
+                    // Check how many consecutive races they've scored points
+                    let currentStreak = 0;
+                    for (let i = completedRaces.length - 1; i >= 0; i--) {
+                        const race = completedRaces[i];
+                        const driverResult = race.results?.find(r => r.driverId == driver.id);
+                        if (driverResult && driverResult.points > 0) {
+                            currentStreak++;
+                        } else {
+                            break;
+                        }
+                    }
+                    
+                    if (currentStreak > longestStreak && currentStreak >= 5) {
+                        longestStreak = currentStreak;
+                        streakDriver = driver;
+                    }
+                });
+                
+                if (streakDriver && longestStreak >= 5) {
+                    articles.push({
+                        title: `Consistency Pays Off: ${streakDriver.name} Extends Points Streak to ${longestStreak} Races`,
+                        content: `${streakDriver.name} (${streakDriver.team}) has been the model of consistency, scoring points in the last ${longestStreak} consecutive races. This remarkable reliability has propelled them to ${streakDriver.position}${streakDriver.position === 1 ? 'st' : streakDriver.position === 2 ? 'nd' : streakDriver.position === 3 ? 'rd' : 'th'} in the championship with ${streakDriver.points} points.`,
+                        type: 'points-streak'
+                    });
+                }
+            }
+            
+            // POLE POSITION SPECIALIST
+            if (completedRaces.length >= 3) {
+                const poleStats = {};
+                completedRaces.forEach(race => {
+                    if (race.grid && race.grid.length > 0) {
+                        const poleId = race.grid[0].driverId;
+                        poleStats[poleId] = (poleStats[poleId] || 0) + 1;
+                    }
+                });
+                
+                let maxPoles = 0;
+                let poleLeaderId = null;
+                Object.entries(poleStats).forEach(([driverId, poles]) => {
+                    if (poles > maxPoles) {
+                        maxPoles = poles;
+                        poleLeaderId = driverId;
+                    }
+                });
+                
+                if (maxPoles >= 3) {
+                    const poleLeader = calculatedDriverStats.find(d => d.id == poleLeaderId);
+                    if (poleLeader) {
+                        const conversionRate = poleLeader.wins > 0 ? Math.round((poleLeader.wins / maxPoles) * 100) : 0;
+                        articles.push({
+                            title: `Qualifying Masterclass: ${poleLeader.name} Dominates Saturdays with ${maxPoles} Pole Positions`,
+                            content: `${poleLeader.name} (${poleLeader.team}) has been untouchable on Saturdays, securing ${maxPoles} pole positions this season. ${conversionRate > 0 ? `With a ${conversionRate}% conversion rate to wins, ${poleLeader.name} has proven that pole position is crucial to race success.` : `However, converting Saturday pace to Sunday success remains a challenge.`}`,
+                            type: 'pole-specialist'
+                        });
+                    }
+                }
+            }
+            
+            // CONSISTENCY KING (Best Average finish)
+            if (completedRaces.length >= 5) {
+                let bestAverage = 999;
+                let consistencyKing = null;
+                
+                calculatedDriverStats.slice(0, 10).forEach(driver => {
+                    let totalFinish = 0;
+                    let finishCount = 0;
+                    
+                    completedRaces.forEach(race => {
+                        const result = race.results?.find(r => r.driverId == driver.id);
+                        if (result && result.position <= 20) {
+                            totalFinish += result.position;
+                            finishCount++;
+                        }
+                    });
+                    
+                    if (finishCount > 0) {
+                        const avgFinish = totalFinish / finishCount;
+                        if (avgFinish < bestAverage && finishCount >= completedRaces.length * 0.8) {
+                            bestAverage = avgFinish;
+                            consistencyKing = driver;
+                        }
+                    }
+                });
+                
+                if (consistencyKing && bestAverage < 6) {
+                    articles.push({
+                        title: `Mr. Consistent: ${consistencyKing.name} Leads with ${bestAverage.toFixed(1)} Average Finish`,
+                        content: `${consistencyKing.name} (${consistencyKing.team}) has been remarkably consistent this season, averaging a finishing position of ${bestAverage.toFixed(1)}. This reliability has been key to their championship challenge, currently sitting ${consistencyKing.position}${consistencyKing.position === 1 ? 'st' : consistencyKing.position === 2 ? 'nd' : consistencyKing.position === 3 ? 'rd' : 'th'} with ${consistencyKing.points} points.`,
+                        type: 'consistency'
+                    });
+                }
+            }
+            
+            // MATHEMATICAL ELIMINATION
+            if (upcomingRaces.length > 0 && upcomingRaces.length <= 5 && calculatedDriverStats.length >= 3) {
+                const eliminated = [];
+                
+                calculatedDriverStats.forEach((driver, index) => {
+                    if (index >= 3) { // Check drivers outside top 3
+                        const maxPossiblePoints = driver.points + (upcomingRaces.length * maxPointsPerRace);
+                        const leaderPoints = leader.points;
+                        
+                        if (maxPossiblePoints < leaderPoints) {
+                            eliminated.push(driver);
+                        }
+                    }
+                });
+                
+                if (eliminated.length > 0 && eliminated.length <= 3) {
+                    const eliminatedNames = eliminated.map(d => d.name).join(', ');
+                    articles.push({
+                        title: `Championship Dreams End: ${eliminatedNames} Mathematically Eliminated`,
+                        content: `With ${upcomingRaces.length} race${upcomingRaces.length > 1 ? 's' : ''} remaining, ${eliminated.length > 1 ? 'several drivers have' : eliminatedNames + ' has'} been mathematically eliminated from championship contention. Even winning all remaining races wouldn't be enough to catch ${leader.name}'s ${leader.points}-point tally. The title fight is now down to ${calculatedDriverStats.filter((d, i) => i < 3 && !eliminated.includes(d)).length} driver${calculatedDriverStats.filter((d, i) => i < 3 && !eliminated.includes(d)).length > 1 ? 's' : ''}.`,
+                        type: 'elimination'
+                    });
+                }
+            }
+            
+            // NEXT RACE PREVIEW
             if (upcomingRaces.length > 0) {
                 const nextRace = upcomingRaces[0];
                 const raceDate = new Date(nextRace.date);
                 const options = { month: 'long', day: 'numeric', year: 'numeric' };
                 const formattedDate = raceDate.toLocaleDateString('en-US', options);
                 
+                let previewText = '';
+                if (upcomingRaces.length === 1) {
+                    previewText = `The season finale at ${nextRace.circuit} on ${formattedDate} will decide the championship. Round ${nextRace.round} at ${nextRace.location} could crown ${leader ? leader.name : 'a new champion'}.`;
+                } else if (pointsGap <= 10 && runnerUp) {
+                    previewText = `With just ${pointsGap} points separating the top two, Round ${nextRace.round} at ${nextRace.circuit} on ${formattedDate} could be pivotal in the championship race.`;
+                } else {
+                    previewText = `The ${racingData.season.year} season continues at ${nextRace.circuit} on ${formattedDate}. Round ${nextRace.round} at ${nextRace.location} promises crucial championship points with ${upcomingRaces.length} race${upcomingRaces.length !== 1 ? 's' : ''} remaining.`;
+                }
+                
                 articles.push({
-                    title: `Next Up: ${nextRace.name}`,
-                    content: `The ${racingData.season.year} season continues at ${nextRace.circuit} on ${formattedDate}. Round ${nextRace.round} at ${nextRace.location} promises to be a crucial battleground as the championship fight intensifies with just ${upcomingRaces.length} race${upcomingRaces.length !== 1 ? 's' : ''} remaining.`,
+                    title: `${upcomingRaces.length === 1 ? 'Season Finale' : 'Next Up'}: ${nextRace.name}`,
+                    content: previewText,
                     type: 'preview'
                 });
             }
             
-            // Article 5: Records broken
+            // RECORDS BROKEN
             const recordsCount = calculateRecordsBroken();
             if (recordsCount > 0) {
                 articles.push({
@@ -2602,22 +3010,35 @@
                 });
             }
             
-            // Render articles
+            // Render articles (limit to 6 most relevant)
             newsArticles.innerHTML = '';
-            articles.forEach((article, index) => {
+            articles.slice(0, 6).forEach((article, index) => {
                 const typeColors = {
                     'championship': 'var(--accent-yellow)',
                     'race-recap': 'var(--primary-red)',
                     'constructor': '#00A19B',
+                    'constructor-battle': '#00C9BF',
                     'preview': '#FF8000',
-                    'records': '#FFD700'
+                    'records': '#FFD700',
+                    'tight-battle': '#FF4444',
+                    'clinch-watch': '#00FF00',
+                    'clinch-scenarios': '#00D4FF',
+                    'finale-preview': '#FF00FF',
+                    'finale-scenarios': '#FF1493',
+                    'hot-streak': '#FF6B00',
+                    'dark-horse': '#9370DB',
+                    'teammate-battle': '#FF69B4',
+                    'points-streak': '#32CD32',
+                    'pole-specialist': '#1E90FF',
+                    'consistency': '#20B2AA',
+                    'elimination': '#DC143C'
                 };
                 
                 newsArticles.innerHTML += `
                     <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-left: 4px solid ${typeColors[article.type] || 'var(--primary-red)'}; border-radius: 8px; padding: 25px; transition: all 0.3s; cursor: pointer;"
                          onmouseover="this.style.background='rgba(225, 6, 0, 0.05)'; this.style.borderColor='${typeColors[article.type] || 'var(--primary-red)'}'"
                          onmouseout="this.style.background='var(--card-bg)'; this.style.borderColor='var(--border-color)'"
-                         onclick="${article.type === 'records' ? 'openRecordsBrokenModal()' : article.type === 'preview' ? 'showTab(\'schedule\')' : '\'\''}">
+                         onclick="${article.type === 'records' ? 'openRecordsBrokenModal()' : article.type === 'preview' || article.type === 'finale-preview' ? 'showTab(\'schedule\')' : '\'\''}">
                         <h4 style="font-family: 'Bebas Neue', cursive; font-size: 1.6rem; color: ${typeColors[article.type] || 'var(--accent-yellow)'}; margin-bottom: 10px; letter-spacing: 1px;">${article.title}</h4>
                         <p style="color: var(--text-secondary); line-height: 1.6; font-size: 1.05rem;">${article.content}</p>
                     </div>
@@ -2675,12 +3096,21 @@
                 card.innerHTML = `
                     <div class="team-card-header" style="border-top: 5px solid ${teamColor};">
                         <div class="team-card-name">${team.name}</div>
+                        ${teamInfo && teamInfo.teamLogo && teamInfo.teamLogo.trim() !== '' ? 
+                            `<div class="team-card-logo">
+                                <img src="${teamInfo.teamLogo}" alt="${team.name} Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                            </div>` : 
+                            ''
+                        }
                     </div>
                     <div class="team-card-drivers">
                         ${driversHTML}
                     </div>
-                    <div class="team-card-image" style="background: linear-gradient(to bottom, transparent, ${teamColor}33), ${teamColor}11;">
-                        <div class="team-card-placeholder">CAR</div>
+                    <div class="team-card-image" style="color: ${teamColor};">
+                        ${teamInfo && teamInfo.carImage && teamInfo.carImage.trim() !== '' ? 
+                            `<img src="${teamInfo.carImage}" alt="${team.name} Car">` : 
+                            `<div class="team-card-placeholder">CAR</div>`
+                        }
                     </div>
                 `;
 
