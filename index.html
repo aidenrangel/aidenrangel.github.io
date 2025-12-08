@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Racing Series Tracker</title>
+    <title>Formula GT Tracker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
@@ -56,6 +56,132 @@
         }
 
         /* Header */
+        /* Fixed Navigation Bar */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--primary-red);
+            z-index: 1000;
+            padding: 0 40px;
+        }
+        
+        .top-nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+        
+        .top-nav-logo {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.5rem;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--primary-red), var(--accent-yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        .top-nav-tabs {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+        
+        @media (min-width: 769px) {
+            .top-nav-tabs {
+                display: flex !important;
+                position: static !important;
+                transform: none !important;
+                flex-direction: row !important;
+                background: transparent !important;
+                border: none !important;
+            }
+        }
+        
+        .top-nav-tab {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            padding: 8px 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .top-nav-tab:hover {
+            color: var(--text-primary);
+        }
+        
+        .top-nav-tab.active {
+            color: var(--accent-yellow);
+        }
+        
+        .top-nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary-red);
+        }
+        
+        /* Hamburger Menu for Mobile */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 10px;
+            border: none !important;
+            outline: none !important;
+            background: transparent;
+            box-shadow: none !important;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            align-self: center;
+            position: relative;
+            top: -5px;
+        }
+        
+        .hamburger:focus {
+            outline: none !important;
+            border: none !important;
+        }
+        
+        .hamburger:active {
+            outline: none !important;
+            border: none !important;
+        }
+        
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+        }
+        
+        /* Add padding to body to account for fixed nav */
+        body {
+            padding-top: 70px;
+        }
+        
         header {
             margin-bottom: 40px;
             animation: slideDown 0.6s ease-out;
@@ -361,7 +487,7 @@
             animation: fadeIn 0.8s ease-out 0.4s both;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 600px) {
             .drivers-grid {
                 grid-template-columns: 1fr;
             }
@@ -557,7 +683,7 @@
             animation: fadeIn 0.8s ease-out 0.4s both;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 600px) {
             .teams-grid {
                 grid-template-columns: 1fr;
             }
@@ -901,7 +1027,68 @@
             pointer-events: auto;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 600px) {
+            .top-nav {
+                padding: 0;
+            }
+            
+            .top-nav-content {
+                height: 70px;
+                padding: 0 20px;
+            }
+            
+            .top-nav-logo {
+                font-size: 1.5rem;
+            }
+            
+            .top-nav-tabs {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: rgba(15, 15, 15, 0.98);
+                flex-direction: column;
+                gap: 0;
+                padding: 10px 0;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.5s ease;
+                border-bottom: none;
+                display: none;
+            }
+            
+            .top-nav-tabs.active {
+                display: flex;
+                max-height: 400px;
+                border-bottom: 2px solid var(--primary-red);
+            }
+            
+            .top-nav-tab {
+                width: 100%;
+                padding: 15px 20px;
+                text-align: left;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            .top-nav-tab.active::after {
+                left: 0;
+                right: auto;
+                width: 4px;
+                height: 100%;
+                top: 0;
+                bottom: 0;
+            }
+            
+            .hamburger {
+                display: flex;
+                position: relative;
+                top: -5px;
+            }
+            
+            body {
+                padding-top: 70px;
+            }
+            
             h1 {
                 font-size: 2.5rem;
             }
@@ -947,6 +1134,31 @@
 
             tbody td:not(:first-child):not(:nth-child(2)):not(:last-child) {
                 display: none;
+            }
+        }
+
+        /* Desktop - ensure tabs are always visible */
+        @media (min-width: 601px) {
+            .hamburger {
+                display: none !important;
+            }
+            
+            .top-nav-tabs {
+                display: flex !important;
+                position: static !important;
+                transform: none !important;
+                flex-direction: row !important;
+                background: transparent !important;
+                border: none !important;
+                gap: 5px !important;
+                padding: 0 !important;
+            }
+            
+            .top-nav-tab {
+                width: auto !important;
+                padding: 8px 20px !important;
+                text-align: center !important;
+                border: none !important;
             }
         }
 
@@ -1400,7 +1612,7 @@
             color: var(--text-primary);
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 600px) {
             .drivers-comparison {
                 grid-template-columns: 1fr;
             }
@@ -1502,6 +1714,26 @@
 <body>
     <div class="bg-pattern"></div>
     
+    <!-- Fixed Top Navigation -->
+    <nav class="top-nav">
+        <div class="top-nav-content">
+            <div class="top-nav-logo" onclick="showTab('standings')">FORMULA GT</div>
+            <div class="hamburger" onclick="toggleMobileNav()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="top-nav-tabs" id="topNavTabs">
+                <button class="top-nav-tab active" onclick="showTab('standings')" data-tab="standings">HOME</button>
+                <button class="top-nav-tab" onclick="showTab('drivers')" data-tab="drivers">DRIVERS</button>
+                <button class="top-nav-tab" onclick="showTab('teams')" data-tab="teams">TEAMS</button>
+                <button class="top-nav-tab" onclick="showTab('schedule')" data-tab="schedule">SCHEDULE</button>
+                <button class="top-nav-tab" onclick="showTab('stats')" data-tab="stats">STANDINGS</button>
+                <button class="top-nav-tab" onclick="showTab('records')" data-tab="records">RECORDS</button>
+            </div>
+        </div>
+    </nav>
+    
     <!-- Mobile Navigation -->
     <div class="mobile-nav-overlay" onclick="toggleMobileNav()"></div>
     <div class="mobile-nav-toggle" onclick="toggleMobileNav()">
@@ -1519,30 +1751,11 @@
     </div>
     
     <div class="container">
-        <header>
-            <div class="header-content">
-                <h1>RACING SERIES</h1>
-                <div class="season-info">
-                    <div class="season-year" id="seasonYearDisplay">2025 SEASON</div>
-                    <div class="race-count" id="raceCountDisplay">24 RACES</div>
-                </div>
-            </div>
-        </header>
-
         <!-- Season Selector -->
         <div class="season-selector">
             <select id="seasonSelect" onchange="changeSeason()">
                 <!-- Options will be populated dynamically -->
             </select>
-        </div>
-
-        <div class="nav-tabs">
-            <button class="tab active" onclick="showTab('standings')">HOME</button>
-            <button class="tab" onclick="showTab('drivers')">DRIVERS</button>
-            <button class="tab" onclick="showTab('teams')">TEAMS</button>
-            <button class="tab" onclick="showTab('schedule')">SCHEDULE</button>
-            <button class="tab" onclick="showTab('stats')">STANDINGS</button>
-            <button class="tab" onclick="showTab('records')">RECORDS</button>
         </div>
 
         <!-- Standings Tab (Now News) -->
@@ -2453,6 +2666,11 @@
                 if (b.wins !== a.wins) return b.wins - a.wins;
                 return b.podiums - a.podiums;
             });
+            
+            // Add position property to each driver after sorting
+            calculatedDriverStats.forEach((driver, index) => {
+                driver.position = index + 1;
+            });
 
             // Sort teams by points
             calculatedTeamStats.sort((a, b) => {
@@ -2596,8 +2814,85 @@
             const teamRunnerUp = calculatedTeamStats.length > 1 ? calculatedTeamStats[1] : null;
             const teamGap = teamRunnerUp ? teamLeader.points - teamRunnerUp.points : 0;
             
+            // SEASON COMPLETE - Special end-of-season articles
+            if (upcomingRaces.length === 0 && completedRaces.length > 0) {
+                // Champion crowned
+                articles.push({
+                    title: `${leader.name} Crowned ${racingData.season.year} Champion!`,
+                    content: `The ${racingData.season.year} season concludes with ${leader.name} (${leader.team}) taking the championship title with ${leader.points} points. ${leader.wins} win${leader.wins !== 1 ? 's' : ''} and ${leader.podiums} podium${leader.podiums !== 1 ? 's' : ''} secured the crown${runnerUp ? `, finishing ${pointsGap} points ahead of ${runnerUp.name}` : ''}. Congratulations to the new champion!`,
+                    type: 'champion-crowned'
+                });
+                
+                // Constructor champion
+                articles.push({
+                    title: `${teamLeader.name} Claims ${racingData.season.year} Constructor Championship`,
+                    content: `${teamLeader.name} has sealed the constructor championship with ${teamLeader.points} points. The team's ${teamLeader.wins} victor${teamLeader.wins !== 1 ? 'ies' : 'y'} and consistent performance throughout the season proved decisive${teamRunnerUp ? `, beating ${teamRunnerUp.name} by ${teamGap} points` : ''}.`,
+                    type: 'constructor-champion'
+                });
+                
+                // Season review stats - concise end of season summary
+                const differentWinners = new Set(completedRaces.flatMap(r => 
+                    r.results?.filter(res => res.position === 1).map(res => res.driverId) || []
+                )).size;
+                
+                // Count total DNFs
+                let totalDNFs = 0;
+                completedRaces.forEach(race => {
+                    race.results?.forEach(result => {
+                        if (result.status && result.status.toLowerCase().includes('dnf')) {
+                            totalDNFs++;
+                        }
+                    });
+                });
+                
+                // Count pole-to-win conversions
+                let poleToWin = 0;
+                completedRaces.forEach(race => {
+                    const pole = race.grid?.[0];
+                    const winner = race.results?.find(r => r.position === 1);
+                    if (pole && winner && pole.driverId == winner.driverId) {
+                        poleToWin++;
+                    }
+                });
+                
+                const winRate = Math.round((leader.wins / completedRaces.length) * 100);
+                const poleConversion = Math.round((poleToWin / completedRaces.length) * 100);
+                
+                articles.push({
+                    title: `${racingData.season.year} Season Review: By The Numbers`,
+                    content: `The ${racingData.season.year} season concludes after ${completedRaces.length} races. ${differentWinners} different driver${differentWinners !== 1 ? 's' : ''} won races, with ${leader.name}'s ${leader.wins} victories (${winRate}% win rate) leading the field. Pole position converted to wins ${poleConversion}% of the time. ${totalDNFs} DNFs were recorded across the season. ${teamLeader.name} claimed the constructor championship with ${teamLeader.points} points, ${teamGap} ahead of ${teamRunnerUp ? teamRunnerUp.name : 'second place'}.`,
+                    type: 'season-review',
+                    priority: 1
+                });
+                
+                // Most improved driver
+                if (calculatedDriverStats.length >= 5) {
+                    // Find driver with best position in top 10
+                    const improvedDriver = calculatedDriverStats.slice(3, 8).find(d => d.podiums >= 1);
+                    if (improvedDriver) {
+                        articles.push({
+                            title: `Breakout Star: ${improvedDriver.name} Exceeds Expectations`,
+                            content: `${improvedDriver.name} (${improvedDriver.team}) emerged as one of the season's biggest surprises, finishing ${improvedDriver.position}${improvedDriver.position === 3 ? 'rd' : improvedDriver.position === 4 ? 'th' : 'th'} with ${improvedDriver.points} points and ${improvedDriver.podiums} podium${improvedDriver.podiums !== 1 ? 's' : ''}. A stellar performance that turned heads all season long.`,
+                            type: 'breakout-star'
+                        });
+                    }
+                }
+                
+                // Championship margin analysis
+                if (runnerUp) {
+                    const marginType = pointsGap <= 5 ? 'nail-biting finale' : 
+                                      pointsGap <= 15 ? 'closely-fought battle' :
+                                      pointsGap <= 30 ? 'competitive season' : 'dominant campaign';
+                    articles.push({
+                        title: `Championship Decided by ${pointsGap} Points in ${marginType.split(' ')[0].charAt(0).toUpperCase() + marginType.split(' ')[0].slice(1)} Fashion`,
+                        content: `${leader.name}'s championship victory came by a margin of ${pointsGap} points over ${runnerUp.name}, making it a ${marginType}. ${third ? `${third.name} rounded out the podium in third place with ${third.points} points.` : ''} The ${racingData.season.year} season will be remembered for its ${pointsGap <= 10 ? 'incredible drama' : pointsGap <= 30 ? 'intense competition' : 'one-sided dominance'}.`,
+                        type: 'championship-margin'
+                    });
+                }
+            }
+            
             // SEASON START (First 3 races)
-            if (completedRaces.length <= 3 && completedRaces.length > 0) {
+            else if (completedRaces.length <= 3 && completedRaces.length > 0) {
                 // Early season leader story
                 articles.push({
                     title: `${leader.name} Makes Strong Start to ${racingData.season.year} Season`,
@@ -2674,48 +2969,128 @@
                 const pointsAfterNextRace = upcomingRaces.length - 1;
                 const maxPointsAfterNext = pointsAfterNextRace * maxPointsPerRace;
                 
-                let clinchScenarios = [];
+                let leaderScenarios = [];
+                let runnerUpScenarios = [];
                 
-                // If leader wins, calculate if they clinch
-                const leaderWinPoints = leader.points + maxPointsPerRace;
-                const runnerUpMaxPoints = runnerUp.points + maxPointsAfterNext;
-                
-                if (leaderWinPoints > runnerUpMaxPoints) {
-                    clinchScenarios.push(`wins ${nextRace.name}`);
-                } else {
-                    // Calculate what position leader needs with runner-up finishing where
-                    for (let leaderPos = 1; leaderPos <= 10; leaderPos++) {
-                        const leaderPosPoints = racingData.pointsSystem.race[leaderPos.toString()] || 0;
-                        const leaderTotalAfter = leader.points + leaderPosPoints;
+                // Calculate all possible clinching scenarios for leader
+                for (let leaderPos = 1; leaderPos <= 10; leaderPos++) {
+                    const leaderPosPoints = racingData.pointsSystem.race[leaderPos.toString()] || 0;
+                    const leaderTotalAfter = leader.points + leaderPosPoints;
+                    
+                    // Find minimum position runner-up needs for leader to NOT clinch
+                    let worstRunnerUpPos = null;
+                    for (let runnerUpPos = 1; runnerUpPos <= 10; runnerUpPos++) {
+                        const runnerUpPosPoints = racingData.pointsSystem.race[runnerUpPos.toString()] || 0;
+                        const runnerUpTotalAfter = runnerUp.points + runnerUpPosPoints;
+                        const runnerUpMaxAfter = runnerUpTotalAfter + maxPointsAfterNext;
                         
-                        for (let runnerUpPos = leaderPos + 1; runnerUpPos <= 10; runnerUpPos++) {
-                            const runnerUpPosPoints = racingData.pointsSystem.race[runnerUpPos.toString()] || 0;
-                            const runnerUpTotalAfter = runnerUp.points + runnerUpPosPoints;
-                            const runnerUpMaxAfter = runnerUpTotalAfter + maxPointsAfterNext;
-                            
-                            if (leaderTotalAfter > runnerUpMaxAfter) {
-                                const positionName = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'][leaderPos];
-                                const runnerUpPosName = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'][runnerUpPos];
-                                clinchScenarios.push(`finishes ${positionName} if ${runnerUp.name} finishes ${runnerUpPosName} or lower`);
-                                break;
-                            }
+                        if (leaderTotalAfter > runnerUpMaxAfter) {
+                            worstRunnerUpPos = runnerUpPos;
+                        } else {
+                            break;
                         }
-                        if (clinchScenarios.length > 0) break;
+                    }
+                    
+                    if (worstRunnerUpPos !== null) {
+                        const positionNames = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'];
+                        leaderScenarios.push({
+                            leaderPos: leaderPos,
+                            leaderPosName: positionNames[leaderPos],
+                            runnerUpPos: worstRunnerUpPos,
+                            runnerUpPosName: positionNames[worstRunnerUpPos]
+                        });
                     }
                 }
                 
-                if (clinchScenarios.length > 0) {
+                // Calculate what runner-up needs to keep championship alive
+                const minPointsToStayAlive = leader.points - runnerUp.points - maxPointsAfterNext + 1;
+                for (let runnerUpPos = 1; runnerUpPos <= 10; runnerUpPos++) {
+                    const runnerUpPosPoints = racingData.pointsSystem.race[runnerUpPos.toString()] || 0;
+                    if (runnerUpPosPoints >= minPointsToStayAlive) {
+                        const positionNames = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'];
+                        runnerUpScenarios.push({
+                            position: runnerUpPos,
+                            positionName: positionNames[runnerUpPos],
+                            points: runnerUpPosPoints
+                        });
+                    }
+                }
+                
+                if (leaderScenarios.length > 0) {
+                    // Build detailed scenario text
+                    let scenarioText = `With ${upcomingRaces.length} race${upcomingRaces.length > 1 ? 's' : ''} remaining and a ${pointsGap}-point lead over ${runnerUp.name}, ${leader.name} has multiple paths to clinch the championship at ${nextRace.name}:\n\n`;
+                    
+                    // Leader's clinching scenarios
+                    scenarioText += `**${leader.name} CLINCHES IF:**\n`;
+                    if (leaderScenarios.length >= 1) {
+                        const best = leaderScenarios[0];
+                        scenarioText += `• Finishes ${best.leaderPosName} (regardless of where ${runnerUp.name} finishes)\n`;
+                    }
+                    if (leaderScenarios.length >= 2) {
+                        const second = leaderScenarios[1];
+                        scenarioText += `• Finishes ${second.leaderPosName} and ${runnerUp.name} finishes ${second.runnerUpPosName} or lower\n`;
+                    }
+                    if (leaderScenarios.length >= 3) {
+                        const third = leaderScenarios[2];
+                        scenarioText += `• Finishes ${third.leaderPosName} and ${runnerUp.name} finishes ${third.runnerUpPosName} or lower\n`;
+                    }
+                    
+                    // Runner-up's survival scenarios
+                    if (runnerUpScenarios.length > 0) {
+                        scenarioText += `\n**${runnerUp.name} KEEPS TITLE HOPES ALIVE IF:**\n`;
+                        if (runnerUpScenarios.length >= 1) {
+                            scenarioText += `• Finishes ${runnerUpScenarios[0].positionName} or better and outscores ${leader.name} significantly\n`;
+                        }
+                        scenarioText += `• Must outscore ${leader.name} by ${Math.ceil(minPointsToStayAlive)} points or more\n`;
+                    }
+                    
+                    // Points gap info
+                    scenarioText += `\nCurrent gap: ${pointsGap} points | Maximum available: ${maxPointsPerRace} points per race | ${pointsAfterNextRace} race${pointsAfterNextRace !== 1 ? 's' : ''} after ${nextRace.name}`;
+                    
                     articles.push({
-                        title: `Championship Clinching Scenarios: How ${leader.name} Can Seal the Title`,
-                        content: `With ${upcomingRaces.length} race${upcomingRaces.length > 1 ? 's' : ''} remaining and a ${pointsGap}-point lead, ${leader.name} could clinch the championship at ${nextRace.name}. The title is secured if ${leader.name} ${clinchScenarios[0]}. ${runnerUp.name} must outscore ${leader.name} significantly to keep the championship alive heading into the final round${upcomingRaces.length > 1 ? 's' : ''}.`,
-                        type: 'clinch-scenarios'
+                        title: `Championship Clinching Scenarios: How ${leader.name} Can Seal the Title at ${nextRace.name}`,
+                        content: scenarioText,
+                        type: 'clinch-scenarios',
+                        priority: 2
                     });
                 } else if (upcomingRaces.length === 1) {
-                    // Season finale scenarios
+                    // Season finale scenarios - detailed breakdown
+                    let finaleText = `The ${racingData.season.year} championship comes down to one final race at ${nextRace.name}. ${leader.name} holds a ${pointsGap}-point advantage over ${runnerUp.name}.\n\n`;
+                    
+                    finaleText += `**CHAMPIONSHIP SCENARIOS:**\n`;
+                    
+                    // Calculate exact scenarios
+                    const pointsNeeded = pointsGap + 1;
+                    if (pointsNeeded > maxPointsPerRace) {
+                        finaleText += `• ${leader.name} has already secured the championship! Even if ${runnerUp.name} wins and ${leader.name} scores zero, the gap is too large.\n`;
+                    } else {
+                        finaleText += `• ${runnerUp.name} must win and ${leader.name} must finish:\n`;
+                        for (let pos = 2; pos <= 10; pos++) {
+                            const leaderPoints = racingData.pointsSystem.race[pos.toString()] || 0;
+                            const runnerUpPoints = maxPointsPerRace;
+                            const finalGap = (leader.points + leaderPoints) - (runnerUp.points + runnerUpPoints);
+                            
+                            const posNames = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'];
+                            if (finalGap < 0) {
+                                finaleText += `  → ${posNames[pos]} or lower for ${runnerUp.name} to win the title\n`;
+                                break;
+                            } else if (finalGap === 0) {
+                                finaleText += `  → ${posNames[pos]} would result in a TIE (${runnerUp.name} wins on countback)\n`;
+                                break;
+                            }
+                        }
+                        
+                        finaleText += `\n• ${leader.name} secures the title with any finish of ${Math.floor((maxPointsPerRace - pointsGap) / 5) + 2}nd or better\n`;
+                        finaleText += `• If both drivers finish outside the points, ${leader.name} wins the championship\n`;
+                    }
+                    
+                    finaleText += `\nIt all comes down to ${nextRace.location}. One race. Everything on the line.`;
+                    
                     articles.push({
-                        title: `Season Finale Showdown: All Possible Championship Outcomes`,
-                        content: `It all comes down to ${nextRace.name}. ${leader.name} leads by ${pointsGap} points, meaning ${runnerUp.name} must win and hope ${leader.name} finishes ${pointsGap >= maxPointsPerRace ? 'outside the points' : `no higher than a certain position`} to steal the title. With ${pointsGap} points separating them, this finale will be decided on track.`,
-                        type: 'finale-scenarios'
+                        title: `Season Finale: Complete Breakdown of All Championship Scenarios`,
+                        content: finaleText,
+                        type: 'finale-scenarios',
+                        priority: 1
                     });
                 }
             }
@@ -2831,7 +3206,8 @@
                     if (teamDrivers.length >= 2) {
                         teamDrivers.sort((a, b) => b.points - a.points);
                         const gap = teamDrivers[0].points - teamDrivers[1].points;
-                        if (gap < smallestGap && gap <= 15) {
+                        // Only consider battles where both drivers have scored points
+                        if (gap < smallestGap && gap <= 15 && teamDrivers[0].points >= 10 && teamDrivers[1].points > 0) {
                             smallestGap = gap;
                             closestTeammateBattle = {
                                 driver1: teamDrivers[0],
@@ -2977,6 +3353,399 @@
                 }
             }
             
+            // FASTEST LAP MASTER
+            if (completedRaces.length >= 3) {
+                const fastestLapStats = {};
+                completedRaces.forEach(race => {
+                    if (race.fastestLap && race.fastestLap.driverId) {
+                        const driverId = race.fastestLap.driverId;
+                        fastestLapStats[driverId] = (fastestLapStats[driverId] || 0) + 1;
+                    }
+                });
+                
+                let maxFastestLaps = 0;
+                let fastestLapLeaderId = null;
+                Object.entries(fastestLapStats).forEach(([driverId, count]) => {
+                    if (count > maxFastestLaps) {
+                        maxFastestLaps = count;
+                        fastestLapLeaderId = driverId;
+                    }
+                });
+                
+                if (maxFastestLaps >= 3) {
+                    const fastestLapLeader = calculatedDriverStats.find(d => d.id == fastestLapLeaderId);
+                    if (fastestLapLeader) {
+                        articles.push({
+                            title: `Speed Demon: ${fastestLapLeader.name} Sets ${maxFastestLaps} Fastest Laps`,
+                            content: `${fastestLapLeader.name} (${fastestLapLeader.team}) has proven to be the fastest driver on track, setting ${maxFastestLaps} fastest laps this season. This raw pace translates to ${fastestLapLeader.position}${fastestLapLeader.position === 1 ? 'st' : fastestLapLeader.position === 2 ? 'nd' : fastestLapLeader.position === 3 ? 'rd' : 'th'} in the championship standings.`,
+                            type: 'fastest-lap'
+                        });
+                    }
+                }
+            }
+            
+            // OVERTAKING MASTER (most positions gained)
+            if (completedRaces.length >= 3) {
+                const positionsGained = {};
+                completedRaces.forEach(race => {
+                    if (race.grid && race.results) {
+                        race.results.forEach(result => {
+                            const gridPos = race.grid.find(g => g.driverId == result.driverId);
+                            if (gridPos && result.position <= 20) {
+                                const gained = gridPos.position - result.position;
+                                if (gained > 0) {
+                                    positionsGained[result.driverId] = (positionsGained[result.driverId] || 0) + gained;
+                                }
+                            }
+                        });
+                    }
+                });
+                
+                let maxGained = 0;
+                let overtakerId = null;
+                Object.entries(positionsGained).forEach(([driverId, gained]) => {
+                    if (gained > maxGained) {
+                        maxGained = gained;
+                        overtakerId = driverId;
+                    }
+                });
+                
+                if (maxGained >= 20) {
+                    const overtaker = calculatedDriverStats.find(d => d.id == overtakerId);
+                    if (overtaker) {
+                        articles.push({
+                            title: `Overtaking King: ${overtaker.name} Gains ${maxGained} Positions This Season`,
+                            content: `${overtaker.name} (${overtaker.team}) has been a master of racecraft, gaining a total of ${maxGained} positions from grid to finish across the season. This aggressive driving style has propelled them to ${overtaker.position}${overtaker.position === 1 ? 'st' : overtaker.position === 2 ? 'nd' : overtaker.position === 3 ? 'rd' : 'th'} in the standings.`,
+                            type: 'overtaking'
+                        });
+                    }
+                }
+            }
+            
+            // RELIABILITY CRISIS (most DNFs)
+            if (completedRaces.length >= 4) {
+                const dnfStats = {};
+                completedRaces.forEach(race => {
+                    if (race.results) {
+                        race.results.forEach(result => {
+                            if (result.status && result.status.toLowerCase().includes('dnf')) {
+                                dnfStats[result.driverId] = (dnfStats[result.driverId] || 0) + 1;
+                            }
+                        });
+                    }
+                });
+                
+                let maxDNFs = 0;
+                let unluckyDriverId = null;
+                Object.entries(dnfStats).forEach(([driverId, dnfs]) => {
+                    if (dnfs > maxDNFs) {
+                        maxDNFs = dnfs;
+                        unluckyDriverId = driverId;
+                    }
+                });
+                
+                if (maxDNFs >= 3) {
+                    const unluckyDriver = calculatedDriverStats.find(d => d.id == unluckyDriverId);
+                    if (unluckyDriver) {
+                        articles.push({
+                            title: `Reliability Woes: ${unluckyDriver.name} Suffers ${maxDNFs} DNFs`,
+                            content: `${unluckyDriver.name} (${unluckyDriver.team}) has been plagued by reliability issues this season, failing to finish ${maxDNFs} races. Despite the setbacks, they currently sit ${unluckyDriver.position}${unluckyDriver.position === 1 ? 'st' : unluckyDriver.position === 2 ? 'nd' : unluckyDriver.position === 3 ? 'rd' : 'th'} in the championship, showing what could have been with better luck.`,
+                            type: 'reliability'
+                        });
+                    }
+                }
+            }
+            
+            // RACE DAY SPECIALIST (gains positions on race day vs qualifying)
+            if (completedRaces.length >= 5) {
+                const raceVsQuali = {};
+                completedRaces.forEach(race => {
+                    if (race.grid && race.results) {
+                        race.results.forEach(result => {
+                            const gridPos = race.grid.find(g => g.driverId == result.driverId);
+                            if (gridPos && result.position <= 20) {
+                                const gained = gridPos.position - result.position;
+                                if (!raceVsQuali[result.driverId]) {
+                                    raceVsQuali[result.driverId] = { total: 0, races: 0 };
+                                }
+                                raceVsQuali[result.driverId].total += gained;
+                                raceVsQuali[result.driverId].races += 1;
+                            }
+                        });
+                    }
+                });
+                
+                let bestAvgGain = 0;
+                let specialistId = null;
+                Object.entries(raceVsQuali).forEach(([driverId, stats]) => {
+                    const avg = stats.total / stats.races;
+                    if (avg > bestAvgGain && stats.races >= 3) {
+                        bestAvgGain = avg;
+                        specialistId = driverId;
+                    }
+                });
+                
+                if (bestAvgGain >= 2) {
+                    const specialist = calculatedDriverStats.find(d => d.id == specialistId);
+                    if (specialist) {
+                        articles.push({
+                            title: `Sunday Warrior: ${specialist.name} Averages ${bestAvgGain.toFixed(1)} Positions Gained Per Race`,
+                            content: `${specialist.name} (${specialist.team}) has proven to be a race day specialist, averaging ${bestAvgGain.toFixed(1)} positions gained from grid to finish. While Saturday pace may not be there, Sunday racecraft has been exceptional.`,
+                            type: 'race-specialist'
+                        });
+                    }
+                }
+            }
+            
+            // MOMENTUM SHIFT (biggest points swing in last 3 races)
+            if (completedRaces.length >= 5) {
+                const recentRaces = completedRaces.slice(-3);
+                const pointsChange = {};
+                
+                calculatedDriverStats.forEach(driver => {
+                    let recentPoints = 0;
+                    recentRaces.forEach(race => {
+                        const result = race.results?.find(r => r.driverId == driver.id);
+                        if (result) {
+                            recentPoints += result.points || 0;
+                        }
+                    });
+                    pointsChange[driver.id] = recentPoints;
+                });
+                
+                let maxRecentPoints = 0;
+                let hotDriverId = null;
+                Object.entries(pointsChange).forEach(([driverId, points]) => {
+                    if (points > maxRecentPoints) {
+                        maxRecentPoints = points;
+                        hotDriverId = driverId;
+                    }
+                });
+                
+                if (maxRecentPoints >= maxPointsPerRace * 2) { // At least 2 race wins worth
+                    const hotDriver = calculatedDriverStats.find(d => d.id == hotDriverId);
+                    if (hotDriver) {
+                        articles.push({
+                            title: `Momentum Shift: ${hotDriver.name} Scores ${maxRecentPoints} Points in Last 3 Races`,
+                            content: `${hotDriver.name} (${hotDriver.team}) has found incredible form, scoring ${maxRecentPoints} points across the last three races. This surge has propelled them to ${hotDriver.position}${hotDriver.position === 1 ? 'st' : hotDriver.position === 2 ? 'nd' : hotDriver.position === 3 ? 'rd' : 'th'} in the championship and makes them a serious contender moving forward.`,
+                            type: 'momentum'
+                        });
+                    }
+                }
+            }
+            
+            // PODIUM STREAK
+            if (completedRaces.length >= 3) {
+                let longestPodiumStreak = 0;
+                let podiumStreakDriver = null;
+                
+                calculatedDriverStats.forEach(driver => {
+                    let currentStreak = 0;
+                    for (let i = completedRaces.length - 1; i >= 0; i--) {
+                        const race = completedRaces[i];
+                        const driverResult = race.results?.find(r => r.driverId == driver.id);
+                        if (driverResult && driverResult.position <= 3) {
+                            currentStreak++;
+                        } else {
+                            break;
+                        }
+                    }
+                    
+                    if (currentStreak > longestPodiumStreak && currentStreak >= 3) {
+                        longestPodiumStreak = currentStreak;
+                        podiumStreakDriver = driver;
+                    }
+                });
+                
+                if (podiumStreakDriver && longestPodiumStreak >= 3) {
+                    articles.push({
+                        title: `Podium Machine: ${podiumStreakDriver.name} Extends Streak to ${longestPodiumStreak} Consecutive Podiums`,
+                        content: `${podiumStreakDriver.name} (${podiumStreakDriver.team}) has been unstoppable, finishing on the podium in the last ${longestPodiumStreak} consecutive races. This remarkable consistency has them ${podiumStreakDriver.position === 1 ? 'leading' : podiumStreakDriver.position === 2 ? 'second in' : 'challenging for'} the championship with ${podiumStreakDriver.points} points.`,
+                        type: 'podium-streak'
+                    });
+                }
+            }
+            
+            // QUALIFYING SLUMP (recent poor qualifying compared to earlier season)
+            if (completedRaces.length >= 6) {
+                const recentRaces = completedRaces.slice(-3);
+                const earlierRaces = completedRaces.slice(0, Math.min(3, completedRaces.length - 3));
+                
+                calculatedDriverStats.slice(0, 10).forEach(driver => {
+                    let recentAvgGrid = 0;
+                    let recentCount = 0;
+                    let earlyAvgGrid = 0;
+                    let earlyCount = 0;
+                    
+                    recentRaces.forEach(race => {
+                        const gridPos = race.grid?.find(g => g.driverId == driver.id);
+                        if (gridPos) {
+                            recentAvgGrid += gridPos.position;
+                            recentCount++;
+                        }
+                    });
+                    
+                    earlierRaces.forEach(race => {
+                        const gridPos = race.grid?.find(g => g.driverId == driver.id);
+                        if (gridPos) {
+                            earlyAvgGrid += gridPos.position;
+                            earlyCount++;
+                        }
+                    });
+                    
+                    if (recentCount > 0 && earlyCount > 0) {
+                        recentAvgGrid /= recentCount;
+                        earlyAvgGrid /= earlyCount;
+                        
+                        const dropOff = recentAvgGrid - earlyAvgGrid;
+                        if (dropOff >= 4 && !articles.find(a => a.type === 'qualifying-slump')) {
+                            articles.push({
+                                title: `Saturday Struggles: ${driver.name} Facing Qualifying Woes`,
+                                content: `${driver.name} (${driver.team}) has struggled on Saturdays recently, with an average grid position of ${recentAvgGrid.toFixed(1)} in the last three races compared to ${earlyAvgGrid.toFixed(1)} earlier in the season. Despite the qualifying troubles, Sunday race pace has kept them ${driver.position}${driver.position === 1 ? 'st' : driver.position === 2 ? 'nd' : driver.position === 3 ? 'rd' : 'th'} in the standings.`,
+                                type: 'qualifying-slump'
+                            });
+                        }
+                    }
+                });
+            }
+            
+            // PERFECT SEASON WATCH (finished every race)
+            if (completedRaces.length >= 5) {
+                const perfectDrivers = calculatedDriverStats.filter(driver => {
+                    let finishedAll = true;
+                    completedRaces.forEach(race => {
+                        const result = race.results?.find(r => r.driverId == driver.id);
+                        if (!result || (result.status && result.status.toLowerCase().includes('dnf'))) {
+                            finishedAll = false;
+                        }
+                    });
+                    return finishedAll && driver.points >= 50;
+                });
+                
+                if (perfectDrivers.length > 0 && perfectDrivers.length <= 3) {
+                    const topPerfect = perfectDrivers[0];
+                    articles.push({
+                        title: `Perfect Record: ${topPerfect.name} Finishes Every Race`,
+                        content: `${topPerfect.name} (${topPerfect.team}) has maintained a perfect reliability record, finishing all ${completedRaces.length} races this season. This consistency has been crucial to their championship push, currently sitting ${topPerfect.position}${topPerfect.position === 1 ? 'st' : topPerfect.position === 2 ? 'nd' : topPerfect.position === 3 ? 'rd' : 'th'} with ${topPerfect.points} points.`,
+                        type: 'perfect-season'
+                    });
+                }
+            }
+            
+            // POSITION BATTLE (close fight for specific championship position)
+            if (completedRaces.length >= 4 && calculatedDriverStats.length >= 5) {
+                for (let pos = 3; pos <= 5; pos++) {
+                    if (calculatedDriverStats[pos] && calculatedDriverStats[pos + 1]) {
+                        const gap = calculatedDriverStats[pos].points - calculatedDriverStats[pos + 1].points;
+                        if (gap <= 10 && gap >= 0) {
+                            const driver1 = calculatedDriverStats[pos];
+                            const driver2 = calculatedDriverStats[pos + 1];
+                            articles.push({
+                                title: `Battle for ${pos + 1}${pos + 1 === 3 ? 'rd' : pos + 1 === 4 ? 'th' : 'th'}: ${driver1.name} and ${driver2.name} Locked in Fight`,
+                                content: `A fierce battle for ${pos + 1}${pos + 1 === 3 ? 'rd' : 'th'} place is unfolding as ${driver1.name} (${driver1.team}) holds just a ${gap}-point advantage over ${driver2.name} (${driver2.team}). With ${upcomingRaces.length} race${upcomingRaces.length !== 1 ? 's' : ''} remaining, this position fight is far from over.`,
+                                type: 'position-battle'
+                            });
+                            break; // Only show one position battle
+                        }
+                    }
+                }
+            }
+            
+            // GIANT SLAYER (lower team beating bigger team)
+            if (completedRaces.length >= 4 && calculatedTeamStats.length >= 3) {
+                // Look for a team in 3rd-5th beating a team ahead of them in a recent race
+                const midPackTeams = calculatedTeamStats.slice(2, 5);
+                const topTeams = calculatedTeamStats.slice(0, 2);
+                
+                if (completedRaces.length > 0) {
+                    const lastRace = completedRaces[completedRaces.length - 1];
+                    midPackTeams.forEach(midTeam => {
+                        const midDrivers = calculatedDriverStats.filter(d => d.team === midTeam.name);
+                        const midBestResult = Math.min(...midDrivers.map(d => {
+                            const result = lastRace.results?.find(r => r.driverId == d.id);
+                            return result ? result.position : 999;
+                        }));
+                        
+                        topTeams.forEach(topTeam => {
+                            const topDrivers = calculatedDriverStats.filter(d => d.team === topTeam.name);
+                            const topBestResult = Math.min(...topDrivers.map(d => {
+                                const result = lastRace.results?.find(r => r.driverId == d.id);
+                                return result ? result.position : 999;
+                            }));
+                            
+                            if (midBestResult < topBestResult && midBestResult <= 5) {
+                                if (!articles.find(a => a.type === 'giant-slayer')) {
+                                    articles.push({
+                                        title: `Giant Slayer: ${midTeam.name} Outpaces ${topTeam.name} at ${lastRace.name}`,
+                                        content: `${midTeam.name} pulled off an impressive performance at ${lastRace.location}, finishing ahead of championship contenders ${topTeam.name}. Despite being ${calculatedTeamStats.findIndex(t => t.name === midTeam.name) + 1}${calculatedTeamStats.findIndex(t => t.name === midTeam.name) + 1 === 3 ? 'rd' : 'th'} in the constructor standings, ${midTeam.name} proved they can compete with the best.`,
+                                        type: 'giant-slayer'
+                                    });
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+            
+            // DNF STREAK BROKEN
+            if (completedRaces.length >= 3) {
+                calculatedDriverStats.forEach(driver => {
+                    const lastRace = completedRaces[completedRaces.length - 1];
+                    const lastResult = lastRace.results?.find(r => r.driverId == driver.id);
+                    
+                    if (lastResult && lastResult.position <= 20) {
+                        // Check if they had DNFs in previous races
+                        let consecutiveDNFs = 0;
+                        for (let i = completedRaces.length - 2; i >= 0 && i >= completedRaces.length - 4; i--) {
+                            const race = completedRaces[i];
+                            const result = race.results?.find(r => r.driverId == driver.id);
+                            if (result && result.status && result.status.toLowerCase().includes('dnf')) {
+                                consecutiveDNFs++;
+                            } else {
+                                break;
+                            }
+                        }
+                        
+                        if (consecutiveDNFs >= 2 && !articles.find(a => a.type === 'dnf-broken')) {
+                            articles.push({
+                                title: `Back in Action: ${driver.name} Breaks DNF Streak with ${lastRace.name} Finish`,
+                                content: `${driver.name} (${driver.team}) finally crossed the finish line at ${lastRace.location} after ${consecutiveDNFs} consecutive DNFs. Finishing ${lastResult.position}${lastResult.position === 1 ? 'st' : lastResult.position === 2 ? 'nd' : lastResult.position === 3 ? 'rd' : 'th'}, this result brings much-needed relief to the team and keeps their championship hopes alive.`,
+                                type: 'dnf-broken'
+                            });
+                        }
+                    }
+                });
+            }
+            
+            // CAREER MILESTONE APPROACHING
+            if (completedRaces.length >= 3) {
+                calculatedDriverStats.forEach(driver => {
+                    // Check for milestone wins (approaching 5, 10, 25, 50)
+                    const milestones = [5, 10, 25, 50, 100];
+                    milestones.forEach(milestone => {
+                        if (driver.wins === milestone - 1 && !articles.find(a => a.type === 'milestone')) {
+                            articles.push({
+                                title: `Milestone Watch: ${driver.name} One Win Away from ${milestone} Career Victories`,
+                                content: `${driver.name} (${driver.team}) stands on the brink of history, needing just one more victory to reach the ${milestone}-win milestone. Currently ${driver.position}${driver.position === 1 ? 'st' : driver.position === 2 ? 'nd' : driver.position === 3 ? 'rd' : 'th'} in the championship, the next race could be a momentous occasion.`,
+                                type: 'milestone'
+                            });
+                        }
+                    });
+                    
+                    // Check for milestone podiums
+                    const podiumMilestones = [25, 50, 100];
+                    podiumMilestones.forEach(milestone => {
+                        if (driver.podiums === milestone - 1 && !articles.find(a => a.type === 'milestone')) {
+                            articles.push({
+                                title: `Career Milestone: ${driver.name} One Podium from ${milestone}th Career Podium`,
+                                content: `With ${driver.podiums} career podiums, ${driver.name} (${driver.team}) is poised to reach the ${milestone}-podium mark in the next race. A testament to years of consistent excellence at the highest level.`,
+                                type: 'milestone'
+                            });
+                        }
+                    });
+                });
+            }
+            
             // NEXT RACE PREVIEW
             if (upcomingRaces.length > 0) {
                 const nextRace = upcomingRaces[0];
@@ -3000,19 +3769,287 @@
                 });
             }
             
+            // FRONT ROW LOCKOUT (team starting 1-2)
+            if (completedRaces.length > 0) {
+                const lastRace = completedRaces[completedRaces.length - 1];
+                if (lastRace.grid && lastRace.grid.length >= 2) {
+                    const pole = lastRace.grid[0];
+                    const second = lastRace.grid[1];
+                    const poleDriver = racingData.drivers.find(d => d.id == pole.driverId);
+                    const secondDriver = racingData.drivers.find(d => d.id == second.driverId);
+                    
+                    if (poleDriver && secondDriver && poleDriver.team === secondDriver.team) {
+                        if (!articles.find(a => a.type === 'front-row-lockout')) {
+                            articles.push({
+                                title: `Front Row Domination: ${poleDriver.team} Locks Out Front Row at ${lastRace.name}`,
+                                content: `${poleDriver.team} achieved a stunning front row lockout at ${lastRace.location}, with ${poleDriver.name} on pole and ${secondDriver.name} in second. This qualifying dominance showcases the team's engineering excellence and sets them up perfectly for race victory.`,
+                                type: 'front-row-lockout'
+                            });
+                        }
+                    }
+                }
+            }
+            
+            // COMEBACK DRIVE OF THE RACE (biggest position gain in last race)
+            if (completedRaces.length > 0) {
+                const lastRace = completedRaces[completedRaces.length - 1];
+                if (lastRace.grid && lastRace.results) {
+                    let biggestGain = 0;
+                    let comebackDriver = null;
+                    
+                    lastRace.results.forEach(result => {
+                        const gridPos = lastRace.grid.find(g => g.driverId == result.driverId);
+                        if (gridPos && result.position <= 20) {
+                            const gain = gridPos.position - result.position;
+                            if (gain > biggestGain) {
+                                biggestGain = gain;
+                                comebackDriver = result.driverId;
+                            }
+                        }
+                    });
+                    
+                    if (biggestGain >= 8) {
+                        const driver = racingData.drivers.find(d => d.id == comebackDriver);
+                        const finalPos = lastRace.results.find(r => r.driverId == comebackDriver).position;
+                        if (driver && !articles.find(a => a.type === 'comeback-drive')) {
+                            articles.push({
+                                title: `Heroic Comeback: ${driver.name} Charges from P${biggestGain + finalPos} to P${finalPos}`,
+                                content: `${driver.name} (${driver.team}) delivered the drive of the race at ${lastRace.location}, gaining ${biggestGain} positions to finish ${finalPos}${finalPos === 1 ? 'st' : finalPos === 2 ? 'nd' : finalPos === 3 ? 'rd' : 'th'}. This spectacular comeback showcased incredible racecraft and determination.`,
+                                type: 'comeback-drive'
+                            });
+                        }
+                    }
+                }
+            }
+            
+            // YOUNGEST PODIUM FINISHER
+            if (completedRaces.length >= 3) {
+                const youngDrivers = racingData.drivers.filter(d => d.age && d.age < 25);
+                youngDrivers.forEach(youngDriver => {
+                    const driverStats = calculatedDriverStats.find(d => d.id == youngDriver.id);
+                    if (driverStats && driverStats.podiums >= 1 && !articles.find(a => a.type === 'youth-podium')) {
+                        articles.push({
+                            title: `Rising Star: ${youngDriver.age}-Year-Old ${youngDriver.name} Scores ${driverStats.podiums} Podium${driverStats.podiums > 1 ? 's' : ''}`,
+                            content: `At just ${youngDriver.age} years old, ${youngDriver.name} (${youngDriver.team}) has already secured ${driverStats.podiums} podium finish${driverStats.podiums > 1 ? 'es' : ''} this season. The young driver's mature performances have impressed the paddock and suggest a bright future ahead.`,
+                            type: 'youth-podium'
+                        });
+                    }
+                });
+            }
+            
+            // TEAM DOMINANCE (1-2 finish)
+            if (completedRaces.length > 0) {
+                const lastRace = completedRaces[completedRaces.length - 1];
+                if (lastRace.results && lastRace.results.length >= 2) {
+                    const winner = lastRace.results.find(r => r.position === 1);
+                    const second = lastRace.results.find(r => r.position === 2);
+                    
+                    if (winner && second) {
+                        const winnerDriver = racingData.drivers.find(d => d.id == winner.driverId);
+                        const secondDriver = racingData.drivers.find(d => d.id == second.driverId);
+                        
+                        if (winnerDriver && secondDriver && winnerDriver.team === secondDriver.team) {
+                            if (!articles.find(a => a.type === 'one-two-finish')) {
+                                articles.push({
+                                    title: `Perfect Result: ${winnerDriver.team} Scores 1-2 Finish at ${lastRace.name}`,
+                                    content: `${winnerDriver.team} achieved the perfect result at ${lastRace.location}, with ${winnerDriver.name} taking victory ahead of teammate ${secondDriver.name}. The 1-2 finish maximizes constructor points and demonstrates total team dominance.`,
+                                    type: 'one-two-finish'
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // VETERAN VS ROOKIE BATTLE
+            if (completedRaces.length >= 4) {
+                const veterans = racingData.drivers.filter(d => d.age && d.age >= 35);
+                const rookies = racingData.drivers.filter(d => d.age && d.age <= 23);
+                
+                veterans.forEach(vet => {
+                    const vetStats = calculatedDriverStats.find(d => d.id == vet.id);
+                    rookies.forEach(rookie => {
+                        const rookieStats = calculatedDriverStats.find(d => d.id == rookie.id);
+                        
+                        if (vetStats && rookieStats && Math.abs(vetStats.points - rookieStats.points) <= 15) {
+                            if (!articles.find(a => a.type === 'veteran-rookie')) {
+                                articles.push({
+                                    title: `Experience vs Youth: ${vet.age}-Year-Old ${vet.name} Battles ${rookie.age}-Year-Old ${rookie.name}`,
+                                    content: `A fascinating generational battle is unfolding between veteran ${vet.name} (${vet.team}) and rookie ${rookie.name} (${rookie.team}). Separated by just ${Math.abs(vetStats.points - rookieStats.points)} points, it's a clash of experience versus youthful exuberance.`,
+                                    type: 'veteran-rookie'
+                                });
+                            }
+                        }
+                    });
+                });
+            }
+            
+            // BAD LUCK STORY (good pace, bad results)
+            if (completedRaces.length >= 5) {
+                calculatedDriverStats.slice(0, 15).forEach(driver => {
+                    let poleCount = 0;
+                    let avgFinish = 0;
+                    let finishCount = 0;
+                    
+                    completedRaces.forEach(race => {
+                        if (race.grid) {
+                            const polePos = race.grid[0];
+                            if (polePos && polePos.driverId == driver.id) poleCount++;
+                        }
+                        if (race.results) {
+                            const result = race.results.find(r => r.driverId == driver.id);
+                            if (result && result.position <= 20) {
+                                avgFinish += result.position;
+                                finishCount++;
+                            }
+                        }
+                    });
+                    
+                    if (finishCount > 0) avgFinish /= finishCount;
+                    
+                    // Good qualifying (2+ poles) but poor avg finish (8+)
+                    if (poleCount >= 2 && avgFinish >= 8 && !articles.find(a => a.type === 'bad-luck')) {
+                        articles.push({
+                            title: `What Could Have Been: ${driver.name}'s Speed Not Translating to Results`,
+                            content: `Despite showing strong pace with ${poleCount} pole position${poleCount > 1 ? 's' : ''}, ${driver.name} (${driver.team}) has averaged only a ${avgFinish.toFixed(1)} finish position. Mechanical issues and racing incidents have plagued what should be a much stronger championship campaign.`,
+                            type: 'bad-luck'
+                        });
+                    }
+                });
+            }
+            
+            // STRATEGY MASTERCLASS (won from outside top 3 on grid)
+            if (completedRaces.length > 0) {
+                const lastRace = completedRaces[completedRaces.length - 1];
+                if (lastRace.grid && lastRace.results) {
+                    const winner = lastRace.results.find(r => r.position === 1);
+                    if (winner) {
+                        const gridPos = lastRace.grid.find(g => g.driverId == winner.driverId);
+                        if (gridPos && gridPos.position > 3) {
+                            const driver = racingData.drivers.find(d => d.id == winner.driverId);
+                            if (driver && !articles.find(a => a.type === 'strategy-win')) {
+                                articles.push({
+                                    title: `Tactical Triumph: ${driver.name} Wins from P${gridPos.position} with Strategic Brilliance`,
+                                    content: `${driver.name} (${driver.team}) pulled off a strategic masterclass at ${lastRace.location}, converting a P${gridPos.position} grid position into race victory. Perfectly timed pit stops and aggressive racecraft made this unlikely triumph possible.`,
+                                    type: 'strategy-win'
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // HOME HERO (driver won at home circuit - check if nationality matches location)
+            if (completedRaces.length > 0) {
+                const lastRace = completedRaces[completedRaces.length - 1];
+                if (lastRace.results) {
+                    const winner = lastRace.results.find(r => r.position === 1);
+                    if (winner) {
+                        const driver = racingData.drivers.find(d => d.id == winner.driverId);
+                        // Check if race location contains driver's nationality or vice versa
+                        if (driver && lastRace.location && 
+                            (lastRace.location.toLowerCase().includes(driver.nationality.toLowerCase()) || 
+                             driver.nationality.toLowerCase().includes(lastRace.location.toLowerCase()))) {
+                            if (!articles.find(a => a.type === 'home-hero')) {
+                                articles.push({
+                                    title: `Home Glory: ${driver.name} Wins ${lastRace.name} in Front of Home Crowd`,
+                                    content: `${driver.name} (${driver.team}) delivered a dream result at ${lastRace.location}, taking victory in front of a passionate home crowd. The emotional win adds another chapter to this circuit's legendary history.`,
+                                    type: 'home-hero'
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            
             // RECORDS BROKEN
             const recordsCount = calculateRecordsBroken();
             if (recordsCount > 0) {
                 articles.push({
                     title: `${recordsCount} Record${recordsCount !== 1 ? 's' : ''} Broken This Season`,
                     content: `The ${racingData.season.year} season has already seen ${recordsCount} championship record${recordsCount !== 1 ? 's' : ''} broken. Click here to see which drivers and teams have etched their names into the history books.`,
-                    type: 'records'
+                    type: 'records',
+                    priority: 3
                 });
             }
             
-            // Render articles (limit to 6 most relevant)
+            // Prioritize articles: 1 = always show first, 2 = show early, 3 = normal, 4 = can be randomized
+            // Add priority to all articles (default to 4 if not set)
+            articles.forEach(article => {
+                if (!article.priority) article.priority = 4;
+            });
+            
+            // Set priorities for important article types
+            articles.forEach(article => {
+                if (['champion-crowned', 'constructor-champion', 'season-review'].includes(article.type)) {
+                    article.priority = 1; // End of season - always show first
+                } else if (['championship', 'clinch-scenarios', 'finale-scenarios', 'tight-battle'].includes(article.type)) {
+                    article.priority = 2; // Championship critical
+                } else if (['race-recap', 'preview'].includes(article.type)) {
+                    article.priority = 3; // Always relevant
+                }
+            });
+            
+            // Sort by priority first
+            articles.sort((a, b) => a.priority - b.priority);
+            
+            // Randomize articles with priority 4 (keep priority 1-3 in order)
+            const priorityArticles = articles.filter(a => a.priority <= 3);
+            const randomizableArticles = articles.filter(a => a.priority === 4);
+            
+            // Shuffle randomizable articles
+            for (let i = randomizableArticles.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [randomizableArticles[i], randomizableArticles[j]] = [randomizableArticles[j], randomizableArticles[i]];
+            }
+            
+            // Combine: priority articles first, then randomized
+            let finalArticles = [...priorityArticles, ...randomizableArticles];
+            
+            // Deduplicate: limit to max 2 articles per driver (based on primary driver mention)
+            const driverArticleCount = {};
+            const deduplicatedArticles = [];
+            
+            finalArticles.forEach(article => {
+                // Extract PRIMARY driver from title (first driver name mentioned)
+                const driverNames = calculatedDriverStats.map(d => d.name);
+                let primaryDriver = null;
+                
+                // Find first driver name in title
+                for (let driverName of driverNames) {
+                    if (article.title.includes(driverName)) {
+                        primaryDriver = driverName;
+                        break;
+                    }
+                }
+                
+                // If no driver in title, check content
+                if (!primaryDriver) {
+                    for (let driverName of driverNames) {
+                        if (article.content.includes(driverName)) {
+                            primaryDriver = driverName;
+                            break;
+                        }
+                    }
+                }
+                
+                // Check if this driver has reached the limit (2 articles max)
+                const currentCount = driverArticleCount[primaryDriver] || 0;
+                
+                // Always add if no primary driver (team/general articles) or under limit
+                if (!primaryDriver || currentCount < 2) {
+                    if (primaryDriver) {
+                        driverArticleCount[primaryDriver] = currentCount + 1;
+                    }
+                    deduplicatedArticles.push(article);
+                }
+            });
+            
+            finalArticles = deduplicatedArticles;
+            
+            // Render articles (limit to 9 most relevant)
             newsArticles.innerHTML = '';
-            articles.slice(0, 6).forEach((article, index) => {
+            finalArticles.slice(0, 9).forEach((article, index) => {
                 const typeColors = {
                     'championship': 'var(--accent-yellow)',
                     'race-recap': 'var(--primary-red)',
@@ -3031,7 +4068,32 @@
                     'points-streak': '#32CD32',
                     'pole-specialist': '#1E90FF',
                     'consistency': '#20B2AA',
-                    'elimination': '#DC143C'
+                    'elimination': '#DC143C',
+                    'champion-crowned': '#FFD700',
+                    'constructor-champion': '#00A19B',
+                    'season-review': '#4169E1',
+                    'breakout-star': '#FF1493',
+                    'championship-margin': '#FFA500',
+                    'fastest-lap': '#8A2BE2',
+                    'overtaking': '#FF4500',
+                    'reliability': '#B22222',
+                    'race-specialist': '#3CB371',
+                    'momentum': '#FF6347',
+                    'podium-streak': '#00CED1',
+                    'qualifying-slump': '#CD5C5C',
+                    'perfect-season': '#98FB98',
+                    'position-battle': '#FF8C00',
+                    'giant-slayer': '#BA55D3',
+                    'dnf-broken': '#90EE90',
+                    'milestone': '#DAA520',
+                    'front-row-lockout': '#4682B4',
+                    'comeback-drive': '#FF6347',
+                    'youth-podium': '#FFB6C1',
+                    'one-two-finish': '#2E8B57',
+                    'veteran-rookie': '#DDA0DD',
+                    'bad-luck': '#696969',
+                    'strategy-win': '#4169E1',
+                    'home-hero': '#FFD700'
                 };
                 
                 newsArticles.innerHTML += `
@@ -3180,9 +4242,10 @@
 
         // Update header with season info
         function updateHeader() {
-            const completedRaces = racingData.races.filter(r => r.status === 'completed').length;
-            document.getElementById('seasonYearDisplay').textContent = `${racingData.season.year} SEASON`;
-            document.getElementById('raceCountDisplay').textContent = `${racingData.season.totalRaces} RACES`;
+            // Header elements removed - now using fixed top nav
+            // const completedRaces = racingData.races.filter(r => r.status === 'completed').length;
+            // document.getElementById('seasonYearDisplay').textContent = `${racingData.season.year} SEASON`;
+            // document.getElementById('raceCountDisplay').textContent = `${racingData.season.totalRaces} RACES`;
         }
 
         // Update driver standings table
@@ -9478,15 +10541,34 @@
             const contents = document.querySelectorAll('.tab-content');
             contents.forEach(content => content.classList.remove('active'));
             
-            // Remove active class from all tabs
+            // Remove active class from all tabs (both old nav and top nav)
             const tabs = document.querySelectorAll('.tab');
             tabs.forEach(tab => tab.classList.remove('active'));
+            
+            const topNavTabs = document.querySelectorAll('.top-nav-tab');
+            topNavTabs.forEach(tab => tab.classList.remove('active'));
             
             // Show selected tab content
             document.getElementById(tabName).classList.add('active');
             
-            // Add active class to clicked tab
-            event.target.classList.add('active');
+            // Add active class to corresponding top nav tab
+            const activeTopNavTab = document.querySelector(`.top-nav-tab[data-tab="${tabName}"]`);
+            if (activeTopNavTab) {
+                activeTopNavTab.classList.add('active');
+            }
+            
+            // Close mobile menu if open
+            const mobileNav = document.getElementById('topNavTabs');
+            if (mobileNav) {
+                mobileNav.classList.remove('active');
+            }
+        }
+        
+        function toggleMobileNav() {
+            const mobileNav = document.getElementById('topNavTabs');
+            if (mobileNav) {
+                mobileNav.classList.toggle('active');
+            }
         }
 
         // Load data when page loads
