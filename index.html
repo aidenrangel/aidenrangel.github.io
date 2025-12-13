@@ -2220,6 +2220,24 @@
                         </table>
                     </div>
                 </div>
+
+                <div class="records-table-wrapper">
+                    <div class="standings-table" id="recordsSameGPWinsTable">
+                        <div class="table-header" onclick="openRecordsModal('sameGPWins')" style="cursor: pointer;">MOST WINS AT SAME GRAND PRIX</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>POS</th>
+                                    <th>DRIVER</th>
+                                    <th>GRAND PRIX</th>
+                                    <th>WINS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recordsSameGPWinsBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <!-- Constructor Records -->
@@ -2450,6 +2468,24 @@
                                 </tr>
                             </thead>
                             <tbody id="constructorEarliestClinchBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="records-table-wrapper">
+                    <div class="standings-table" id="constructorSameGPWinsTable">
+                        <div class="table-header" onclick="openRecordsModal('constructorSameGPWins')" style="cursor: pointer;">MOST WINS AT SAME GRAND PRIX</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>POS</th>
+                                    <th>CONSTRUCTOR</th>
+                                    <th>GRAND PRIX</th>
+                                    <th>WINS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="constructorSameGPWinsBody">
                             </tbody>
                         </table>
                     </div>
@@ -5064,6 +5100,42 @@
                 }
             }
             
+            // Most Wins at Same Grand Prix
+            const driverGPWins = {};
+            allSeasonsData.seasons.forEach(season => {
+                season.races.forEach(race => {
+                    if (race.status === 'completed' && race.results) {
+                        const winner = race.results.find(r => r.position === 1);
+                        if (winner) {
+                            const winnerId = winner.driverId;
+                            const gpName = race.name;
+                            const key = `${winnerId}-${gpName}`;
+                            if (!driverGPWins[key]) {
+                                driverGPWins[key] = {
+                                    driverId: winnerId,
+                                    gpName: gpName,
+                                    wins: 0
+                                };
+                            }
+                            driverGPWins[key].wins++;
+                        }
+                    }
+                });
+            });
+            
+            // Find max wins at any GP by any driver
+            let maxGPWins = 0;
+            Object.values(driverGPWins).forEach(record => {
+                maxGPWins = Math.max(maxGPWins, record.wins);
+            });
+            
+            // Check if this driver holds the record
+            Object.values(driverGPWins).forEach(record => {
+                if (record.driverId == driverId && record.wins === maxGPWins && maxGPWins > 1) {
+                    records.push({ name: 'Most Wins at ' + record.gpName, value: record.wins + ' wins' });
+                }
+            });
+            
             return records;
         }
 
@@ -5343,6 +5415,46 @@
                     records.push({ name: 'Fewest Races to Secure Championship', value: fewestRaces + ' races (' + fewestRacesSeason + ')' });
                 }
             }
+            
+            // Most Wins at Same Grand Prix
+            const constructorGPWins = {};
+            allSeasonsData.seasons.forEach(season => {
+                season.races.forEach(race => {
+                    if (race.status === 'completed' && race.results) {
+                        const winner = race.results.find(r => r.position === 1);
+                        if (winner) {
+                            const driverId = winner.driverId;
+                            const driver = season.drivers.find(d => d.id == driverId);
+                            if (driver) {
+                                const team = driver.team;
+                                const gpName = race.name;
+                                const key = `${team}-${gpName}`;
+                                if (!constructorGPWins[key]) {
+                                    constructorGPWins[key] = {
+                                        teamName: team,
+                                        gpName: gpName,
+                                        wins: 0
+                                    };
+                                }
+                                constructorGPWins[key].wins++;
+                            }
+                        }
+                    }
+                });
+            });
+            
+            // Find max wins at any GP by any constructor
+            let maxGPWins = 0;
+            Object.values(constructorGPWins).forEach(record => {
+                maxGPWins = Math.max(maxGPWins, record.wins);
+            });
+            
+            // Check if this constructor holds the record
+            Object.values(constructorGPWins).forEach(record => {
+                if (record.teamName === teamName && record.wins === maxGPWins && maxGPWins > 1) {
+                    records.push({ name: 'Most Wins at ' + record.gpName, value: record.wins + ' wins' });
+                }
+            });
             
             return records;
         }
@@ -9149,6 +9261,93 @@
                 constructorEarliestClinchBody.appendChild(row);
             });
             
+            // Most Wins at Same Grand Prix - DRIVERS
+            const driverGPWins = {};
+            allSeasonsData.seasons.forEach(season => {
+                season.races.forEach(race => {
+                    if (race.status === 'completed' && race.results) {
+                        const winner = race.results.find(r => r.position === 1);
+                        if (winner) {
+                            const driverId = winner.driverId;
+                            const gpName = race.name;
+                            const key = `${driverId}-${gpName}`;
+                            if (!driverGPWins[key]) {
+                                const driver = season.drivers.find(d => d.id == driverId);
+                                driverGPWins[key] = {
+                                    driverName: driver ? driver.name : 'Unknown',
+                                    gpName: gpName,
+                                    wins: 0
+                                };
+                            }
+                            driverGPWins[key].wins++;
+                        }
+                    }
+                });
+            });
+            
+            const driverGPWinsArray = Object.values(driverGPWins).sort((a, b) => b.wins - a.wins).slice(0, 10);
+            const recordsSameGPWinsBody = document.getElementById('recordsSameGPWinsBody');
+            recordsSameGPWinsBody.innerHTML = '';
+            
+            driverGPWinsArray.forEach((record, index) => {
+                const row = document.createElement('tr');
+                if (index >= 5) row.classList.add('records-row-hidden');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>
+                        <div class="driver-name">${record.driverName}</div>
+                    </td>
+                    <td>${record.gpName}</td>
+                    <td><span class="points">${record.wins}</span></td>
+                `;
+                recordsSameGPWinsBody.appendChild(row);
+            });
+            
+            // Most Wins at Same Grand Prix - CONSTRUCTORS
+            const constructorGPWins = {};
+            allSeasonsData.seasons.forEach(season => {
+                season.races.forEach(race => {
+                    if (race.status === 'completed' && race.results) {
+                        const winner = race.results.find(r => r.position === 1);
+                        if (winner) {
+                            const driverId = winner.driverId;
+                            const driver = season.drivers.find(d => d.id == driverId);
+                            if (driver) {
+                                const teamName = driver.team;
+                                const gpName = race.name;
+                                const key = `${teamName}-${gpName}`;
+                                if (!constructorGPWins[key]) {
+                                    constructorGPWins[key] = {
+                                        teamName: teamName,
+                                        gpName: gpName,
+                                        wins: 0
+                                    };
+                                }
+                                constructorGPWins[key].wins++;
+                            }
+                        }
+                    }
+                });
+            });
+            
+            const constructorGPWinsArray = Object.values(constructorGPWins).sort((a, b) => b.wins - a.wins).slice(0, 10);
+            const constructorSameGPWinsBody = document.getElementById('constructorSameGPWinsBody');
+            constructorSameGPWinsBody.innerHTML = '';
+            
+            constructorGPWinsArray.forEach((record, index) => {
+                const row = document.createElement('tr');
+                if (index >= 5) row.classList.add('records-row-hidden');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>
+                        <div class="driver-name">${record.teamName}</div>
+                    </td>
+                    <td>${record.gpName}</td>
+                    <td><span class="points">${record.wins}</span></td>
+                `;
+                constructorSameGPWinsBody.appendChild(row);
+            });
+            
             console.log('updateRecords completed successfully');
             } catch (error) {
                 console.error('ERROR in updateRecords:', error);
@@ -9894,6 +10093,79 @@
                     position: null,
                     driver: calculatedDriverStats.find(d => d.id == record.championId),
                     values: [record.championName, record.clinchRace, record.remainingRaces, record.season]
+                }));
+            } else if (recordType === 'sameGPWins') {
+                title = 'MOST WINS AT SAME GRAND PRIX (ALL-TIME)';
+                headers = ['POS', 'DRIVER', 'GRAND PRIX', 'WINS'];
+                
+                const driverGPWins = {};
+                allSeasonsData.seasons.forEach(season => {
+                    season.races.forEach(race => {
+                        if (race.status === 'completed' && race.results) {
+                            const winner = race.results.find(r => r.position === 1);
+                            if (winner) {
+                                const driverId = winner.driverId;
+                                const gpName = race.name;
+                                const key = `${driverId}-${gpName}`;
+                                if (!driverGPWins[key]) {
+                                    const driver = season.drivers.find(d => d.id == driverId);
+                                    driverGPWins[key] = {
+                                        driverId: driverId,
+                                        driverName: driver ? driver.name : 'Unknown',
+                                        gpName: gpName,
+                                        wins: 0
+                                    };
+                                }
+                                driverGPWins[key].wins++;
+                            }
+                        }
+                    });
+                });
+                
+                const driverGPWinsArray = Object.values(driverGPWins).sort((a, b) => b.wins - a.wins);
+                
+                data = driverGPWinsArray.map((record, index) => ({
+                    position: index + 1,
+                    driver: calculatedDriverStats.find(d => d.id == record.driverId),
+                    values: [record.driverName, record.gpName, record.wins]
+                }));
+            } else if (recordType === 'constructorSameGPWins') {
+                title = 'MOST WINS AT SAME GRAND PRIX (ALL-TIME)';
+                headers = ['POS', 'CONSTRUCTOR', 'GRAND PRIX', 'WINS'];
+                
+                const constructorGPWins = {};
+                allSeasonsData.seasons.forEach(season => {
+                    season.races.forEach(race => {
+                        if (race.status === 'completed' && race.results) {
+                            const winner = race.results.find(r => r.position === 1);
+                            if (winner) {
+                                const driverId = winner.driverId;
+                                const driver = season.drivers.find(d => d.id == driverId);
+                                if (driver) {
+                                    const teamName = driver.team;
+                                    const gpName = race.name;
+                                    const key = `${teamName}-${gpName}`;
+                                    if (!constructorGPWins[key]) {
+                                        constructorGPWins[key] = {
+                                            teamName: teamName,
+                                            gpName: gpName,
+                                            wins: 0
+                                        };
+                                    }
+                                    constructorGPWins[key].wins++;
+                                }
+                            }
+                        }
+                    });
+                });
+                
+                const constructorGPWinsArray = Object.values(constructorGPWins).sort((a, b) => b.wins - a.wins);
+                
+                data = constructorGPWinsArray.map((record, index) => ({
+                    position: index + 1,
+                    driver: null,
+                    team: calculatedTeamStats.find(t => t.name === record.teamName),
+                    values: [record.teamName, record.gpName, record.wins]
                 }));
             } else if (recordType === 'constructorTotalRaces') {
                 title = 'TOTAL RACES (ALL-TIME)';
