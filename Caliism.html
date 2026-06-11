@@ -36,6 +36,9 @@ a{color:inherit;text-decoration:none}
 a:focus-visible,button:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:2px}
 .wrap{max-width:1180px;margin:0 auto;padding:0 28px}
 
+[data-page]{display:none}
+[data-page].active{display:block}
+
 /* ---------- top status bar ---------- */
 .statusbar{border-bottom:1px solid var(--line);background:#0B0E12;font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--faint)}
 .statusbar .wrap{display:flex;justify-content:space-between;align-items:center;height:34px}
@@ -84,7 +87,7 @@ h1 .zero{color:var(--amber);position:relative}
 .hero-trust span{display:flex;align-items:center;gap:8px}
 .hero-trust .tick{color:var(--green)}
 
-/* ---------- the bench (signature) ---------- */
+/* ---------- the bench ---------- */
 .bench{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line2);box-shadow:0 24px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.04);position:relative}
 .bench::before,.bench::after{content:'';position:absolute;width:10px;height:10px;border:2px solid var(--line2);border-radius:50%;top:12px}
 .bench::before{left:12px}.bench::after{right:12px}
@@ -138,7 +141,7 @@ h2{font-family:var(--disp);font-weight:700;font-size:clamp(28px,3.2vw,40px);line
 
 /* ---------- services ---------- */
 .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
-.svc{background:var(--bg);padding:34px 30px 38px;position:relative;transition:background .25s;overflow:hidden}
+.svc{background:var(--bg);padding:34px 30px 38px;position:relative;transition:background .25s;overflow:hidden;display:block}
 .svc:hover{background:var(--panel)}
 .svc::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:var(--amber);transform:scaleX(0);transform-origin:left;transition:transform .3s}
 .svc:hover::before{transform:scaleX(1)}
@@ -169,7 +172,6 @@ h2{font-family:var(--disp);font-weight:700;font-size:clamp(28px,3.2vw,40px);line
 @media(max-width:900px){.offer .wrap{grid-template-columns:1fr;gap:46px}}
 
 /* ---------- process ---------- */
-.proc{counter-reset:step}
 .proc-row{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
 .step{background:var(--bg);padding:30px 24px 34px;position:relative;transition:background .25s}
 .step:hover{background:var(--panel)}
@@ -217,6 +219,67 @@ footer{border-top:1px solid var(--line);background:#0B0E12;padding:30px 0}
 footer .wrap{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11.5px;color:var(--faint);letter-spacing:.04em;flex-wrap:wrap;gap:14px}
 footer a:hover{color:var(--amber)}
 
+/* ================= SERVICE PAGE STYLES ================= */
+.sp-hero{position:relative;padding:70px 0 64px;border-bottom:1px solid var(--line);overflow:hidden}
+.sp-hero::before{content:'';position:absolute;inset:0;background:
+  linear-gradient(rgba(38,45,56,.22) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(38,45,56,.22) 1px,transparent 1px);
+  background-size:44px 44px;mask-image:radial-gradient(ellipse 70% 80% at 80% 20%,#000 25%,transparent 70%)}
+.sp-hero .wrap{position:relative}
+.crumb{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;color:var(--faint);margin-bottom:30px;display:inline-flex;align-items:center;gap:10px}
+.crumb a{color:var(--dim);transition:color .2s}
+.crumb a:hover{color:var(--amber)}
+.sp-hero h1{font-size:clamp(32px,4vw,50px);max-width:760px}
+.sp-hero .lede{color:var(--dim);font-size:17.5px;max-width:620px;margin-bottom:34px}
+.sp-body{padding:84px 0}
+.sp-cols{display:grid;grid-template-columns:1.25fr .75fr;gap:64px;align-items:start}
+.sp-cols h2{font-size:clamp(24px,2.6vw,32px)}
+.sp-cols .prose p{color:var(--dim);font-size:16px;margin-bottom:18px}
+.specpanel{background:var(--panel);border:1px solid var(--line2);padding:26px 26px 18px;font-family:var(--mono);font-size:12.5px;position:sticky;top:96px}
+.specpanel .sh{color:var(--amber);font-size:11px;letter-spacing:.16em;border-bottom:1px solid var(--line);padding-bottom:11px;margin-bottom:8px}
+.specpanel .sr{display:flex;justify-content:space-between;gap:18px;padding:10px 0;border-bottom:1px solid var(--line)}
+.specpanel .sr:last-child{border-bottom:none}
+.specpanel .sr span:first-child{color:var(--faint)}
+.specpanel .sr span:last-child{text-align:right}
+.specpanel .g{color:var(--green)}
+.specpanel .a{color:var(--amber)}
+@media(max-width:900px){.sp-cols{grid-template-columns:1fr;gap:46px}.specpanel{position:static}}
+
+.inc-head{margin:74px 0 34px}
+.inc-head h2{font-size:clamp(22px,2.4vw,30px);margin-bottom:8px}
+.inc-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+.inc{background:var(--bg);padding:24px 26px;display:flex;gap:16px;align-items:flex-start;transition:background .25s}
+.inc:hover{background:var(--panel)}
+.inc .tk{font-family:var(--mono);color:var(--green);flex-shrink:0;font-size:14px;margin-top:1px}
+.inc h5{font-family:var(--disp);font-weight:600;font-size:15px;margin-bottom:4px}
+.inc p{color:var(--dim);font-size:13.5px;line-height:1.6}
+@media(max-width:680px){.inc-grid{grid-template-columns:1fr}}
+
+.mini-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:34px}
+.mini-steps.three{grid-template-columns:repeat(3,1fr)}
+.ms{background:var(--bg);padding:24px 22px;transition:background .25s}
+.ms:hover{background:var(--panel)}
+.ms .n{font-family:var(--mono);font-size:10.5px;color:var(--amber);letter-spacing:.12em;display:block;margin-bottom:12px}
+.ms h5{font-family:var(--disp);font-weight:600;font-size:15px;margin-bottom:6px}
+.ms p{color:var(--dim);font-size:13px;line-height:1.6}
+@media(max-width:900px){.mini-steps,.mini-steps.three{grid-template-columns:1fr 1fr}}
+@media(max-width:540px){.mini-steps,.mini-steps.three{grid-template-columns:1fr}}
+
+.sp-cta{border-top:1px solid var(--line);background:#0B0E12}
+.sp-cta .wrap{display:flex;justify-content:space-between;align-items:center;gap:36px;padding-top:60px;padding-bottom:60px;flex-wrap:wrap}
+.sp-cta h2{font-size:clamp(22px,2.6vw,32px);margin-bottom:8px}
+.sp-cta p{color:var(--dim);max-width:480px}
+.sp-cta .btns{display:flex;gap:14px;flex-shrink:0;flex-wrap:wrap}
+.sp-related{padding:70px 0 90px}
+.sp-related h3{font-family:var(--disp);font-weight:600;font-size:18px;margin-bottom:24px;color:var(--dim)}
+.rel-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.rel{background:var(--bg);padding:22px 24px;transition:background .25s;display:block}
+.rel:hover{background:var(--panel)}
+.rel .tag{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--faint);display:block;margin-bottom:8px}
+.rel:hover .tag{color:var(--amber)}
+.rel h6{font-family:var(--disp);font-weight:600;font-size:15px}
+@media(max-width:760px){.rel-row{grid-template-columns:1fr}}
+
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   html{scroll-behavior:auto}
@@ -239,7 +302,7 @@ footer a:hover{color:var(--amber)}
 
 <nav>
   <div class="wrap">
-    <a class="logo" href="#"><span class="mark"></span><span>CALI<b>ISM</b></span></a>
+    <a class="logo" href="#/"><span class="mark"></span><span>CALI<b>ISM</b></span></a>
     <div class="navlinks">
       <a href="#services">Services</a>
       <a href="#free">Free Destruction</a>
@@ -250,6 +313,11 @@ footer a:hover{color:var(--amber)}
     <a href="#contact" style="margin-left:auto"><button class="nav-cta">GET A QUOTE</button></a>
   </div>
 </nav>
+
+<!-- ============================================================ -->
+<!-- HOME PAGE -->
+<!-- ============================================================ -->
+<div data-page="home" class="active">
 
 <header class="hero">
   <div class="wrap">
@@ -299,12 +367,12 @@ footer a:hover{color:var(--amber)}
       <p>One team handles your hardware from the moment it powers down to the moment its data is provably gone.</p>
     </div>
     <div class="svc-grid">
-      <div class="svc reveal"><span class="tag">SVC / DESTRUCT</span><h3>Data Destruction</h3><p>Secure wiping, physical shredding, and hydraulic crushing across the Bay Area. Software sanitization for drives with resale value, physical destruction for everything else.</p><span class="more">Learn more →</span></div>
-      <div class="svc reveal"><span class="tag">SVC / DECOM</span><h3>Data Center Decommissioning</h3><p>End-to-end teardown: planning, de-racking, chain-of-custody logistics, and disposal. We manage every cable, drive, and chassis so your team doesn't have to.</p><span class="more">Learn more →</span></div>
-      <div class="svc reveal"><span class="tag">SVC / RECOVER</span><h3>Asset Recovery</h3><p>End-of-life hardware still has value. We test, grade, and remarket equipment to maximize return on assets you no longer need.</p><span class="more">Learn more →</span></div>
-      <div class="svc reveal"><span class="tag">SVC / DEPLOY</span><h3>Deployment Services</h3><p>New equipment racked, cabled, and live faster — so the benefits of your IT investment start sooner, not next quarter.</p><span class="more">Learn more →</span></div>
-      <div class="svc reveal"><span class="tag">SVC / MIGRATE</span><h3>Relocation & Migration</h3><p>Moving a data center is a thousand small risks. We plan, transport, and re-commission with full inventory tracking at every step.</p><span class="more">Learn more →</span></div>
-      <div class="svc reveal"><span class="tag">SVC / ADVISE</span><h3>Consulting & Staffing</h3><p>IT policy, decommissioning strategy, and skilled hands on site. Align your infrastructure decisions with where the business is actually going.</p><span class="more">Learn more →</span></div>
+      <a class="svc reveal" href="#/services/data-destruction"><span class="tag">SVC / DESTRUCT</span><h3>Data Destruction</h3><p>Secure wiping, physical shredding, and hydraulic crushing across the Bay Area. Software sanitization for drives with resale value, physical destruction for everything else.</p><span class="more">Learn more →</span></a>
+      <a class="svc reveal" href="#/services/decommissioning"><span class="tag">SVC / DECOM</span><h3>Data Center Decommissioning</h3><p>End-to-end teardown: planning, de-racking, chain-of-custody logistics, and disposal. We manage every cable, drive, and chassis so your team doesn't have to.</p><span class="more">Learn more →</span></a>
+      <a class="svc reveal" href="#/services/asset-recovery"><span class="tag">SVC / RECOVER</span><h3>Asset Recovery</h3><p>End-of-life hardware still has value. We test, grade, and remarket equipment to maximize return on assets you no longer need.</p><span class="more">Learn more →</span></a>
+      <a class="svc reveal" href="#/services/deployment"><span class="tag">SVC / DEPLOY</span><h3>Deployment Services</h3><p>New equipment racked, cabled, and live faster — so the benefits of your IT investment start sooner, not next quarter.</p><span class="more">Learn more →</span></a>
+      <a class="svc reveal" href="#/services/relocation"><span class="tag">SVC / MIGRATE</span><h3>Relocation & Migration</h3><p>Moving a data center is a thousand small risks. We plan, transport, and re-commission with full inventory tracking at every step.</p><span class="more">Learn more →</span></a>
+      <a class="svc reveal" href="#/services/consulting"><span class="tag">SVC / ADVISE</span><h3>Consulting & Staffing</h3><p>IT policy, decommissioning strategy, and skilled hands on site. Align your infrastructure decisions with where the business is actually going.</p><span class="more">Learn more →</span></a>
     </div>
   </div>
 </section>
@@ -396,6 +464,476 @@ footer a:hover{color:var(--amber)}
   </div>
 </section>
 
+</div><!-- /home -->
+
+<!-- ============================================================ -->
+<!-- SERVICE: DATA DESTRUCTION -->
+<!-- ============================================================ -->
+<div data-page="services/data-destruction">
+<header class="sp-hero">
+  <div class="wrap">
+    <div class="crumb"><a href="#/">HOME</a> / <a href="#services">SERVICES</a> / <span style="color:var(--amber)">DATA DESTRUCTION</span></div>
+    <div class="eyebrow">SVC / DESTRUCT</div>
+    <h1>Data Destruction</h1>
+    <p class="lede">When data has to be gone, "deleted" isn't a standard — verified is. Caliism sanitizes storage media by software wipe or physical destruction, and documents both to the same audit-ready standard.</p>
+    <div class="hero-ctas">
+      <a href="#contact"><button class="btn btn-primary">GET A QUOTE</button></a>
+      <a href="#free"><button class="btn btn-ghost">FREE PROGRAM</button></a>
+    </div>
+  </div>
+</header>
+<div class="sp-body">
+  <div class="wrap">
+    <div class="sp-cols">
+      <div class="prose">
+        <h2>Two paths to provably gone</h2>
+        <p><strong style="color:var(--text)">Software sanitization</strong> is our default for healthy drives. Using KillDisk Industrial across a 240-slot wipe bench, we run multi-pass overwrites to NIST 800-88 and DoD 5220.22-M standards, then perform a full-surface read-back to verify every sector returns zero. Wiped drives keep their resale value — which is what makes our free destruction program possible.</p>
+        <p><strong style="color:var(--text)">Physical destruction</strong> handles everything else: drives that fail verification, failed or degraded media that can't be reliably wiped, and any media your policy requires destroyed regardless of condition. Shredding and hydraulic crushing reduce drives to fragments that no laboratory recovers data from.</p>
+        <p>Either path ends the same way — with a per-drive certificate listing the serial number, method used, date, and verification result. Your auditors get a complete, defensible record; you get to stop thinking about those drives forever.</p>
+      </div>
+      <aside class="specpanel">
+        <div class="sh">SERVICE SPEC</div>
+        <div class="sr"><span>METHODS</span><span>WIPE · SHRED · CRUSH</span></div>
+        <div class="sr"><span>STANDARD</span><span class="g">NIST 800-88</span></div>
+        <div class="sr"><span>ALT STANDARD</span><span>DoD 5220.22-M</span></div>
+        <div class="sr"><span>CAPACITY</span><span class="a">240 SLOTS</span></div>
+        <div class="sr"><span>MEDIA</span><span>HDD · SSD · TAPE</span></div>
+        <div class="sr"><span>VERIFY</span><span class="g">100% SECTORS</span></div>
+        <div class="sr"><span>CERTS</span><span class="g">PER DRIVE</span></div>
+        <div class="sr"><span>NO-COST OPT</span><span class="a">AVAILABLE</span></div>
+      </aside>
+    </div>
+    <div class="inc-head">
+      <h2>What's included</h2>
+      <p style="color:var(--dim)">Every destruction engagement, regardless of method or volume.</p>
+    </div>
+    <div class="inc-grid">
+      <div class="inc"><span class="tk">✓</span><div><h5>Serial-level intake audit</h5><p>Every drive is logged by serial number on arrival, opening an unbroken chain of custody.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Multi-pass KillDisk sanitization</h5><p>Industrial-grade overwriting monitored in real time across the entire bench.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Full-surface verification</h5><p>Read-back confirms complete sanitization. Any drive that fails goes straight to the shredder.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Physical destruction on demand</h5><p>Shredding and crushing for failed media or policy-mandated destruction.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Per-drive certificates</h5><p>Serial, method, date, and verification result — formatted for compliance review.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Responsible recycling</h5><p>Destroyed material is processed through responsible e-waste channels.</p></div></div>
+    </div>
+    <div class="inc-head">
+      <h2>How it works</h2>
+    </div>
+    <div class="mini-steps">
+      <div class="ms"><span class="n">01</span><h5>Intake</h5><p>Drives arrive by pickup or drop-off; serials logged, assets tagged.</p></div>
+      <div class="ms"><span class="n">02</span><h5>Sanitize</h5><p>Multi-pass wipe on the bench — or straight to physical destruction.</p></div>
+      <div class="ms"><span class="n">03</span><h5>Verify</h5><p>Full-surface read-back; failures are physically destroyed.</p></div>
+      <div class="ms"><span class="n">04</span><h5>Certify</h5><p>Per-drive certificates delivered; custody closes on record.</p></div>
+    </div>
+  </div>
+</div>
+<div class="sp-cta">
+  <div class="wrap">
+    <div><h2>Have drives that need to disappear?</h2><p>Tell us the count and condition — we'll quote it, or qualify you for the free program on the spot.</p></div>
+    <div class="btns">
+      <a href="#contact"><button class="btn btn-primary">GET A QUOTE</button></a>
+      <a href="tel:+18885990571"><button class="btn btn-ghost">CALL US</button></a>
+    </div>
+  </div>
+</div>
+<div class="sp-related">
+  <div class="wrap">
+    <h3>RELATED SERVICES</h3>
+    <div class="rel-row">
+      <a class="rel" href="#/services/decommissioning"><span class="tag">SVC / DECOM</span><h6>Data Center Decommissioning</h6></a>
+      <a class="rel" href="#/services/asset-recovery"><span class="tag">SVC / RECOVER</span><h6>Asset Recovery</h6></a>
+      <a class="rel" href="#/services/consulting"><span class="tag">SVC / ADVISE</span><h6>Consulting & Staffing</h6></a>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SERVICE: DECOMMISSIONING -->
+<!-- ============================================================ -->
+<div data-page="services/decommissioning">
+<header class="sp-hero">
+  <div class="wrap">
+    <div class="crumb"><a href="#/">HOME</a> / <a href="#services">SERVICES</a> / <span style="color:var(--amber)">DECOMMISSIONING</span></div>
+    <div class="eyebrow">SVC / DECOM</div>
+    <h1>Data Center Decommissioning</h1>
+    <p class="lede">Shutting down a data center is a project with a thousand details and zero tolerance for lost drives. Caliism manages the entire teardown — planning through disposal — under one accountable team.</p>
+    <div class="hero-ctas">
+      <a href="#contact"><button class="btn btn-primary">PLAN A DECOM</button></a>
+      <a href="tel:+18885990571"><button class="btn btn-ghost">CALL US</button></a>
+    </div>
+  </div>
+</header>
+<div class="sp-body">
+  <div class="wrap">
+    <div class="sp-cols">
+      <div class="prose">
+        <h2>From live floor to empty room, on schedule</h2>
+        <p>A decommission touches everything: power-down sequencing, asset inventory, data-bearing device handling, de-racking, cable recovery, transport logistics, and final disposition. Done piecemeal across multiple vendors, the chain of custody fractures and accountability disappears into the gaps.</p>
+        <p>Caliism runs the project end to end. We start with a planning phase that maps every rack and asset, sequence the power-down to protect your remaining operations, then de-rack, inventory, and remove equipment with serial-level tracking. Data-bearing devices flow directly into our certified destruction process — no third-party handoff, no unaccounted drives.</p>
+        <p>What leaves the building is documented. What had data on it is certified destroyed. What still has value comes back to you as recovered budget through our asset recovery program.</p>
+      </div>
+      <aside class="specpanel">
+        <div class="sh">SERVICE SPEC</div>
+        <div class="sr"><span>SCOPE</span><span>FULL TEARDOWN</span></div>
+        <div class="sr"><span>PLANNING</span><span class="g">INCLUDED</span></div>
+        <div class="sr"><span>TRACKING</span><span>SERIAL-LEVEL</span></div>
+        <div class="sr"><span>DATA DEVICES</span><span class="a">CERTIFIED DESTRUCT</span></div>
+        <div class="sr"><span>LOGISTICS</span><span>MANAGED</span></div>
+        <div class="sr"><span>DISPOSAL</span><span class="g">RESPONSIBLE</span></div>
+        <div class="sr"><span>VALUE RECOV</span><span class="a">AVAILABLE</span></div>
+      </aside>
+    </div>
+    <div class="inc-head">
+      <h2>What's included</h2>
+      <p style="color:var(--dim)">A single statement of work covers the whole project.</p>
+    </div>
+    <div class="inc-grid">
+      <div class="inc"><span class="tk">✓</span><div><h5>Site survey & project plan</h5><p>Rack-by-rack mapping, timeline, and power-down sequencing before anything moves.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Asset inventory & tagging</h5><p>Every chassis, drive, and switch logged by serial before it leaves its rack.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>De-rack & cable recovery</h5><p>Clean removal of equipment, cabling, and rack infrastructure.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Chain-of-custody logistics</h5><p>Secure transport with documentation at every handoff.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Integrated data destruction</h5><p>Data-bearing devices flow directly to certified wiping or destruction.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Final disposition report</h5><p>A closing document covering every asset: recovered, destroyed, or recycled.</p></div></div>
+    </div>
+    <div class="inc-head">
+      <h2>How it works</h2>
+    </div>
+    <div class="mini-steps">
+      <div class="ms"><span class="n">01</span><h5>Survey</h5><p>Site walk, asset map, and a project plan with timeline.</p></div>
+      <div class="ms"><span class="n">02</span><h5>Power down</h5><p>Sequenced shutdown that protects everything staying live.</p></div>
+      <div class="ms"><span class="n">03</span><h5>Remove</h5><p>De-rack, inventory, and transport with full tracking.</p></div>
+      <div class="ms"><span class="n">04</span><h5>Disposition</h5><p>Destruction certificates, recovery proceeds, closing report.</p></div>
+    </div>
+  </div>
+</div>
+<div class="sp-cta">
+  <div class="wrap">
+    <div><h2>Closing a room, a floor, or a facility?</h2><p>We've torn down all three. One conversation scopes the project.</p></div>
+    <div class="btns">
+      <a href="#contact"><button class="btn btn-primary">PLAN A DECOM</button></a>
+      <a href="tel:+18885990571"><button class="btn btn-ghost">CALL US</button></a>
+    </div>
+  </div>
+</div>
+<div class="sp-related">
+  <div class="wrap">
+    <h3>RELATED SERVICES</h3>
+    <div class="rel-row">
+      <a class="rel" href="#/services/data-destruction"><span class="tag">SVC / DESTRUCT</span><h6>Data Destruction</h6></a>
+      <a class="rel" href="#/services/relocation"><span class="tag">SVC / MIGRATE</span><h6>Relocation & Migration</h6></a>
+      <a class="rel" href="#/services/asset-recovery"><span class="tag">SVC / RECOVER</span><h6>Asset Recovery</h6></a>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SERVICE: ASSET RECOVERY -->
+<!-- ============================================================ -->
+<div data-page="services/asset-recovery">
+<header class="sp-hero">
+  <div class="wrap">
+    <div class="crumb"><a href="#/">HOME</a> / <a href="#services">SERVICES</a> / <span style="color:var(--amber)">ASSET RECOVERY</span></div>
+    <div class="eyebrow">SVC / RECOVER</div>
+    <h1>Asset Recovery</h1>
+    <p class="lede">Retired hardware isn't waste — it's an asset class your books forgot about. We test, grade, and remarket end-of-life equipment so it comes back to you as budget instead of a disposal invoice.</p>
+    <div class="hero-ctas">
+      <a href="#contact"><button class="btn btn-primary">VALUE MY HARDWARE</button></a>
+      <a href="tel:+18885990571"><button class="btn btn-ghost">CALL US</button></a>
+    </div>
+  </div>
+</header>
+<div class="sp-body">
+  <div class="wrap">
+    <div class="sp-cols">
+      <div class="prose">
+        <h2>Idle racks are stranded capital</h2>
+        <p>Servers, switches, drives, and infrastructure that no longer serve your environment still hold real market value — but only if they're tested, graded, and sold through the right channels before that value decays. Most organizations either pay to dispose of it or let it depreciate in a storage cage.</p>
+        <p>Caliism handles the whole recovery cycle. Equipment is functionally tested and cosmetically graded; data-bearing devices are sanitized and certified through our destruction process first, so nothing leaves with your data on it. Then we remarket through our worldwide distribution footprint to maximize realized value.</p>
+        <p>The result: a documented return on hardware you'd already written off, with the same chain-of-custody rigor as everything else we do.</p>
+      </div>
+      <aside class="specpanel">
+        <div class="sh">SERVICE SPEC</div>
+        <div class="sr"><span>TESTING</span><span class="g">FUNCTIONAL</span></div>
+        <div class="sr"><span>GRADING</span><span>COSMETIC + TECH</span></div>
+        <div class="sr"><span>DATA DEVICES</span><span class="a">WIPED FIRST</span></div>
+        <div class="sr"><span>CHANNEL</span><span>WORLDWIDE</span></div>
+        <div class="sr"><span>EQUIPMENT</span><span>SERVERS · NET · STORAGE</span></div>
+        <div class="sr"><span>REPORTING</span><span class="g">PER ASSET</span></div>
+      </aside>
+    </div>
+    <div class="inc-head">
+      <h2>What's included</h2>
+    </div>
+    <div class="inc-grid">
+      <div class="inc"><span class="tk">✓</span><div><h5>Pickup & inventory</h5><p>Equipment collected and logged by serial number from your site or ours.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Certified sanitization first</h5><p>Every data-bearing device is wiped and certified before it's evaluated for resale.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Testing & grading</h5><p>Functional testing and condition grading determine the best disposition per asset.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Remarketing</h5><p>Graded assets sold through established distribution channels for maximum return.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Recycling for the remainder</h5><p>Anything without market value is responsibly recycled, documented.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Asset-level reporting</h5><p>A final report shows what sold, what was recycled, and what came back to you.</p></div></div>
+    </div>
+    <div class="inc-head">
+      <h2>How it works</h2>
+    </div>
+    <div class="mini-steps">
+      <div class="ms"><span class="n">01</span><h5>Collect</h5><p>Pickup and serial-level inventory of retired equipment.</p></div>
+      <div class="ms"><span class="n">02</span><h5>Sanitize</h5><p>Data-bearing devices wiped and certified before anything else.</p></div>
+      <div class="ms"><span class="n">03</span><h5>Grade</h5><p>Functional testing and condition grading per asset.</p></div>
+      <div class="ms"><span class="n">04</span><h5>Return value</h5><p>Remarketing proceeds and a full disposition report.</p></div>
+    </div>
+  </div>
+</div>
+<div class="sp-cta">
+  <div class="wrap">
+    <div><h2>Got a cage full of retired gear?</h2><p>Send us a rough inventory — we'll tell you what it's worth before you commit to anything.</p></div>
+    <div class="btns">
+      <a href="#contact"><button class="btn btn-primary">VALUE MY HARDWARE</button></a>
+      <a href="tel:+18885990571"><button class="btn btn-ghost">CALL US</button></a>
+    </div>
+  </div>
+</div>
+<div class="sp-related">
+  <div class="wrap">
+    <h3>RELATED SERVICES</h3>
+    <div class="rel-row">
+      <a class="rel" href="#/services/data-destruction"><span class="tag">SVC / DESTRUCT</span><h6>Data Destruction</h6></a>
+      <a class="rel" href="#/services/decommissioning"><span class="tag">SVC / DECOM</span><h6>Decommissioning</h6></a>
+      <a class="rel" href="#/services/relocation"><span class="tag">SVC / MIGRATE</span><h6>Relocation & Migration</h6></a>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SERVICE: DEPLOYMENT -->
+<!-- ============================================================ -->
+<div data-page="services/deployment">
+<header class="sp-hero">
+  <div class="wrap">
+    <div class="crumb"><a href="#/">HOME</a> / <a href="#services">SERVICES</a> / <span style="color:var(--amber)">DEPLOYMENT</span></div>
+    <div class="eyebrow">SVC / DEPLOY</div>
+    <h1>Deployment Services</h1>
+    <p class="lede">New hardware only earns its keep once it's racked, cabled, and live. Caliism gets equipment from loading dock to production faster — so the return on your IT investment starts now, not next quarter.</p>
+    <div class="hero-ctas">
+      <a href="#contact"><button class="btn btn-primary">SCOPE A DEPLOYMENT</button></a>
+      <a href="tel:+18885990571"><button class="btn btn-ghost">CALL US</button></a>
+    </div>
+  </div>
+</header>
+<div class="sp-body">
+  <div class="wrap">
+    <div class="sp-cols">
+      <div class="prose">
+        <h2>From pallet to production</h2>
+        <p>Deployment is where good infrastructure plans go to stall. Equipment sits in receiving while internal teams juggle it against their actual jobs; cabling gets improvised; documentation gets skipped. Months later, nobody is sure which port maps to what.</p>
+        <p>Our deployment crews do this every week. We receive, unbox, asset-tag, rack, cable to plan, and bring equipment online with clean labeling and documentation your team can actually maintain. Because we also supply hardware as a value-added reseller — Opengear, Arista, Fortinet, Vertiv — we can deliver and deploy in a single coordinated engagement.</p>
+        <p>The handoff is a working environment, documented, with no mystery cables.</p>
+      </div>
+      <aside class="specpanel">
+        <div class="sh">SERVICE SPEC</div>
+        <div class="sr"><span>SCOPE</span><span>RACK · CABLE · LIVE</span></div>
+        <div class="sr"><span>LABELING</span><span class="g">FULL</span></div>
+        <div class="sr"><span>DOCS</span><span class="g">AS-BUILT</span></div>
+        <div class="sr"><span>HARDWARE</span><span class="a">SUPPLY AVAILABLE</span></div>
+        <div class="sr"><span>VENDORS</span><span>OPENGEAR · ARISTA<br>FORTINET · VERTIV</span></div>
+      </aside>
+    </div>
+    <div class="inc-head">
+      <h2>What's included</h2>
+    </div>
+    <div class="inc-grid">
+      <div class="inc"><span class="tk">✓</span><div><h5>Receiving & asset tagging</h5><p>Equipment checked in against the order and tagged before installation.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Rack & stack</h5><p>Installed to plan with proper weight distribution and airflow.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Structured cabling</h5><p>Power and network cabling run, dressed, and labeled to standard.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Bring-up & verification</h5><p>Equipment powered, verified, and handed off in a known-good state.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>As-built documentation</h5><p>Rack elevations and cable maps that match reality.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Hardware supply (optional)</h5><p>Source and deploy in one engagement through our vendor partnerships.</p></div></div>
+    </div>
+    <div class="inc-head">
+      <h2>How it works</h2>
+    </div>
+    <div class="mini-steps three">
+      <div class="ms"><span class="n">01</span><h5>Plan</h5><p>Rack elevations, cabling plan, and schedule agreed up front.</p></div>
+      <div class="ms"><span class="n">02</span><h5>Install</h5><p>Receive, rack, cable, and label — to plan, on schedule.</p></div>
+      <div class="ms"><span class="n">03</span><h5>Hand off</h5><p>Verified bring-up with as-built documentation delivered.</p></div>
+    </div>
+  </div>
+</div>
+<div class="sp-cta">
+  <div class="wrap">
+    <div><h2>Hardware arriving soon?</h2><p>Get the deployment scheduled before the pallets hit the dock.</p></div>
+    <div class="btns">
+      <a href="#contact"><button class="btn btn-primary">SCOPE A DEPLOYMENT</button></a>
+      <a href="tel:+18885990571"><button class="btn btn-ghost">CALL US</button></a>
+    </div>
+  </div>
+</div>
+<div class="sp-related">
+  <div class="wrap">
+    <h3>RELATED SERVICES</h3>
+    <div class="rel-row">
+      <a class="rel" href="#/services/relocation"><span class="tag">SVC / MIGRATE</span><h6>Relocation & Migration</h6></a>
+      <a class="rel" href="#/services/consulting"><span class="tag">SVC / ADVISE</span><h6>Consulting & Staffing</h6></a>
+      <a class="rel" href="#/services/decommissioning"><span class="tag">SVC / DECOM</span><h6>Decommissioning</h6></a>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SERVICE: RELOCATION -->
+<!-- ============================================================ -->
+<div data-page="services/relocation">
+<header class="sp-hero">
+  <div class="wrap">
+    <div class="crumb"><a href="#/">HOME</a> / <a href="#services">SERVICES</a> / <span style="color:var(--amber)">RELOCATION & MIGRATION</span></div>
+    <div class="eyebrow">SVC / MIGRATE</div>
+    <h1>Relocation & Migration</h1>
+    <p class="lede">Moving a data center is a thousand small risks riding in the same truck. Caliism plans, transports, and re-commissions your environment with serial-level tracking from the old floor to the new one.</p>
+    <div class="hero-ctas">
+      <a href="#contact"><button class="btn btn-primary">PLAN A MOVE</button></a>
+      <a href="tel:+18885990571"><button class="btn btn-ghost">CALL US</button></a>
+    </div>
+  </div>
+</header>
+<div class="sp-body">
+  <div class="wrap">
+    <div class="sp-cols">
+      <div class="prose">
+        <h2>The move is the easy part. The plan is everything.</h2>
+        <p>A successful relocation is decided before anything is unplugged. We start with a full inventory and dependency map, sequence the shutdown to minimize downtime windows, and stage the destination site so equipment goes from truck to rack without sitting on a dock.</p>
+        <p>In transit, every asset is tracked by serial against the inventory. At the destination, our deployment crews re-rack, re-cable, and bring the environment back up to the documented plan — the same teams that handle our greenfield deployments.</p>
+        <p>If part of the environment isn't making the move, it flows into our decommissioning and asset recovery processes instead — one project plan covers the whole transition, with nothing falling between vendors.</p>
+      </div>
+      <aside class="specpanel">
+        <div class="sh">SERVICE SPEC</div>
+        <div class="sr"><span>PLANNING</span><span class="g">DEPENDENCY-MAPPED</span></div>
+        <div class="sr"><span>TRACKING</span><span>SERIAL-LEVEL</span></div>
+        <div class="sr"><span>TRANSPORT</span><span>SECURED</span></div>
+        <div class="sr"><span>RE-COMMISSION</span><span class="g">INCLUDED</span></div>
+        <div class="sr"><span>NON-MOVERS</span><span class="a">DECOM / RECOVERY</span></div>
+      </aside>
+    </div>
+    <div class="inc-head">
+      <h2>What's included</h2>
+    </div>
+    <div class="inc-grid">
+      <div class="inc"><span class="tk">✓</span><div><h5>Inventory & dependency mapping</h5><p>Know exactly what's moving, what it connects to, and what order it comes down in.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Sequenced shutdown</h5><p>Power-down planned around your downtime windows and live systems.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Secure packing & transport</h5><p>Equipment packed for transit and tracked at every handoff.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Destination staging</h5><p>The new site prepped so equipment goes straight to its rack.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Re-rack & bring-up</h5><p>Re-cabled, labeled, verified, and handed back in a known-good state.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Integrated offboarding</h5><p>Anything not moving flows into decommissioning or asset recovery.</p></div></div>
+    </div>
+    <div class="inc-head">
+      <h2>How it works</h2>
+    </div>
+    <div class="mini-steps">
+      <div class="ms"><span class="n">01</span><h5>Map</h5><p>Inventory, dependencies, and a sequenced move plan.</p></div>
+      <div class="ms"><span class="n">02</span><h5>Pack</h5><p>Sequenced shutdown and secure packing, serials tracked.</p></div>
+      <div class="ms"><span class="n">03</span><h5>Move</h5><p>Secured transport with custody documentation.</p></div>
+      <div class="ms"><span class="n">04</span><h5>Restore</h5><p>Re-rack, re-cable, verify, and hand back online.</p></div>
+    </div>
+  </div>
+</div>
+<div class="sp-cta">
+  <div class="wrap">
+    <div><h2>New facility on the calendar?</h2><p>The earlier we map the move, the smaller the downtime window gets.</p></div>
+    <div class="btns">
+      <a href="#contact"><button class="btn btn-primary">PLAN A MOVE</button></a>
+      <a href="tel:+18885990571"><button class="btn btn-ghost">CALL US</button></a>
+    </div>
+  </div>
+</div>
+<div class="sp-related">
+  <div class="wrap">
+    <h3>RELATED SERVICES</h3>
+    <div class="rel-row">
+      <a class="rel" href="#/services/deployment"><span class="tag">SVC / DEPLOY</span><h6>Deployment Services</h6></a>
+      <a class="rel" href="#/services/decommissioning"><span class="tag">SVC / DECOM</span><h6>Decommissioning</h6></a>
+      <a class="rel" href="#/services/asset-recovery"><span class="tag">SVC / RECOVER</span><h6>Asset Recovery</h6></a>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SERVICE: CONSULTING -->
+<!-- ============================================================ -->
+<div data-page="services/consulting">
+<header class="sp-hero">
+  <div class="wrap">
+    <div class="crumb"><a href="#/">HOME</a> / <a href="#services">SERVICES</a> / <span style="color:var(--amber)">CONSULTING & STAFFING</span></div>
+    <div class="eyebrow">SVC / ADVISE</div>
+    <h1>Consulting & Staffing</h1>
+    <p class="lede">Sometimes the gap isn't hardware — it's strategy, policy, or skilled hands on site. Caliism provides IT consulting and staffing that aligns your infrastructure decisions with where the business is actually going.</p>
+    <div class="hero-ctas">
+      <a href="#contact"><button class="btn btn-primary">START A CONVERSATION</button></a>
+      <a href="tel:+18885990571"><button class="btn btn-ghost">CALL US</button></a>
+    </div>
+  </div>
+</header>
+<div class="sp-body">
+  <div class="wrap">
+    <div class="sp-cols">
+      <div class="prose">
+        <h2>Advice from people who do the work</h2>
+        <p>Our consulting isn't slideware — it comes from teams that physically decommission data centers, sanitize drives by the thousand, and deploy enterprise hardware every week. When we advise on data destruction policy, asset lifecycle strategy, or decommissioning roadmaps, the recommendations have already survived contact with real projects.</p>
+        <p>Engagements range from a focused policy review — what should your media sanitization standard actually require, and what should the certificates capture? — to long-term lifecycle planning across deployment, refresh, and retirement.</p>
+        <p>When you need execution capacity rather than advice, our staffing arm places skilled, vetted technicians on your site for projects or ongoing operations.</p>
+      </div>
+      <aside class="specpanel">
+        <div class="sh">SERVICE SPEC</div>
+        <div class="sr"><span>CONSULTING</span><span>POLICY · STRATEGY</span></div>
+        <div class="sr"><span>FOCUS</span><span>LIFECYCLE · DECOM<br>DATA SECURITY</span></div>
+        <div class="sr"><span>STAFFING</span><span class="g">PROJECT + ONGOING</span></div>
+        <div class="sr"><span>PERSONNEL</span><span class="g">VETTED TECHS</span></div>
+        <div class="sr"><span>ENGAGEMENT</span><span class="a">FLEXIBLE</span></div>
+      </aside>
+    </div>
+    <div class="inc-head">
+      <h2>Where we help</h2>
+    </div>
+    <div class="inc-grid">
+      <div class="inc"><span class="tk">✓</span><div><h5>Data destruction policy</h5><p>Sanitization standards, certificate requirements, and audit readiness.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Asset lifecycle strategy</h5><p>Deployment, refresh, and retirement planning that protects value.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Decommissioning roadmaps</h5><p>Multi-site and phased teardown planning before the first rack moves.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>IT policy review</h5><p>Practical policy guidance grounded in how the work actually gets done.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Project staffing</h5><p>Skilled technicians on site for builds, moves, and teardowns.</p></div></div>
+      <div class="inc"><span class="tk">✓</span><div><h5>Ongoing placements</h5><p>Longer-term staffing for operations that need steady hands.</p></div></div>
+    </div>
+    <div class="inc-head">
+      <h2>How it works</h2>
+    </div>
+    <div class="mini-steps three">
+      <div class="ms"><span class="n">01</span><h5>Listen</h5><p>A scoping conversation about where the gaps actually are.</p></div>
+      <div class="ms"><span class="n">02</span><h5>Propose</h5><p>A focused engagement — advisory, staffing, or both.</p></div>
+      <div class="ms"><span class="n">03</span><h5>Deliver</h5><p>Recommendations you can execute, or people who execute them.</p></div>
+    </div>
+  </div>
+</div>
+<div class="sp-cta">
+  <div class="wrap">
+    <div><h2>Not sure which service you need?</h2><p>That's literally what this one is for. Start with a conversation.</p></div>
+    <div class="btns">
+      <a href="#contact"><button class="btn btn-primary">START A CONVERSATION</button></a>
+      <a href="tel:+18885990571"><button class="btn btn-ghost">CALL US</button></a>
+    </div>
+  </div>
+</div>
+<div class="sp-related">
+  <div class="wrap">
+    <h3>RELATED SERVICES</h3>
+    <div class="rel-row">
+      <a class="rel" href="#/services/data-destruction"><span class="tag">SVC / DESTRUCT</span><h6>Data Destruction</h6></a>
+      <a class="rel" href="#/services/deployment"><span class="tag">SVC / DEPLOY</span><h6>Deployment Services</h6></a>
+      <a class="rel" href="#/services/decommissioning"><span class="tag">SVC / DECOM</span><h6>Decommissioning</h6></a>
+    </div>
+  </div>
+</div>
+</div>
+
 <footer>
   <div class="wrap">
     <span>© 2026 CALIISM DATA SOLUTIONS — ALL RIGHTS RESERVED</span>
@@ -407,15 +945,60 @@ footer a:hover{color:var(--amber)}
 (function(){
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---- cert date ---- */
-  var d = new Date();
-  document.getElementById('certDate').textContent =
-    d.toISOString().slice(0,10);
+  /* ================= ROUTER ================= */
+  var pages = {};
+  document.querySelectorAll('[data-page]').forEach(function(el){
+    pages[el.getAttribute('data-page')] = el;
+  });
+  var titles = {
+    'home':'Caliism Data Solutions — Certified Data Destruction & Data Center Decommissioning',
+    'services/data-destruction':'Data Destruction — Caliism Data Solutions',
+    'services/decommissioning':'Data Center Decommissioning — Caliism Data Solutions',
+    'services/asset-recovery':'Asset Recovery — Caliism Data Solutions',
+    'services/deployment':'Deployment Services — Caliism Data Solutions',
+    'services/relocation':'Relocation & Migration — Caliism Data Solutions',
+    'services/consulting':'Consulting & Staffing — Caliism Data Solutions'
+  };
+  var current = 'home';
 
-  /* ---- build bench ---- */
+  function showPage(key){
+    if(!pages[key]) key = 'home';
+    if(key === current) return;
+    pages[current].classList.remove('active');
+    pages[key].classList.add('active');
+    current = key;
+    document.title = titles[key] || titles.home;
+    window.scrollTo(0,0);
+  }
+
+  function route(){
+    var h = location.hash;
+    if(h.indexOf('#/') === 0){
+      // page route, e.g. #/services/data-destruction or #/
+      var key = h.slice(2).replace(/\/+$/,'');
+      showPage(key === '' ? 'home' : key);
+    } else if(h.length > 1){
+      // section anchor on the home page, e.g. #services, #contact
+      showPage('home');
+      var el = document.getElementById(h.slice(1));
+      if(el){
+        // wait a tick so the page is visible before scrolling
+        requestAnimationFrame(function(){ el.scrollIntoView({behavior: reduced ? 'auto' : 'smooth'}); });
+      }
+    } else {
+      showPage('home');
+    }
+  }
+  window.addEventListener('hashchange', route);
+  route();
+
+  /* ================= cert date ================= */
+  var d = new Date();
+  document.getElementById('certDate').textContent = d.toISOString().slice(0,10);
+
+  /* ================= build bench ================= */
   var slotsEl = document.getElementById('slots');
   var SLOTS = 24, slots = [];
-  var statuses = {queued:'QUEUED', wiping:'PASS', verifying:'VERIFY', done:'CERTIFIED'};
   function serial(){
     var c='ABCDEFGHJKMNPQRSTVWXYZ0123456789', s='';
     for(var i=0;i<4;i++) s+=c[Math.floor(Math.random()*c.length)];
@@ -465,8 +1048,7 @@ footer a:hover{color:var(--amber)}
     });
   }
 
-  // seed some initial activity
-  slots.forEach(function(s,idx){
+  slots.forEach(function(s){
     var r=Math.random();
     if(r<0.45){ start(s); s.prog=Math.random()*90; s.pass=1+Math.floor(Math.random()*3); s.st.textContent='PASS '+s.pass+'/3 · '+s.sn; }
     else if(r<0.6){ s.state='done'; s.el.dataset.state='done'; s.st.textContent='CERTIFIED ✓'; s.bar.style.width='100%';
@@ -475,11 +1057,10 @@ footer a:hover{color:var(--amber)}
 
   if(!reduced){ setInterval(tick, 380); }
   else {
-    // static but meaningful frame for reduced motion
     slots.forEach(function(s){ if(s.state==='wiping') s.bar.style.width=s.prog+'%'; });
   }
 
-  /* ---- zero word flicker ---- */
+  /* ================= zero word flicker ================= */
   if(!reduced){
     var zw=document.getElementById('zeroWord'), glyphs='01x0█0', orig='zero';
     setInterval(function(){
@@ -492,13 +1073,13 @@ footer a:hover{color:var(--amber)}
     }, 900);
   }
 
-  /* ---- scroll reveals ---- */
+  /* ================= scroll reveals ================= */
   var io=new IntersectionObserver(function(entries){
     entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
   },{threshold:0.12});
   document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
 
-  /* ---- stat counters ---- */
+  /* ================= stat counters ================= */
   var io2=new IntersectionObserver(function(entries){
     entries.forEach(function(e){
       if(!e.isIntersecting) return;
