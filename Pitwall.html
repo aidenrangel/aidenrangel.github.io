@@ -1123,7 +1123,6 @@ function renderSeasonSheet() {
     <h1 class="sheet-title">${s.year} GT World Championship</h1>
     <div class="sheet-sub">${s.drivers.length} drivers · ${s.teams.length} teams · ${s.races.length} rounds</div>
     ${leaderHtml}
-    ${buildTitleFight(s, standings)}
     <div class="section-head">
       <div class="section-title">Results Matrix</div>
       <div class="section-note">TAP A ROUND HEADER FOR THE RACE SHEET</div>
@@ -1136,6 +1135,7 @@ function renderSeasonSheet() {
       <span><span class="sw" style="background:var(--red-2)"></span>DNF</span>
       <span>ᴾ POLE · ᶠ FASTEST LAP</span>
     </div>
+    ${buildTitleFight(s, standings)}
     ${done.length >= 2 ? `
       <div class="section-head">
         <div class="section-title">Points Progression</div>
