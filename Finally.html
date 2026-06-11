@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FINAL LAP — GT World Championship</title>
+<meta name="description" content="The GT World Championship as a retro arcade racing game.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   FINAL LAP — arcade cabinet tokens
+   ============================================================ */
+:root {
+  --crt:      #07071A;
+  --crt-2:    #0E0E2A;
+  --bezel:    #16163A;
+  --cyan:     #2BE3F7;
+  --magenta:  #FF3D8A;
+  --yellow:   #FFD23F;
+  --white:    #EDEFF7;
+  --dim:      #6E72A8;
+  --grid:     #1B1B45;
+  --px:       'Press Start 2P', monospace;
+  --vt:       'VT323', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+::selection { background: var(--magenta); color: var(--crt); }
+
+body {
+  background: var(--crt);
+  color: var(--white);
+  font-family: var(--vt);
+  font-size: 20px;
+  line-height: 1.25;
+  min-height: 100vh;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* CRT overlay: scanlines + vignette */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 90;
+  background:
+    repeating-linear-gradient(0deg, rgba(0,0,0,0.22) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, transparent 58%, rgba(0,0,5,0.55) 100%);
+}
+
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+button:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--yellow);
+  outline-offset: 2px;
+}
+
+.blink { animation: blink 1.1s steps(2, start) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ---------- Marquee ---------- */
+.marquee {
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  background: linear-gradient(180deg, var(--bezel), var(--crt-2));
+  border-bottom: 4px solid var(--magenta);
+  box-shadow: 0 0 24px rgba(255, 61, 138, 0.35);
+}
+.marquee-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 18px 10px;
+  flex-wrap: wrap;
+}
+.logo {
+  font-family: var(--px);
+  font-size: 1.05rem;
+  letter-spacing: 1px;
+  color: var(--yellow);
+  text-shadow: 3px 3px 0 var(--magenta);
+  white-space: nowrap;
+}
+.logo .lap { color: var(--cyan); }
+.marquee-mid {
+  font-family: var(--px);
+  font-size: 0.5rem;
+  color: var(--dim);
+  letter-spacing: 1px;
+  text-align: center;
+}
+.marquee-mid .v { color: var(--white); }
+.hiscore {
+  font-family: var(--px);
+  font-size: 0.5rem;
+  text-align: right;
+  color: var(--dim);
+}
+.hiscore .v { color: var(--yellow); font-size: 0.8rem; display: block; margin-top: 4px; }
+.round-pick {
+  font-family: var(--px);
+  font-size: 0.5rem;
+  color: var(--dim);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.round-pick select {
+  font-family: var(--px);
+  font-size: 0.6rem;
+  background: var(--crt);
+  color: var(--cyan);
+  border: 2px solid var(--cyan);
+  padding: 5px 6px;
+  cursor: pointer;
+}
+
+/* ---------- Menu ---------- */
+.menu {
+  display: flex;
+  overflow-x: auto;
+  border-top: 2px solid var(--grid);
+}
+.menu-btn {
+  flex: 1;
+  font-family: var(--px);
+  font-size: 0.55rem;
+  letter-spacing: 1px;
+  padding: 12px 10px;
+  color: var(--dim);
+  border-right: 2px solid var(--grid);
+  white-space: nowrap;
+  transition: none;
+}
+.menu-btn:hover { color: var(--white); background: var(--crt-2); }
+.menu-btn[aria-current="true"] {
+  color: var(--crt);
+  background: var(--cyan);
+  text-shadow: none;
+}
+.menu-btn[aria-current="true"]::before { content: '▶ '; }
+
+/* ---------- Screen ---------- */
+.screen {
+  max-width: 1060px;
+  margin: 26px auto 80px;
+  padding: 0 16px;
+}
+.panel {
+  border: 4px solid var(--cyan);
+  box-shadow: 0 0 0 4px var(--crt), 0 0 0 6px var(--grid), 0 0 30px rgba(43, 227, 247, 0.18);
+  background: rgba(7, 7, 26, 0.92);
+  padding: 22px 22px 26px;
+  margin-bottom: 26px;
+}
+.panel.magenta { border-color: var(--magenta); box-shadow: 0 0 0 4px var(--crt), 0 0 0 6px var(--grid), 0 0 30px rgba(255, 61, 138, 0.2); }
+.panel.yellow { border-color: var(--yellow); box-shadow: 0 0 0 4px var(--crt), 0 0 0 6px var(--grid), 0 0 30px rgba(255, 210, 63, 0.16); }
+
+.screen-title {
+  font-family: var(--px);
+  font-size: clamp(0.85rem, 2.6vw, 1.3rem);
+  color: var(--yellow);
+  text-shadow: 2px 2px 0 var(--magenta);
+  margin-bottom: 6px;
+}
+.screen-sub { color: var(--dim); font-size: 1.1rem; margin-bottom: 18px; }
+.screen-sub .hl { color: var(--cyan); }
+
+.backbtn {
+  font-family: var(--px);
+  font-size: 0.55rem;
+  color: var(--magenta);
+  margin-bottom: 16px;
+  display: inline-block;
+}
+.backbtn:hover { color: var(--white); }
+
+/* ---------- Hi-score table ---------- */
+.score-table { width: 100%; border-collapse: collapse; }
+.score-table th {
+  font-family: var(--px);
+  font-size: 0.5rem;
+  color: var(--cyan);
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 3px solid var(--cyan);
+}
+.score-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--grid);
+  font-size: 1.25rem;
+  vertical-align: middle;
+}
+.score-table tr.rowlink { cursor: pointer; }
+.score-table tr.rowlink:hover td { background: var(--crt-2); color: var(--yellow); }
+.score-table .rank {
+  font-family: var(--px);
+  font-size: 0.75rem;
+  width: 64px;
+  color: var(--dim);
+}
+.score-table tr.p1 .rank, .score-table tr.p1 td { color: var(--yellow); }
+.score-table tr.p2 td { color: var(--white); }
+.score-table tr.p3 td { color: var(--white); }
+.score-table .pts {
+  font-family: var(--px);
+  font-size: 0.8rem;
+  text-align: right;
+}
+.tchip {
+  display: inline-block;
+  width: 12px; height: 12px;
+  margin-right: 10px;
+  vertical-align: -1px;
+  box-shadow: 0 0 6px currentColor;
+}
+.mv-up { color: #4ADE80; }
+.mv-dn { color: var(--magenta); }
+.mv-sm { color: var(--dim); }
+.crown { color: var(--yellow); }
+
+/* ---------- Driver select grid ---------- */
+.select-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 18px;
+}
+.pcard {
+  border: 3px solid var(--grid);
+  background: var(--crt-2);
+  text-align: center;
+  padding: 16px 10px 14px;
+  position: relative;
+  transition: none;
+}
+.pcard:hover, .pcard:focus-visible {
+  border-color: var(--yellow);
+  box-shadow: 0 0 16px rgba(255, 210, 63, 0.35);
+}
+.pcard .num {
+  font-family: var(--px);
+  font-size: 1.3rem;
+  color: var(--white);
+  text-shadow: 2px 2px 0 var(--magenta);
+}
+.pcard .ptla {
+  font-family: var(--px);
+  font-size: 0.7rem;
+  color: var(--cyan);
+  margin-top: 10px;
+}
+.pcard .pname { font-size: 1.1rem; color: var(--white); margin-top: 6px; }
+.pcard .pteam { font-size: 0.95rem; color: var(--dim); }
+.pcard .stripe { height: 8px; margin: 12px -10px -14px; }
+.pcard .prank {
+  position: absolute;
+  top: 6px; left: 8px;
+  font-family: var(--px);
+  font-size: 0.45rem;
+  color: var(--dim);
+}
+
+/* ---------- Stat meters ---------- */
+.meters { margin-top: 6px; }
+.meter { display: grid; grid-template-columns: 130px 1fr 60px; gap: 12px; align-items: center; padding: 7px 0; }
+.meter .lab { font-family: var(--px); font-size: 0.5rem; color: var(--cyan); }
+.meter .val { font-family: var(--px); font-size: 0.65rem; text-align: right; color: var(--white); }
+.meter .bar { display: flex; gap: 4px; }
+.meter .seg {
+  flex: 1;
+  height: 16px;
+  background: var(--grid);
+  border: 1px solid #26265A;
+}
+.meter .seg.on { background: var(--cyan); box-shadow: 0 0 8px rgba(43, 227, 247, 0.5); }
+.meter.gold .seg.on { background: var(--yellow); box-shadow: 0 0 8px rgba(255, 210, 63, 0.5); }
+.meter.pink .seg.on { background: var(--magenta); box-shadow: 0 0 8px rgba(255, 61, 138, 0.5); }
+
+/* ---------- Stage select ---------- */
+.stage {
+  display: grid;
+  grid-template-columns: 110px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  border: 3px solid var(--grid);
+  background: var(--crt-2);
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  width: 100%;
+  text-align: left;
+}
+.stage.clear:hover, .stage.clear:focus-visible { border-color: var(--cyan); }
+.stage.next { border-color: var(--yellow); }
+.stage.locked { opacity: 0.55; cursor: default; }
+.stage-no { font-family: var(--px); font-size: 0.6rem; color: var(--dim); }
+.stage-no .n { font-size: 1.1rem; color: var(--white); display: block; margin-top: 5px; }
+.stage-name { font-size: 1.35rem; }
+.stage-loc { color: var(--dim); font-size: 1rem; }
+.stage-state { font-family: var(--px); font-size: 0.55rem; text-align: right; }
+.stage-state .clear-tag { color: #4ADE80; }
+.stage-state .next-tag { color: var(--yellow); }
+.stage-state .lock-tag { color: var(--dim); }
+.stage-state .winner { display: block; margin-top: 6px; color: var(--white); font-size: 0.6rem; }
+
+/* ---------- Podium ---------- */
+.podium {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  align-items: end;
+  margin: 8px 0 24px;
+}
+.pod {
+  text-align: center;
+  border: 3px solid var(--grid);
+  background: var(--crt-2);
+  padding: 14px 8px 0;
+}
+.pod .plc { font-family: var(--px); font-size: 0.7rem; }
+.pod .who { font-family: var(--px); font-size: 0.6rem; margin: 10px 0 4px; color: var(--white); }
+.pod .tm { font-size: 0.95rem; color: var(--dim); margin-bottom: 10px; }
+.pod .base { height: 14px; }
+.pod-1 { order: 2; } .pod-1 .plc { color: var(--yellow); } .pod-1 .base { height: 34px; }
+.pod-2 { order: 1; } .pod-2 .plc { color: var(--cyan); } .pod-2 .base { height: 24px; }
+.pod-3 { order: 3; } .pod-3 .plc { color: var(--magenta); }
+
+/* ---------- Hall of fame ---------- */
+.fame-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 1fr;
+  gap: 18px;
+  align-items: center;
+  border-bottom: 2px solid var(--grid);
+  padding: 18px 4px;
+}
+.fame-year { font-family: var(--px); font-size: 1rem; color: var(--cyan); }
+.fame-year .wip { display: block; font-size: 0.45rem; color: var(--magenta); margin-top: 6px; }
+.fame-entry .lab { font-family: var(--px); font-size: 0.45rem; color: var(--dim); letter-spacing: 1px; }
+.fame-entry .who {
+  font-family: var(--px);
+  font-size: 0.75rem;
+  color: var(--yellow);
+  margin: 8px 0 4px;
+}
+.fame-entry .det { font-size: 1rem; color: var(--white); }
+
+/* ---------- Footer ---------- */
+.coin {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 70;
+  text-align: center;
+  font-family: var(--px);
+  font-size: 0.55rem;
+  color: var(--dim);
+  padding: 10px;
+  background: linear-gradient(0deg, var(--crt) 60%, transparent);
+}
+.coin .ins { color: var(--yellow); }
+
+.demo-badge {
+  position: fixed;
+  top: 8px; right: 8px;
+  z-index: 95;
+  font-family: var(--px);
+  font-size: 0.42rem;
+  color: var(--crt);
+  background: var(--yellow);
+  padding: 6px 8px;
+  display: none;
+}
+.demo-badge.show { display: block; }
+
+.notice { color: var(--dim); font-size: 1.1rem; border: 2px dashed var(--grid); padding: 14px; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 720px) {
+  body { font-size: 18px; }
+  .marquee-mid { display: none; }
+  .stage { grid-template-columns: 78px 1fr; }
+  .stage-state { grid-column: 1 / -1; text-align: left; }
+  .fame-row { grid-template-columns: 1fr; gap: 10px; }
+  .podium { grid-template-columns: 1fr; }
+  .pod-1, .pod-2, .pod-3 { order: 0; }
+  .pod .base { height: 12px !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blink { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="marquee">
+  <div class="marquee-top">
+    <div class="logo">FINAL<span class="lap">LAP</span></div>
+    <div class="marquee-mid" id="marqueeMid">ROUND <span class="v">—</span> · <span class="v">—</span> SEASON</div>
+    <label class="round-pick">YEAR
+      <select id="seasonSelect" aria-label="Select season"></select>
+    </label>
+    <div class="hiscore">HI-SCORE<span class="v" id="hiScore">000000</span></div>
+  </div>
+  <nav class="menu" aria-label="Game menu">
+    <button class="menu-btn" data-nav="standings" aria-current="true" data-go="nav" data-screen="standings">STANDINGS</button>
+    <button class="menu-btn" data-nav="drivers" aria-current="false" data-go="nav" data-screen="drivers">DRIVER SELECT</button>
+    <button class="menu-btn" data-nav="stages" aria-current="false" data-go="nav" data-screen="stages">STAGE SELECT</button>
+    <button class="menu-btn" data-nav="teams" aria-current="false" data-go="nav" data-screen="teams">TEAM GP</button>
+    <button class="menu-btn" data-nav="fame" aria-current="false" data-go="nav" data-screen="fame">HALL OF FAME</button>
+  </nav>
+</header>
+
+<main class="screen" id="screen"></main>
+
+<div class="coin"><span class="ins blink">INSERT COIN</span> · 1 CREDIT = 1 SEASON · © CALIISM AMUSEMENTS</div>
+<div class="demo-badge" id="demoBadge">DEMO MODE — JSON NOT FOUND</div>
+
+<script>
+/* ============================================================
+   FINAL LAP · zero dependencies
+   Same data structure as the Formula GT Tracker / PITWALL:
+   racing-data-multi-season.json, with bundled demo fallback.
+   ============================================================ */
+
+'use strict';
+
+const App = { data: null, seasonIdx: 0, view: { type: 'standings' }, caches: new Map() };
+
+/* ---------------- shared math (memoized) ---------------- */
+
+function season() { return App.data.seasons[App.seasonIdx]; }
+function completedIdxs(s) {
+  return s.races.map((r, i) => (r.status === 'completed' && r.results ? i : -1)).filter(i => i >= 0);
+}
+function isComplete(s) { return s.races.length > 0 && s.races.every(r => r.status === 'completed'); }
+
+function driverStandings(si, upto = Infinity) {
+  const key = `drv|${si}|${upto}`;
+  if (App.caches.has(key)) return App.caches.get(key);
+  const s = App.data.seasons[si];
+  const map = new Map();
+  s.drivers.forEach(d => map.set(d.id, {
+    id: d.id, name: d.name, team: d.team, number: d.number,
+    points: 0, wins: 0, podiums: 0, poles: 0, fastestLaps: 0, dnfs: 0
+  }));
+  s.races.forEach((race, i) => {
+    if (i > upto || race.status !== 'completed' || !race.results) return;
+    if (race.grid && race.grid.length) {
+      const pole = map.get(race.grid[0].driverId);
+      if (pole) pole.poles++;
+    }
+    race.results.forEach(res => {
+      const d = map.get(res.driverId);
+      if (!d) return;
+      d.points += s.pointsSystem.race[res.position] || 0;
+      if (res.position === 1) d.wins++;
+      if (res.position <= 3) d.podiums++;
+      if (res.status && res.status !== 'finished') d.dnfs++;
+      if (race.fastestLap && race.fastestLap.driverId == res.driverId) {
+        d.fastestLaps++;
+        if (res.position <= 10 && res.status === 'finished') d.points += s.pointsSystem.fastestLap || 0;
+      }
+    });
+  });
+  const out = [...map.values()].sort((a, b) => b.points - a.points || b.wins - a.wins || b.podiums - a.podiums);
+  App.caches.set(key, out);
+  return out;
+}
+
+function teamStandings(si) {
+  const key = `team|${si}`;
+  if (App.caches.has(key)) return App.caches.get(key);
+  const s = App.data.seasons[si];
+  const drivers = driverStandings(si);
+  const map = new Map();
+  [...new Set(s.drivers.map(d => d.team))].forEach(t => map.set(t, { name: t, points: 0, wins: 0, podiums: 0 }));
+  drivers.forEach(d => {
+    const t = map.get(d.team);
+    if (t) { t.points += d.points; t.wins += d.wins; t.podiums += d.podiums; }
+  });
+  const out = [...map.values()].sort((a, b) => b.points - a.points || b.wins - a.wins);
+  App.caches.set(key, out);
+  return out;
+}
+
+function movementMap(si) {
+  const s = App.data.seasons[si];
+  const done = completedIdxs(s);
+  const map = new Map();
+  if (done.length < 2) return map;
+  const prev = driverStandings(si, done[done.length - 2]);
+  const prevPos = new Map(prev.map((d, i) => [d.id, i + 1]));
+  driverStandings(si).forEach((d, i) => {
+    if (prevPos.has(d.id)) map.set(d.id, prevPos.get(d.id) - (i + 1));
+  });
+  return map;
+}
+
+function teamColor(s, name) {
+  const t = s.teams.find(t => t.name === name);
+  return t && t.color ? t.color : '#888';
+}
+function tla(name) { return name.trim().split(/\s+/).pop().slice(0, 3).toUpperCase(); }
+function driverById(s, id) { return s.drivers.find(d => d.id == id); }
+function esc(str) {
+  return String(str).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function score(n) { return String(n).padStart(6, '0'); }
+
+/* ---------------- navigation ---------------- */
+
+function go(view) {
+  App.view = view;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function render() {
+  const navMap = { standings: 'standings', drivers: 'drivers', driver: 'drivers', stages: 'stages', race: 'stages', teams: 'teams', team: 'teams', fame: 'fame' };
+  document.querySelectorAll('.menu-btn').forEach(b =>
+    b.setAttribute('aria-current', String(b.dataset.nav === navMap[App.view.type])));
+
+  renderMarquee();
+
+  const fn = {
+    standings: screenStandings,
+    drivers: screenDrivers,
+    driver: screenDriver,
+    stages: screenStages,
+    race: screenRace,
+    teams: screenTeams,
+    team: screenTeam,
+    fame: screenFame
+  }[App.view.type] || screenStandings;
+
+  document.getElementById('screen').innerHTML = fn();
+}
+
+function renderMarquee() {
+  const s = season();
+  const done = completedIdxs(s).length;
+  document.getElementById('marqueeMid').innerHTML =
+    `ROUND <span class="v">${done}/${s.races.length}</span> · <span class="v">${s.year}</span> SEASON`;
+  const leader = driverStandings(App.seasonIdx)[0];
+  document.getElementById('hiScore').textContent = score(leader ? leader.points : 0);
+}
+
+/* ---------------- screens ---------------- */
+
+function screenStandings() {
+  const s = season();
+  const standings = driverStandings(App.seasonIdx);
+  const moves = movementMap(App.seasonIdx);
+  const complete = isComplete(s);
+
+  const rows = standings.map((d, i) => {
+    const mv = moves.get(d.id);
+    const mvHtml = mv === undefined ? '<span class="mv-sm"></span>'
+      : mv > 0 ? `<span class="mv-up">▲${mv}</span>`
+      : mv < 0 ? `<span class="mv-dn">▼${-mv}</span>`
+      : '<span class="mv-sm">·</span>';
+    const crown = complete && i === 0 ? ' <span class="crown">♛</span>' : '';
+    return `
+      <tr class="rowlink p${i + 1}" data-go="driver" data-id="${esc(String(d.id))}" tabindex="0">
+        <td class="rank">${String(i + 1).padStart(2, '0')}</td>
+        <td><span class="tchip" style="background:${esc(teamColor(s, d.team))}; color:${esc(teamColor(s, d.team))}"></span>${esc(tla(d.name))} · ${esc(d.name)}${crown}</td>
+        <td>${esc(d.team)}</td>
+        <td>${mvHtml}</td>
+        <td>${d.wins}</td>
+        <td class="pts">${score(d.points)}</td>
+      </tr>`;
+  }).join('');
+
+  return `
+    <div class="panel yellow">
+      <div class="screen-title">${complete ? 'FINAL STANDINGS' : 'CHAMPIONSHIP STANDINGS'}</div>
+      <div class="screen-sub">${s.year} GT WORLD CHAMPIONSHIP · <span class="hl">SELECT A RACER FOR PLAYER STATS</span></div>
+      <table class="score-table">
+        <thead><tr><th>RNK</th><th>RACER</th><th>TEAM</th><th>MV</th><th>WIN</th><th style="text-align:right">SCORE</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+function screenDrivers() {
+  const s = season();
+  const standings = driverStandings(App.seasonIdx);
+  const cards = standings.map((d, i) => {
+    const info = driverById(s, d.id) || {};
+    const color = teamColor(s, d.team);
+    return `
+      <button class="pcard" data-go="driver" data-id="${esc(String(d.id))}">
+        <span class="prank">RNK ${String(i + 1).padStart(2, '0')}</span>
+        <div class="num">${esc(String(info.number ?? '?'))}</div>
+        <div class="ptla">${esc(tla(d.name))}</div>
+        <div class="pname">${esc(d.name)}</div>
+        <div class="pteam">${esc(d.team)} · ${esc(info.nationality || '')}</div>
+        <div class="stripe" style="background:${esc(color)}"></div>
+      </button>`;
+  }).join('');
+
+  return `
+    <div class="panel">
+      <div class="screen-title">DRIVER SELECT</div>
+      <div class="screen-sub">${s.year} GRID · <span class="hl">CHOOSE YOUR RACER</span></div>
+      <div class="select-grid">${cards}</div>
+    </div>`;
+}
+
+function meter(label, value, max, cls = '') {
+  const SEGS = 10;
+  const on = max > 0 ? Math.round(value / max * SEGS) : 0;
+  const segs = Array.from({ length: SEGS }, (_, i) =>
+    `<span class="seg${i < on ? ' on' : ''}"></span>`).join('');
+  return `
+    <div class="meter ${cls}">
+      <span class="lab">${label}</span>
+      <span class="bar">${segs}</span>
+      <span class="val">${value}</span>
+    </div>`;
+}
+
+function screenDriver() {
+  const s = season();
+  const standings = driverStandings(App.seasonIdx);
+  const idx = standings.findIndex(d => d.id == App.view.id);
+  if (idx === -1) return '<div class="panel"><div class="notice">RACER NOT FOUND IN THIS SEASON.</div></div>';
+  const d = standings[idx];
+  const info = driverById(s, d.id) || {};
+  const leader = standings[0];
+
+  // season log
+  const logRows = s.races.map((race, i) => {
+    if (race.status !== 'completed' || !race.results) return '';
+    const res = race.results.find(r => r.driverId == d.id);
+    if (!res) return '';
+    const dnf = res.status && res.status !== 'finished';
+    const fl = race.fastestLap && race.fastestLap.driverId == d.id;
+    const pts = (s.pointsSystem.race[res.position] || 0) + (fl && res.position <= 10 && !dnf ? (s.pointsSystem.fastestLap || 0) : 0);
+    return `
+      <tr class="rowlink" data-go="race" data-idx="${i}" tabindex="0">
+        <td class="rank">${String(i + 1).padStart(2, '0')}</td>
+        <td>${esc(race.name)}</td>
+        <td>${dnf ? '<span class="mv-dn">OUT</span>' : 'P' + res.position}${res.position === 1 && !dnf ? ' <span class="crown">★</span>' : ''}${fl ? ' <span style="color:var(--magenta)">FL!</span>' : ''}</td>
+        <td class="pts">${pts ? score(pts).slice(3) : '···'}</td>
+      </tr>`;
+  }).join('');
+
+  // career across seasons
+  const career = [];
+  App.data.seasons.forEach((cs, csi) => {
+    if (!cs.drivers.find(x => x.id == d.id) || !completedIdxs(cs).length) return;
+    const st = driverStandings(csi);
+    const p = st.findIndex(x => x.id == d.id);
+    if (p === -1) return;
+    career.push(`${cs.year} P${p + 1}${isComplete(cs) && p === 0 ? '<span class="crown">♛</span>' : ''}`);
+  });
+
+  return `
+    <div class="panel magenta">
+      <button class="backbtn" data-go="nav" data-screen="drivers">◀ B · DRIVER SELECT</button>
+      <div class="screen-title">PLAYER ${String(idx + 1).padStart(2, '0')} — ${esc(tla(d.name))}</div>
+      <div class="screen-sub">
+        ${esc(d.name)} · #${esc(String(info.number ?? ''))} · ${esc(d.team)} · ${esc(info.nationality || '')}
+        ${career.length ? ` · <span class="hl">RECORD: ${career.join(' / ')}</span>` : ''}
+      </div>
+      <div class="meters">
+        ${meter('SCORE', d.points, leader.points, 'gold')}
+        ${meter('WINS', d.wins, Math.max(1, leader.wins))}
+        ${meter('PODIUMS', d.podiums, Math.max(1, ...standings.map(x => x.podiums)))}
+        ${meter('POLES', d.poles, Math.max(1, ...standings.map(x => x.poles)))}
+        ${meter('F.LAPS', d.fastestLaps, Math.max(1, ...standings.map(x => x.fastestLaps)), 'pink')}
+      </div>
+    </div>
+    <div class="panel">
+      <div class="screen-title" style="font-size:0.8rem">SEASON LOG</div>
+      <table class="score-table">
+        <thead><tr><th>STG</th><th>RACE</th><th>RESULT</th><th style="text-align:right">PTS</th></tr></thead>
+        <tbody>${logRows || '<tr><td colspan="4" class="notice" style="border:none">NO STAGES CLEARED YET.</td></tr>'}</tbody>
+      </table>
+    </div>`;
+}
+
+function screenStages() {
+  const s = season();
+  let nextFound = false;
+
+  const stages = s.races.map((race, i) => {
+    const done = race.status === 'completed' && race.results;
+    let stateCls = 'locked', stateHtml = '<span class="lock-tag">LOCKED</span>', interactive = '';
+    if (done) {
+      stateCls = 'clear';
+      interactive = ` data-go="race" data-idx="${i}" tabindex="0"`;
+      const win = race.results.find(r => r.position === 1);
+      const winner = win && driverById(s, win.driverId);
+      stateHtml = `<span class="clear-tag">CLEAR!</span>${winner ? `<span class="winner">1ST ${esc(tla(winner.name))}</span>` : ''}`;
+    } else if (!nextFound) {
+      nextFound = true;
+      stateCls = 'next';
+      stateHtml = `<span class="next-tag blink">NEXT RACE</span>${race.date ? `<span class="winner">${esc(race.date)}</span>` : ''}`;
+    }
+    const tag = done ? 'button' : 'div';
+    return `
+      <${tag} class="stage ${stateCls}"${interactive}>
+        <span class="stage-no">STAGE<span class="n">${String(i + 1).padStart(2, '0')}</span></span>
+        <span>
+          <div class="stage-name">${esc(race.name)}</div>
+          <div class="stage-loc">${esc(race.location || '')}</div>
+        </span>
+        <span class="stage-state">${stateHtml}</span>
+      </${tag}>`;
+  }).join('');
+
+  return `
+    <div class="panel">
+      <div class="screen-title">STAGE SELECT</div>
+      <div class="screen-sub">${s.year} CALENDAR · <span class="hl">CLEARED STAGES OPEN THE RESULTS SCREEN</span></div>
+      ${stages}
+    </div>`;
+}
+
+function screenRace() {
+  const s = season();
+  const i = App.view.idx;
+  const race = s.races[i];
+  if (!race || race.status !== 'completed' || !race.results) {
+    return '<div class="panel"><div class="notice">STAGE NOT CLEARED YET.</div></div>';
+  }
+
+  const gridPos = new Map((race.grid || []).map((g, gi) => [g.driverId, gi + 1]));
+  const top3 = race.results.slice(0, 3).map(res => ({ res, d: driverById(s, res.driverId) }));
+
+  const podium = `
+    <div class="podium">
+      ${top3.map(({ res, d }, n) => d ? `
+        <div class="pod pod-${n + 1}">
+          <div class="plc">${['1ST', '2ND', '3RD'][n]}</div>
+          <div class="who">${esc(tla(d.name))}</div>
+          <div class="tm">${esc(d.name)}<br>${esc(d.team)}</div>
+          <div class="base" style="background:${esc(teamColor(s, d.team))}"></div>
+        </div>` : '').join('')}
+    </div>`;
+
+  const rows = race.results.map(res => {
+    const d = driverById(s, res.driverId);
+    if (!d) return '';
+    const g = gridPos.get(res.driverId);
+    const delta = g === undefined ? null : g - res.position;
+    const dnf = res.status && res.status !== 'finished';
+    const fl = race.fastestLap && race.fastestLap.driverId == res.driverId;
+    const pts = (s.pointsSystem.race[res.position] || 0) + (fl && res.position <= 10 && !dnf ? (s.pointsSystem.fastestLap || 0) : 0);
+    return `
+      <tr class="rowlink" data-go="driver" data-id="${esc(String(d.id))}" tabindex="0">
+        <td class="rank">${String(res.position).padStart(2, '0')}</td>
+        <td><span class="tchip" style="background:${esc(teamColor(s, d.team))}; color:${esc(teamColor(s, d.team))}"></span>${esc(d.name)}${dnf ? ' <span class="mv-dn">OUT</span>' : ''}${fl ? ' <span style="color:var(--magenta)">FL!</span>' : ''}</td>
+        <td>${g ? 'P' + g : '·'}</td>
+        <td>${delta === null ? '' : delta > 0 ? `<span class="mv-up">▲${delta}</span>` : delta < 0 ? `<span class="mv-dn">▼${-delta}</span>` : '<span class="mv-sm">·</span>'}</td>
+        <td class="pts">${pts ? score(pts).slice(3) : '···'}</td>
+      </tr>`;
+  }).join('');
+
+  // previous winners across seasons
+  const prev = [];
+  App.data.seasons.forEach((cs, csi) => {
+    cs.races.forEach((r, ri) => {
+      if (r.name !== race.name || r.status !== 'completed' || !r.results) return;
+      if (csi === App.seasonIdx && ri === i) return;
+      const win = r.results.find(res => res.position === 1);
+      const winner = win && driverById(cs, win.driverId);
+      if (winner) prev.push(`${cs.year} ${esc(tla(winner.name))}`);
+    });
+  });
+
+  return `
+    <div class="panel yellow">
+      <button class="backbtn" data-go="nav" data-screen="stages">◀ B · STAGE SELECT</button>
+      <div class="screen-title">RACE OVER — STAGE ${String(i + 1).padStart(2, '0')}</div>
+      <div class="screen-sub">${esc(race.name)} · ${esc(race.location || '')}${race.date ? ' · ' + esc(race.date) : ''}
+        ${prev.length ? ` · <span class="hl">PREV WINNERS: ${prev.join(' / ')}</span>` : ''}</div>
+      ${podium}
+      <table class="score-table">
+        <thead><tr><th>POS</th><th>RACER</th><th>GRID</th><th>+/−</th><th style="text-align:right">PTS</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+function screenTeams() {
+  const s = season();
+  const teams = teamStandings(App.seasonIdx);
+  const drivers = driverStandings(App.seasonIdx);
+
+  const rows = teams.map((t, i) => {
+    const squad = drivers.filter(d => d.team === t.name).map(d => esc(tla(d.name))).join(' + ');
+    return `
+      <tr class="rowlink p${i + 1}" data-go="team" data-name="${esc(t.name)}" tabindex="0">
+        <td class="rank">${String(i + 1).padStart(2, '0')}</td>
+        <td><span class="tchip" style="background:${esc(teamColor(s, t.name))}; color:${esc(teamColor(s, t.name))}"></span>${esc(t.name)}</td>
+        <td>${squad}</td>
+        <td>${t.wins}</td>
+        <td class="pts">${score(t.points)}</td>
+      </tr>`;
+  }).join('');
+
+  return `
+    <div class="panel">
+      <div class="screen-title">TEAM GP</div>
+      <div class="screen-sub">${s.year} CONSTRUCTORS · <span class="hl">2-PLAYER CO-OP SCORING</span></div>
+      <table class="score-table">
+        <thead><tr><th>RNK</th><th>TEAM</th><th>SQUAD</th><th>WIN</th><th style="text-align:right">SCORE</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+function screenTeam() {
+  const s = season();
+  const teams = teamStandings(App.seasonIdx);
+  const idx = teams.findIndex(t => t.name === App.view.name);
+  if (idx === -1) return '<div class="panel"><div class="notice">TEAM NOT FOUND.</div></div>';
+  const t = teams[idx];
+  const squad = driverStandings(App.seasonIdx).filter(d => d.team === t.name);
+  const leader = teamStandings(App.seasonIdx)[0];
+
+  const squadCards = squad.map(d => {
+    const info = driverById(s, d.id) || {};
+    return `
+      <button class="pcard" data-go="driver" data-id="${esc(String(d.id))}">
+        <div class="num">${esc(String(info.number ?? '?'))}</div>
+        <div class="ptla">${esc(tla(d.name))}</div>
+        <div class="pname">${esc(d.name)}</div>
+        <div class="pteam">${score(d.points)} PTS · ${d.wins} WIN</div>
+        <div class="stripe" style="background:${esc(teamColor(s, t.name))}"></div>
+      </button>`;
+  }).join('');
+
+  return `
+    <div class="panel">
+      <button class="backbtn" data-go="nav" data-screen="teams">◀ B · TEAM GP</button>
+      <div class="screen-title">${esc(t.name)}</div>
+      <div class="screen-sub">RNK ${String(idx + 1).padStart(2, '0')} · ${s.year} CONSTRUCTORS</div>
+      <div class="meters">
+        ${meter('SCORE', t.points, leader.points, 'gold')}
+        ${meter('WINS', t.wins, Math.max(1, ...teams.map(x => x.wins)))}
+        ${meter('PODIUMS', t.podiums, Math.max(1, ...teams.map(x => x.podiums)))}
+      </div>
+      <div class="select-grid" style="margin-top:20px">${squadCards}</div>
+    </div>`;
+}
+
+function screenFame() {
+  const rows = [...App.data.seasons].map((s, si) => ({ s, si }))
+    .filter(({ s }) => completedIdxs(s).length)
+    .reverse()
+    .map(({ s, si }) => {
+      const champ = driverStandings(si)[0];
+      const ctor = teamStandings(si)[0];
+      const complete = isComplete(s);
+      return `
+        <div class="fame-row">
+          <div class="fame-year">${s.year}${complete ? '' : '<span class="wip blink">IN PROGRESS</span>'}</div>
+          <div class="fame-entry">
+            <div class="lab">${complete ? 'WORLD CHAMPION' : 'CURRENT LEADER'}</div>
+            <div class="who">♛ ${esc(champ.name)}</div>
+            <div class="det">${esc(champ.team)} · ${score(champ.points)} PTS · ${champ.wins} WINS</div>
+          </div>
+          <div class="fame-entry">
+            <div class="lab">${complete ? 'TEAM CHAMPION' : 'LEADING TEAM'}</div>
+            <div class="who">${esc(ctor.name)}</div>
+            <div class="det">${score(ctor.points)} PTS · ${ctor.wins} WINS</div>
+          </div>
+        </div>`;
+    }).join('');
+
+  return `
+    <div class="panel magenta">
+      <div class="screen-title">HALL OF FAME</div>
+      <div class="screen-sub">EVERY CHAMPION ON RECORD</div>
+      ${rows || '<div class="notice">NO RECORDS YET. CLEAR A STAGE FIRST.</div>'}
+    </div>`;
+}
+
+/* ---------------- input ---------------- */
+
+function handleGoTarget(el) {
+  const kind = el.dataset.go;
+  if (kind === 'nav') go({ type: el.dataset.screen });
+  else if (kind === 'driver') go({ type: 'driver', id: el.dataset.id });
+  else if (kind === 'race') go({ type: 'race', idx: parseInt(el.dataset.idx, 10) });
+  else if (kind === 'team') go({ type: 'team', name: el.dataset.name });
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-go]');
+  if (el) handleGoTarget(el);
+});
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const el = e.target.closest && e.target.closest('[data-go]');
+  if (el && el.tagName !== 'BUTTON') { e.preventDefault(); handleGoTarget(el); }
+});
+
+/* ---------------- boot ---------------- */
+
+function buildSeasonSelect() {
+  const sel = document.getElementById('seasonSelect');
+  sel.innerHTML = App.data.seasons.map((s, i) => `<option value="${i}">${s.year}</option>`).join('');
+  sel.value = App.seasonIdx;
+  sel.onchange = () => {
+    App.seasonIdx = parseInt(sel.value, 10);
+    if (['driver', 'race', 'team'].includes(App.view.type)) App.view = { type: 'standings' };
+    render();
+  };
+}
+
+function demoData() {
+  const D = (id, name, team, number, nationality) => ({ id, name, team, number, nationality, birthday: '2000-01-01' });
+  const drivers = [
+    D(1, 'Kai Mercer', 'Vortex Racing', 7, 'GB'), D(2, 'Luca Ferraro', 'Vortex Racing', 11, 'IT'),
+    D(3, 'Ren Takeda', 'Apex GP', 23, 'JP'), D(4, 'Marcus Hale', 'Apex GP', 4, 'US'),
+    D(5, 'Elias Brandt', 'Nordwind', 18, 'DE'), D(6, 'Theo Laurent', 'Nordwind', 31, 'FR'),
+    D(7, 'Santiago Vega', 'Calavera', 9, 'ES'), D(8, 'Oliver Knox', 'Calavera', 88, 'AU')
+  ];
+  const teams = [
+    { name: 'Vortex Racing', color: '#9D5CFF' }, { name: 'Apex GP', color: '#39D98A' },
+    { name: 'Nordwind', color: '#4DA3FF' }, { name: 'Calavera', color: '#FF6B4A' }
+  ];
+  const pointsSystem = { race: { 1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4 }, sprint: {}, fastestLap: 1 };
+  const R = (name, location, date, order, fl, dnfIds = []) => ({
+    name, location, date, status: 'completed',
+    results: order.map((driverId, i) => ({ driverId, position: i + 1, status: dnfIds.includes(driverId) ? 'dnf' : 'finished' })),
+    grid: [...order].reverse().map(driverId => ({ driverId })),
+    fastestLap: { driverId: fl }
+  });
+  return { seasons: [
+    { year: 2024, totalRaces: 5, drivers, teams, pointsSystem, races: [
+      R('Neon City GP', 'Night Stage', '2024-03-10', [3, 1, 5, 7, 2, 4, 6, 8], 3),
+      R('Seaside Run', 'Coast Stage', '2024-04-14', [3, 5, 1, 2, 4, 7, 8, 6], 1),
+      R('Mountain Pass', 'Alpine Stage', '2024-05-26', [1, 3, 2, 5, 7, 4, 6, 8], 3, [8]),
+      R('Desert Mirage', 'Dune Stage', '2024-07-07', [3, 1, 4, 5, 2, 6, 7, 8], 4),
+      R('Final Circuit', 'Mega Stage', '2024-09-01', [3, 2, 1, 7, 5, 4, 8, 6], 3)
+    ]},
+    { year: 2025, totalRaces: 6, drivers, teams, pointsSystem, races: [
+      R('Neon City GP', 'Night Stage', '2025-03-09', [1, 3, 2, 5, 4, 7, 6, 8], 1),
+      R('Seaside Run', 'Coast Stage', '2025-04-13', [1, 5, 3, 2, 7, 4, 8, 6], 5),
+      R('Mountain Pass', 'Alpine Stage', '2025-05-25', [5, 1, 3, 4, 2, 6, 7, 8], 1, [7]),
+      R('Desert Mirage', 'Dune Stage', '2025-07-06', [3, 1, 5, 2, 4, 8, 6, 7], 3),
+      { name: 'Final Circuit', location: 'Mega Stage', date: '2025-09-07', status: 'upcoming', results: null, grid: null, fastestLap: null },
+      { name: 'Bonus Round', location: 'Secret Stage', date: '2025-11-23', status: 'upcoming', results: null, grid: null, fastestLap: null }
+    ]}
+  ]};
+}
+
+async function boot() {
+  try {
+    const res = await fetch('racing-data-multi-season.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    App.data = await res.json();
+  } catch (e) {
+    App.data = demoData();
+    document.getElementById('demoBadge').classList.add('show');
+  }
+  App.seasonIdx = App.data.seasons.length - 1;
+  buildSeasonSelect();
+  render();
+}
+
+window.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>
