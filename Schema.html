@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCHEMA — GT World Championship Drawing Set</title>
+<meta name="description" content="The GT World Championship as an engineering drawing set.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   SCHEMA — cyanotype drawing-set tokens
+   blueprint blue · pale linework · redline markup
+   ============================================================ */
+:root {
+  --blue:    #10305C;
+  --blue-2:  #0B2548;
+  --line:    #B9D2F0;
+  --line-2:  #5E7FB0;
+  --bright:  #FFFFFF;
+  --redline: #FF5C49;
+  --hilite:  #FFD84D;
+  --disp:    'Michroma', sans-serif;
+  --draft:   'Share Tech Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+::selection { background: var(--hilite); color: var(--blue-2); }
+
+body {
+  font-family: var(--draft);
+  font-size: 16px;
+  background: var(--blue);
+  color: var(--line);
+  /* graph paper: fine + major grid */
+  background-image:
+    linear-gradient(rgba(185, 210, 240, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(185, 210, 240, 0.06) 1px, transparent 1px),
+    linear-gradient(rgba(185, 210, 240, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(185, 210, 240, 0.12) 1px, transparent 1px);
+  background-size: 10px 10px, 10px 10px, 50px 50px, 50px 50px;
+  min-height: 100vh;
+}
+
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+button:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--hilite);
+  outline-offset: 2px;
+}
+
+a, .lk { color: var(--bright); }
+
+/* ---------- Top strip ---------- */
+.topstrip {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: var(--blue-2);
+  border-bottom: 2px solid var(--line);
+}
+.topstrip-in {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 18px;
+  flex-wrap: wrap;
+}
+.logo {
+  font-family: var(--disp);
+  font-size: 1.05rem;
+  letter-spacing: 3px;
+  color: var(--bright);
+}
+.logo .dim { color: var(--line-2); }
+.proj {
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  color: var(--line-2);
+}
+.sheet-tabs { display: flex; gap: 4px; margin-left: auto; flex-wrap: wrap; }
+.sheet-tab {
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  padding: 7px 10px;
+  border: 1px solid var(--line-2);
+  color: var(--line);
+}
+.sheet-tab:hover { border-color: var(--line); color: var(--bright); }
+.sheet-tab[aria-current="true"] {
+  background: var(--line);
+  color: var(--blue-2);
+  border-color: var(--line);
+  font-weight: 700;
+}
+.rev-pick {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  color: var(--line-2);
+}
+.rev-pick select {
+  font-family: var(--draft);
+  font-size: 0.85rem;
+  background: var(--blue);
+  color: var(--bright);
+  border: 1px solid var(--line-2);
+  padding: 4px 6px;
+  cursor: pointer;
+}
+
+/* ---------- Drawing sheet ---------- */
+.board { max-width: 1140px; margin: 26px auto 60px; padding: 0 16px; }
+.sheet {
+  position: relative;
+  border: 2px solid var(--line);
+  box-shadow: inset 0 0 0 6px var(--blue), inset 0 0 0 7px var(--line-2);
+  padding: 38px 34px 120px;
+  background: rgba(11, 37, 72, 0.35);
+}
+/* corner registration ticks */
+.sheet::before, .sheet::after {
+  content: '+';
+  position: absolute;
+  color: var(--line-2);
+  font-size: 14px;
+}
+.sheet::before { top: 10px; left: 12px; }
+.sheet::after { bottom: 10px; right: 12px; }
+
+.dwg-kicker {
+  font-size: 0.68rem;
+  letter-spacing: 3px;
+  color: var(--line-2);
+  margin-bottom: 8px;
+}
+.dwg-title {
+  font-family: var(--disp);
+  font-size: clamp(1.2rem, 3.6vw, 2.1rem);
+  letter-spacing: 2px;
+  color: var(--bright);
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+.dwg-sub { font-size: 0.85rem; color: var(--line); margin-top: 8px; }
+.dwg-sub .rl { color: var(--redline); }
+.dwg-sub .hl { color: var(--hilite); }
+
+/* ---------- Title block (signature) ---------- */
+.titleblock {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: grid;
+  grid-template-columns: auto auto;
+  border: 2px solid var(--line);
+  background: var(--blue-2);
+  font-size: 0.62rem;
+  letter-spacing: 1px;
+  max-width: min(420px, calc(100% - 16px));
+}
+.tb-cell { padding: 5px 10px; border: 1px solid var(--line-2); }
+.tb-cell .k { color: var(--line-2); display: block; font-size: 0.55rem; }
+.tb-cell .v { color: var(--bright); }
+.tb-cell.wide { grid-column: 1 / -1; }
+.tb-cell .v.rl { color: var(--redline); }
+
+/* ---------- Section labels ---------- */
+.detail-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 40px 0 16px;
+}
+.detail-label .bubble {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  display: grid;
+  place-items: center;
+  font-size: 0.85rem;
+  color: var(--bright);
+  flex-shrink: 0;
+}
+.detail-label .txt {
+  font-family: var(--disp);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  color: var(--bright);
+  text-transform: uppercase;
+}
+.detail-label .note { font-size: 0.68rem; color: var(--line-2); margin-left: auto; }
+.detail-label::after { content: ''; flex: 0 0 0; }
+
+/* ---------- Drafting table ---------- */
+.dtable { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.dtable th {
+  text-align: left;
+  font-size: 0.62rem;
+  letter-spacing: 2px;
+  color: var(--line-2);
+  border-bottom: 1px solid var(--line);
+  padding: 7px 10px;
+}
+.dtable td { padding: 8px 10px; border-bottom: 1px dashed rgba(94, 127, 176, 0.45); }
+.dtable tr.rowlink { cursor: pointer; }
+.dtable tr.rowlink:hover td { background: rgba(185, 210, 240, 0.08); color: var(--bright); }
+.dtable .r { text-align: right; }
+.dtable .b { color: var(--bright); }
+.up { color: #7FE3A8; }
+.rl { color: var(--redline); }
+.dim2 { color: var(--line-2); }
+.sq {
+  display: inline-block;
+  width: 9px; height: 9px;
+  border: 1px solid var(--line);
+  margin-right: 9px;
+}
+.partno { color: var(--hilite); }
+
+/* revision-cloud-ish tag for champions */
+.revtag {
+  display: inline-block;
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  color: var(--hilite);
+  border: 1px dashed var(--hilite);
+  border-radius: 8px;
+  padding: 1px 7px;
+  margin-left: 8px;
+}
+
+/* ---------- Dimension drawing (SVG) ---------- */
+.dimwrap { overflow-x: auto; }
+.dimwrap svg { display: block; min-width: 640px; width: 100%; height: auto; }
+.dim-bar { fill: rgba(185, 210, 240, 0.18); stroke: var(--line); stroke-width: 1.5; }
+.dim-bar-lead { fill: rgba(255, 216, 77, 0.18); stroke: var(--hilite); }
+.dim-name { font-family: 'Share Tech Mono', monospace; font-size: 12px; fill: var(--line); }
+.dim-name.lead { fill: var(--hilite); }
+.dim-pts { font-family: 'Share Tech Mono', monospace; font-size: 12px; fill: var(--bright); }
+.dim-line { stroke: var(--redline); stroke-width: 1; }
+.dim-ext { stroke: var(--line-2); stroke-width: 1; stroke-dasharray: 3 3; }
+.dim-val { font-family: 'Share Tech Mono', monospace; font-size: 11px; fill: var(--redline); }
+.dim-axis { stroke: var(--line-2); stroke-width: 1; }
+
+/* ---------- Component grid (drivers) ---------- */
+.comp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
+}
+.comp {
+  border: 1px solid var(--line-2);
+  background: rgba(11, 37, 72, 0.5);
+  padding: 16px 16px 14px;
+  text-align: left;
+  position: relative;
+}
+.comp:hover, .comp:focus-visible { border-color: var(--bright); background: rgba(185, 210, 240, 0.06); }
+.comp::before {
+  content: attr(data-callout);
+  position: absolute;
+  top: -11px;
+  left: 12px;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line);
+  background: var(--blue);
+  display: grid;
+  place-items: center;
+  font-size: 0.62rem;
+  color: var(--bright);
+}
+.comp-part { font-size: 0.65rem; letter-spacing: 1.5px; color: var(--hilite); }
+.comp-name {
+  font-family: var(--disp);
+  font-size: 0.92rem;
+  letter-spacing: 1px;
+  color: var(--bright);
+  margin: 8px 0 4px;
+  text-transform: uppercase;
+}
+.comp-meta { font-size: 0.72rem; color: var(--line-2); }
+.comp-bar { height: 5px; background: rgba(185,210,240,0.15); margin-top: 12px; position: relative; }
+.comp-bar i { position: absolute; inset: 0 auto 0 0; background: var(--line); }
+
+/* ---------- Spec strip ---------- */
+.specstrip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+  border: 1px solid var(--line);
+  margin: 22px 0;
+}
+.specstrip .cell {
+  padding: 12px 14px 10px;
+  border-right: 1px solid var(--line-2);
+}
+.specstrip .cell:last-child { border-right: none; }
+.specstrip .v { font-family: var(--disp); font-size: 1.4rem; color: var(--bright); }
+.specstrip .k { font-size: 0.58rem; letter-spacing: 1.5px; color: var(--line-2); margin-top: 5px; }
+
+.backbtn {
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  color: var(--hilite);
+  border-bottom: 1px dashed var(--hilite);
+  padding-bottom: 2px;
+  margin-bottom: 18px;
+  display: inline-block;
+}
+.backbtn:hover { color: var(--bright); border-color: var(--bright); }
+
+/* ---------- Schedule ---------- */
+.sched-row {
+  display: grid;
+  grid-template-columns: 88px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  border: 1px solid var(--line-2);
+  padding: 13px 16px;
+  margin-bottom: 12px;
+  width: 100%;
+  text-align: left;
+  background: rgba(11, 37, 72, 0.4);
+}
+.sched-row.done:hover, .sched-row.done:focus-visible { border-color: var(--bright); }
+.sched-row.pending { opacity: 0.65; }
+.sched-no { font-size: 0.65rem; letter-spacing: 1px; color: var(--line-2); }
+.sched-no .n { font-family: var(--disp); font-size: 1rem; color: var(--bright); display: block; margin-top: 4px; }
+.sched-name { font-family: var(--disp); font-size: 0.95rem; letter-spacing: 1px; color: var(--bright); text-transform: uppercase; }
+.sched-loc { font-size: 0.75rem; color: var(--line-2); margin-top: 3px; }
+.sched-status { font-size: 0.68rem; letter-spacing: 1px; text-align: right; }
+.sched-status .ok { color: #7FE3A8; }
+.sched-status .pend { color: var(--line-2); }
+.sched-status .who { display: block; color: var(--bright); margin-top: 5px; }
+
+/* ---------- Career ticks ---------- */
+.career-line { display: flex; gap: 10px; flex-wrap: wrap; margin: 4px 0 22px; }
+.career-tick {
+  border: 1px solid var(--line-2);
+  padding: 8px 12px;
+  font-size: 0.72rem;
+}
+.career-tick .yr { color: var(--line-2); }
+.career-tick .p { color: var(--bright); font-family: var(--disp); font-size: 0.9rem; margin-left: 6px; }
+.career-tick.champ { border-color: var(--hilite); }
+.career-tick.champ .p { color: var(--hilite); }
+
+/* ---------- Revision history (archive) ---------- */
+.rev-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.rev-table th {
+  text-align: left;
+  font-size: 0.62rem;
+  letter-spacing: 2px;
+  color: var(--line-2);
+  border: 1px solid var(--line-2);
+  padding: 8px 12px;
+}
+.rev-table td { border: 1px solid var(--line-2); padding: 12px; vertical-align: top; }
+.rev-table tr.rowlink { cursor: pointer; }
+.rev-table tr.rowlink:hover td { background: rgba(185, 210, 240, 0.08); }
+.rev-table .rev-id { font-family: var(--disp); color: var(--hilite); font-size: 1rem; }
+.rev-table .champ-line { color: var(--bright); }
+
+.notice {
+  border: 1px dashed var(--line-2);
+  padding: 14px 16px;
+  font-size: 0.8rem;
+  color: var(--line-2);
+}
+
+.demo-badge {
+  position: fixed;
+  bottom: 12px; left: 12px;
+  z-index: 80;
+  font-size: 0.62rem;
+  letter-spacing: 1px;
+  background: var(--redline);
+  color: var(--blue-2);
+  font-weight: 700;
+  padding: 6px 10px;
+  display: none;
+}
+.demo-badge.show { display: block; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 760px) {
+  .sheet { padding: 26px 18px 150px; }
+  .proj { display: none; }
+  .sched-row { grid-template-columns: 64px 1fr; }
+  .sched-status { grid-column: 1 / -1; text-align: left; }
+  .titleblock { position: static; margin-top: 30px; max-width: none; }
+  .sheet { padding-bottom: 26px; }
+}
+</style>
+</head>
+<body>
+
+<header class="topstrip">
+  <div class="topstrip-in">
+    <div class="logo">SCHEMA<span class="dim">//GT</span></div>
+    <div class="proj">PROJECT: GT WORLD CHAMPIONSHIP · DRAWING SET</div>
+    <nav class="sheet-tabs" aria-label="Sheets">
+      <button class="sheet-tab" data-nav="standings" aria-current="true" data-go="nav" data-screen="standings">S1 STANDINGS</button>
+      <button class="sheet-tab" data-nav="components" aria-current="false" data-go="nav" data-screen="components">S2 DRIVERS</button>
+      <button class="sheet-tab" data-nav="schedule" aria-current="false" data-go="nav" data-screen="schedule">S3 SCHEDULE</button>
+      <button class="sheet-tab" data-nav="assemblies" aria-current="false" data-go="nav" data-screen="assemblies">S4 TEAMS</button>
+      <button class="sheet-tab" data-nav="revisions" aria-current="false" data-go="nav" data-screen="revisions">S5 REVISIONS</button>
+    </nav>
+    <label class="rev-pick">YEAR
+      <select id="seasonSelect" aria-label="Select season"></select>
+    </label>
+  </div>
+</header>
+
+<main class="board">
+  <div class="sheet" id="sheet"></div>
+</main>
+
+<div class="demo-badge" id="demoBadge">UNCONTROLLED COPY — JSON NOT FOUND</div>
+
+<script>
+/* ============================================================
+   SCHEMA · zero dependencies
+   Same structure as the other editions:
+   racing-data-multi-season.json, bundled demo fallback.
+   ============================================================ */
+
+'use strict';
+
+const App = { data: null, seasonIdx: 0, view: { type: 'standings' }, caches: new Map() };
+
+/* ---------------- shared math (memoized) ---------------- */
+
+function season() { return App.data.seasons[App.seasonIdx]; }
+function completedIdxs(s) {
+  return s.races.map((r, i) => (r.status === 'completed' && r.results ? i : -1)).filter(i => i >= 0);
+}
+function isComplete(s) { return s.races.length > 0 && s.races.every(r => r.status === 'completed'); }
+
+function driverStandings(si, upto = Infinity) {
+  const key = `drv|${si}|${upto}`;
+  if (App.caches.has(key)) return App.caches.get(key);
+  const s = App.data.seasons[si];
+  const map = new Map();
+  s.drivers.forEach(d => map.set(d.id, {
+    id: d.id, name: d.name, team: d.team, number: d.number,
+    points: 0, wins: 0, podiums: 0, poles: 0, fastestLaps: 0, dnfs: 0
+  }));
+  s.races.forEach((race, i) => {
+    if (i > upto || race.status !== 'completed' || !race.results) return;
+    if (race.grid && race.grid.length) {
+      const pole = map.get(race.grid[0].driverId);
+      if (pole) pole.poles++;
+    }
+    race.results.forEach(res => {
+      const d = map.get(res.driverId);
+      if (!d) return;
+      d.points += s.pointsSystem.race[res.position] || 0;
+      if (res.position === 1) d.wins++;
+      if (res.position <= 3) d.podiums++;
+      if (res.status && res.status !== 'finished') d.dnfs++;
+      if (race.fastestLap && race.fastestLap.driverId == res.driverId) {
+        d.fastestLaps++;
+        if (res.position <= 10 && res.status === 'finished') d.points += s.pointsSystem.fastestLap || 0;
+      }
+    });
+  });
+  const out = [...map.values()].sort((a, b) => b.points - a.points || b.wins - a.wins || b.podiums - a.podiums);
+  App.caches.set(key, out);
+  return out;
+}
+
+function teamStandings(si) {
+  const key = `team|${si}`;
+  if (App.caches.has(key)) return App.caches.get(key);
+  const s = App.data.seasons[si];
+  const drivers = driverStandings(si);
+  const map = new Map();
+  [...new Set(s.drivers.map(d => d.team))].forEach(t => map.set(t, { name: t, points: 0, wins: 0, podiums: 0, poles: 0 }));
+  drivers.forEach(d => {
+    const t = map.get(d.team);
+    if (t) { t.points += d.points; t.wins += d.wins; t.podiums += d.podiums; t.poles += d.poles; }
+  });
+  const out = [...map.values()].sort((a, b) => b.points - a.points || b.wins - a.wins);
+  App.caches.set(key, out);
+  return out;
+}
+
+function movementMap(si) {
+  const s = App.data.seasons[si];
+  const done = completedIdxs(s);
+  const map = new Map();
+  if (done.length < 2) return map;
+  const prev = driverStandings(si, done[done.length - 2]);
+  const prevPos = new Map(prev.map((d, i) => [d.id, i + 1]));
+  driverStandings(si).forEach((d, i) => {
+    if (prevPos.has(d.id)) map.set(d.id, prevPos.get(d.id) - (i + 1));
+  });
+  return map;
+}
+
+function teamColor(s, name) {
+  const t = s.teams.find(t => t.name === name);
+  return t && t.color ? t.color : '#B9D2F0';
+}
+function driverById(s, id) { return s.drivers.find(d => d.id == id); }
+function esc(str) {
+  return String(str).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function surname(name) { return name.trim().split(/\s+/).pop().toUpperCase(); }
+function latestDate(s) {
+  const done = completedIdxs(s);
+  if (!done.length) return '—';
+  return s.races[done[done.length - 1]].date || '—';
+}
+
+/* ---------------- navigation + chrome ---------------- */
+
+function go(view) {
+  App.view = view;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+const SHEET_NO = { standings: 1, components: 2, driver: 2, schedule: 3, race: 3, assemblies: 4, team: 4, revisions: 5 };
+
+function titleblock(title) {
+  const s = season();
+  const done = completedIdxs(s).length;
+  const no = SHEET_NO[App.view.type] || 1;
+  return `
+    <div class="titleblock" aria-label="Title block">
+      <div class="tb-cell wide"><span class="k">TITLE</span><span class="v">${esc(title)}</span></div>
+      <div class="tb-cell"><span class="k">DWG NO.</span><span class="v">GT-${s.year}-S${no}</span></div>
+      <div class="tb-cell"><span class="k">SHEET</span><span class="v">${no} OF 5</span></div>
+      <div class="tb-cell"><span class="k">REV</span><span class="v ${isComplete(s) ? '' : 'rl'}">${isComplete(s) ? 'FINAL' : 'R' + done}</span></div>
+      <div class="tb-cell"><span class="k">DATE</span><span class="v">${esc(latestDate(s))}</span></div>
+      <div class="tb-cell"><span class="k">SCALE</span><span class="v">NTS</span></div>
+      <div class="tb-cell"><span class="k">DRAWN</span><span class="v">RACE CONTROL</span></div>
+    </div>`;
+}
+
+function render() {
+  const navMap = { standings: 'standings', components: 'components', driver: 'components', schedule: 'schedule', race: 'schedule', assemblies: 'assemblies', team: 'assemblies', revisions: 'revisions' };
+  document.querySelectorAll('.sheet-tab').forEach(b =>
+    b.setAttribute('aria-current', String(b.dataset.nav === navMap[App.view.type])));
+
+  const fn = {
+    standings: sheetStandings, components: sheetComponents, driver: sheetDriver,
+    schedule: sheetSchedule, race: sheetRace,
+    assemblies: sheetAssemblies, team: sheetTeam, revisions: sheetRevisions
+  }[App.view.type] || sheetStandings;
+
+  document.getElementById('sheet').innerHTML = fn();
+}
+
+/* ---------------- S1: standings (dimensioned drawing) ---------------- */
+
+function dimensionSVG(s, standings) {
+  const N = Math.min(standings.length, 12);
+  const rows = standings.slice(0, N);
+  const maxPts = Math.max(1, rows[0].points);
+  const W = 900, rowH = 44, padL = 120, padR = 90, padT = 34, padB = 26;
+  const H = padT + N * rowH + padB;
+  const barW = p => (W - padL - padR) * (p / maxPts);
+
+  let out = `<defs>
+    <marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 z" fill="#FF5C49"/>
+    </marker>
+  </defs>`;
+
+  // baseline axis
+  out += `<line class="dim-axis" x1="${padL}" y1="${padT - 12}" x2="${padL}" y2="${H - padB + 6}"/>`;
+
+  rows.forEach((d, i) => {
+    const y = padT + i * rowH;
+    const w = Math.max(2, barW(d.points));
+    const lead = i === 0;
+    out += `<text class="dim-name${lead ? ' lead' : ''}" x="${padL - 10}" y="${y + 17}" text-anchor="end">${i + 1}. ${esc(surname(d.name))}</text>`;
+    out += `<rect class="dim-bar${lead ? ' dim-bar-lead' : ''}" x="${padL}" y="${y}" width="${w}" height="24"><title>${esc(d.name)} — ${d.points} pts</title></rect>`;
+    out += `<rect x="${padL}" y="${y}" width="${Math.min(6, w)}" height="24" fill="${esc(teamColor(s, d.team))}"></rect>`;
+    out += `<text class="dim-pts" x="${padL + w + 8}" y="${y + 17}">${d.points}</text>`;
+
+    // dimension: gap to the car ahead, drawn between bar ends
+    if (i > 0) {
+      const prev = rows[i - 1];
+      const gap = prev.points - d.points;
+      if (gap > 0) {
+        const x1 = padL + barW(d.points);
+        const x2 = padL + barW(prev.points);
+        const dy = y + 12;
+        out += `<line class="dim-ext" x1="${x2}" y1="${y - rowH + 24}" x2="${x2}" y2="${dy}"/>`;
+        out += `<line class="dim-line" x1="${x1 + 2}" y1="${dy}" x2="${x2 - 2}" y2="${dy}" marker-start="url(#arr)" marker-end="url(#arr)"/>`;
+        const mid = (x1 + x2) / 2;
+        out += `<text class="dim-val" x="${Math.min(Math.max(mid, x1 + 18), W - padR + 60)}" y="${dy - 5}" text-anchor="middle">-${gap}</text>`;
+      }
+    }
+  });
+
+  return `<div class="dimwrap"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Championship points drawn as dimensioned bars; redline dimensions show the gap to the car ahead">${out}</svg></div>`;
+}
+
+function sheetStandings() {
+  const s = season();
+  const standings = driverStandings(App.seasonIdx);
+  const moves = movementMap(App.seasonIdx);
+  const done = completedIdxs(s);
+  const complete = isComplete(s);
+  const leader = standings[0];
+
+  const rows = standings.map((d, i) => {
+    const mv = moves.get(d.id);
+    const mvTxt = mv === undefined ? '' : mv > 0 ? `<span class="up">▲${mv}</span>` : mv < 0 ? `<span class="rl">▼${-mv}</span>` : '<span class="dim2">·</span>';
+    return `
+      <tr class="rowlink" data-go="driver" data-id="${esc(String(d.id))}" tabindex="0">
+        <td class="b">${String(i + 1).padStart(2, '0')}</td>
+        <td><span class="sq" style="background:${esc(teamColor(s, d.team))}"></span><span class="b">${esc(d.name)}</span>${complete && i === 0 ? '<span class="revtag">AS-BUILT CHAMPION</span>' : ''}</td>
+        <td class="dim2">${esc(d.team)}</td>
+        <td class="r">${mvTxt}</td>
+        <td class="r">${d.wins}</td>
+        <td class="r">${d.podiums}</td>
+        <td class="r b">${d.points}</td>
+      </tr>`;
+  }).join('');
+
+  return `
+    <div class="dwg-kicker">SHEET 1 · GENERAL ARRANGEMENT</div>
+    <div class="dwg-title">${s.year} Championship — Standings</div>
+    <div class="dwg-sub">AFTER ROUND ${done.length} OF ${s.races.length}${leader && standings[1] ? ` · CLEARANCE P1–P2: <span class="rl">${leader.points - standings[1].points} PTS</span>` : ''} · ${complete ? '<span class="hl">ISSUED FOR RECORD</span>' : '<span class="rl">WORK IN PROGRESS</span>'}</div>
+
+    <div class="detail-label"><span class="bubble">A</span><span class="txt">Dimensioned Points Drawing</span><span class="note">REDLINE DIMS = GAP TO CAR AHEAD · TOP ${Math.min(standings.length, 12)}</span></div>
+    ${done.length ? dimensionSVG(s, standings) : '<div class="notice">NO ROUNDS RUN — NOTHING TO DIMENSION YET.</div>'}
+
+    <div class="detail-label"><span class="bubble">B</span><span class="txt">Schedule of Drivers</span><span class="note">SELECT A ROW FOR ITS PART DRAWING</span></div>
+    <table class="dtable">
+      <thead><tr><th>ITEM</th><th>DRIVER</th><th>ASSEMBLY</th><th class="r">MOV</th><th class="r">WINS</th><th class="r">POD</th><th class="r">PTS</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    ${titleblock('CHAMPIONSHIP — GENERAL ARRANGEMENT')}`;
+}
+
+/* ---------------- S2: drivers as components ---------------- */
+
+function sheetComponents() {
+  const s = season();
+  const standings = driverStandings(App.seasonIdx);
+  const maxPts = Math.max(1, standings[0] ? standings[0].points : 1);
+
+  const comps = standings.map((d, i) => {
+    const info = driverById(s, d.id) || {};
+    return `
+      <button class="comp" data-callout="${i + 1}" data-go="driver" data-id="${esc(String(d.id))}">
+        <div class="comp-part">PART NO. ${esc(String(info.number ?? '?'))}</div>
+        <div class="comp-name">${esc(d.name)}</div>
+        <div class="comp-meta">${esc(d.team)} · ${esc(info.nationality || '')} · ${d.points} PTS</div>
+        <div class="comp-bar"><i style="width:${maxPts ? d.points / maxPts * 100 : 0}%; background:${esc(teamColor(s, d.team))}"></i></div>
+      </button>`;
+  }).join('');
+
+  return `
+    <div class="dwg-kicker">SHEET 2 · PARTS LIST</div>
+    <div class="dwg-title">${s.year} Drivers — Components</div>
+    <div class="dwg-sub">${standings.length} ITEMS · CALLOUT NUMBER = CHAMPIONSHIP POSITION · BAR = POINTS VS LEADER</div>
+    <div class="comp-grid" style="margin-top:30px">${comps}</div>
+    ${titleblock('DRIVERS — PARTS LIST')}`;
+}
+
+function sheetDriver() {
+  const s = season();
+  const standings = driverStandings(App.seasonIdx);
+  const idx = standings.findIndex(d => d.id == App.view.id);
+  if (idx === -1) return `<div class="notice">PART NOT FOUND IN THIS REVISION.</div>${titleblock('PART DRAWING — VOID')}`;
+  const d = standings[idx];
+  const info = driverById(s, d.id) || {};
+
+  const career = [];
+  App.data.seasons.forEach((cs, csi) => {
+    if (!cs.drivers.find(x => x.id == d.id) || !completedIdxs(cs).length) return;
+    const st = driverStandings(csi);
+    const p = st.findIndex(x => x.id == d.id);
+    if (p === -1) return;
+    career.push({ year: cs.year, pos: p + 1, champ: isComplete(cs) && p === 0 });
+  });
+
+  const logRows = s.races.map((race, i) => {
+    if (race.status !== 'completed' || !race.results) return '';
+    const res = race.results.find(r => r.driverId == d.id);
+    if (!res) return '';
+    const g = race.grid ? (race.grid.findIndex(x => x.driverId == d.id) + 1) : 0;
+    const dnf = res.status && res.status !== 'finished';
+    const fl = race.fastestLap && race.fastestLap.driverId == d.id;
+    const pts = (s.pointsSystem.race[res.position] || 0) + (fl && res.position <= 10 && !dnf ? (s.pointsSystem.fastestLap || 0) : 0);
+    return `
+      <tr class="rowlink" data-go="race" data-idx="${i}" tabindex="0">
+        <td class="b">${String(i + 1).padStart(2, '0')}</td>
+        <td>${esc(race.name)}</td>
+        <td class="r">${g ? 'P' + g : '—'}</td>
+        <td class="r">${dnf ? '<span class="rl">FAIL</span>' : '<span class="b">P' + res.position + '</span>'}${fl ? ' <span class="hl" style="color:var(--hilite)">FL</span>' : ''}</td>
+        <td class="r">${dnf ? '<span class="rl">DNF</span>' : '<span class="up">PASS</span>'}</td>
+        <td class="r b">${pts || '—'}</td>
+      </tr>`;
+  }).join('');
+
+  return `
+    <button class="backbtn" data-go="nav" data-screen="components">← SHEET 2 · PARTS LIST</button>
+    <div class="dwg-kicker">SHEET 2 · DETAIL · PART NO. ${esc(String(info.number ?? '?'))}</div>
+    <div class="dwg-title">${esc(d.name)}</div>
+    <div class="dwg-sub">ASSEMBLY: ${esc(d.team)} · ORIGIN: ${esc(info.nationality || '—')} · POSITION ${idx + 1} OF ${standings.length}, ${s.year}</div>
+    <div class="specstrip">
+      <div class="cell"><div class="v">${d.points}</div><div class="k">Points</div></div>
+      <div class="cell"><div class="v">${d.wins}</div><div class="k">Wins</div></div>
+      <div class="cell"><div class="v">${d.podiums}</div><div class="k">Podiums</div></div>
+      <div class="cell"><div class="v">${d.poles}</div><div class="k">Poles</div></div>
+      <div class="cell"><div class="v">${d.fastestLaps}</div><div class="k">Fastest laps</div></div>
+      <div class="cell"><div class="v">${d.dnfs}</div><div class="k">Failures</div></div>
+    </div>
+    ${career.length ? `
+      <div class="detail-label"><span class="bubble">A</span><span class="txt">Service History</span><span class="note">${career.length} REVISION${career.length !== 1 ? 'S' : ''}</span></div>
+      <div class="career-line">
+        ${career.map(c => `<span class="career-tick${c.champ ? ' champ' : ''}"><span class="yr">${c.year}</span><span class="p">P${c.pos}${c.champ ? ' ★' : ''}</span></span>`).join('')}
+      </div>` : ''}
+    <div class="detail-label"><span class="bubble">B</span><span class="txt">Test Log — ${s.year}</span><span class="note">SELECT A ROUND FOR ITS TEST REPORT</span></div>
+    <table class="dtable">
+      <thead><tr><th>RD</th><th>EVENT</th><th class="r">GRID</th><th class="r">RESULT</th><th class="r">STATUS</th><th class="r">PTS</th></tr></thead>
+      <tbody>${logRows || '<tr><td colspan="6" class="dim2">NO TESTS RUN.</td></tr>'}</tbody>
+    </table>
+    ${titleblock(`PART DRAWING — ${surname(d.name)}`)}`;
+}
+
+/* ---------------- S3: schedule + race report ---------------- */
+
+function sheetSchedule() {
+  const s = season();
+  const rows = s.races.map((race, i) => {
+    const done = race.status === 'completed' && race.results;
+    let status = '<span class="pend">PENDING</span>', cls = 'pending', tag = 'div', extra = '';
+    if (done) {
+      const win = race.results.find(r => r.position === 1);
+      const winner = win && driverById(s, win.driverId);
+      cls = 'done'; tag = 'button';
+      extra = ` data-go="race" data-idx="${i}"`;
+      status = `<span class="ok">COMPLETE</span>${winner ? `<span class="who">W: ${esc(surname(winner.name))} / ${esc(winner.team)}</span>` : ''}`;
+    }
+    return `
+      <${tag} class="sched-row ${cls}"${extra}>
+        <span class="sched-no">RD<span class="n">${String(i + 1).padStart(2, '0')}</span></span>
+        <span>
+          <div class="sched-name">${esc(race.name)}</div>
+          <div class="sched-loc">${esc(race.location || '')}${race.date ? ' · ' + esc(race.date) : ''}</div>
+        </span>
+        <span class="sched-status">${status}</span>
+      </${tag}>`;
+  }).join('');
+
+  return `
+    <div class="dwg-kicker">SHEET 3 · TEST SCHEDULE</div>
+    <div class="dwg-title">${s.year} Calendar</div>
+    <div class="dwg-sub">${completedIdxs(s).length} OF ${s.races.length} ROUNDS COMPLETE · COMPLETE ROWS OPEN THE TEST REPORT</div>
+    <div style="margin-top:28px">${rows}</div>
+    ${titleblock('CALENDAR — TEST SCHEDULE')}`;
+}
+
+function sheetRace() {
+  const s = season();
+  const i = App.view.idx;
+  const race = s.races[i];
+  if (!race || race.status !== 'completed' || !race.results) {
+    return `<div class="notice">TEST NOT YET RUN.</div>${titleblock('TEST REPORT — VOID')}`;
+  }
+
+  const gridPos = new Map((race.grid || []).map((g, gi) => [g.driverId, gi + 1]));
+  const pole = race.grid && race.grid.length ? driverById(s, race.grid[0].driverId) : null;
+  const fl = race.fastestLap ? driverById(s, race.fastestLap.driverId) : null;
+  const fails = race.results.filter(r => r.status && r.status !== 'finished').length;
+
+  const rows = race.results.map(res => {
+    const d = driverById(s, res.driverId);
+    if (!d) return '';
+    const g = gridPos.get(res.driverId);
+    const delta = g === undefined ? null : g - res.position;
+    const dnf = res.status && res.status !== 'finished';
+    const isFl = race.fastestLap && race.fastestLap.driverId == res.driverId;
+    const pts = (s.pointsSystem.race[res.position] || 0) + (isFl && res.position <= 10 && !dnf ? (s.pointsSystem.fastestLap || 0) : 0);
+    return `
+      <tr class="rowlink" data-go="driver" data-id="${esc(String(d.id))}" tabindex="0">
+        <td class="b">${String(res.position).padStart(2, '0')}</td>
+        <td><span class="sq" style="background:${esc(teamColor(s, d.team))}"></span><span class="b">${esc(d.name)}</span>${isFl ? ' <span style="color:var(--hilite)">FL</span>' : ''}</td>
+        <td class="dim2">${esc(d.team)}</td>
+        <td class="r">${g ? 'P' + g : '—'}</td>
+        <td class="r">${delta === null ? '' : delta > 0 ? `<span class="up">+${delta}</span>` : delta < 0 ? `<span class="rl">−${-delta}</span>` : '<span class="dim2">0</span>'}</td>
+        <td class="r">${dnf ? '<span class="rl">FAIL</span>' : '<span class="up">PASS</span>'}</td>
+        <td class="r b">${pts || '—'}</td>
+      </tr>`;
+  }).join('');
+
+  const prev = [];
+  App.data.seasons.forEach((cs, csi) => {
+    cs.races.forEach((r, ri) => {
+      if (r.name !== race.name || r.status !== 'completed' || !r.results) return;
+      if (csi === App.seasonIdx && ri === i) return;
+      const win = r.results.find(res => res.position === 1);
+      const winner = win && driverById(cs, win.driverId);
+      if (winner) prev.push(`${cs.year} ${esc(surname(winner.name))}`);
+    });
+  });
+
+  return `
+    <button class="backbtn" data-go="nav" data-screen="schedule">← SHEET 3 · TEST SCHEDULE</button>
+    <div class="dwg-kicker">SHEET 3 · TEST REPORT · ROUND ${String(i + 1).padStart(2, '0')}</div>
+    <div class="dwg-title">${esc(race.name)}</div>
+    <div class="dwg-sub">${esc(race.location || '')}${race.date ? ' · ' + esc(race.date) : ''}${prev.length ? ` · PRIOR RESULTS: <span class="hl">${prev.join(' / ')}</span>` : ''}</div>
+    <div class="specstrip">
+      <div class="cell"><div class="v">${esc(pole ? surname(pole.name) : '—')}</div><div class="k">Pole</div></div>
+      <div class="cell"><div class="v">${esc(fl ? surname(fl.name) : '—')}</div><div class="k">Fastest lap</div></div>
+      <div class="cell"><div class="v">${race.results.length - fails}</div><div class="k">Passed</div></div>
+      <div class="cell"><div class="v">${fails}</div><div class="k">Failures</div></div>
+    </div>
+    <div class="detail-label"><span class="bubble">A</span><span class="txt">Classification</span><span class="note">+/− = PLACES VS GRID</span></div>
+    <table class="dtable">
+      <thead><tr><th>POS</th><th>DRIVER</th><th>ASSEMBLY</th><th class="r">GRID</th><th class="r">+/−</th><th class="r">STATUS</th><th class="r">PTS</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    ${titleblock(`TEST REPORT — RD${String(i + 1).padStart(2, '0')}`)}`;
+}
+
+/* ---------------- S4: assemblies (teams) ---------------- */
+
+function sheetAssemblies() {
+  const s = season();
+  const teams = teamStandings(App.seasonIdx);
+  const drivers = driverStandings(App.seasonIdx);
+
+  const rows = teams.map((t, i) => {
+    const squad = drivers.filter(d => d.team === t.name);
+    return `
+      <tr class="rowlink" data-go="team" data-name="${esc(t.name)}" tabindex="0">
+        <td class="b">${String(i + 1).padStart(2, '0')}</td>
+        <td><span class="sq" style="background:${esc(teamColor(s, t.name))}"></span><span class="b">${esc(t.name)}</span></td>
+        <td class="dim2">${squad.map(d => `<span class="partno">#${esc(String((driverById(s, d.id) || {}).number ?? '?'))}</span> ${esc(surname(d.name))}`).join(' · ')}</td>
+        <td class="r">${t.wins}</td>
+        <td class="r b">${t.points}</td>
+      </tr>`;
+  }).join('');
+
+  return `
+    <div class="dwg-kicker">SHEET 4 · ASSEMBLIES</div>
+    <div class="dwg-title">${s.year} Constructors</div>
+    <div class="dwg-sub">${teams.length} ASSEMBLIES · COMBINED OUTPUT OF EACH ASSEMBLY'S PARTS</div>
+    <div style="margin-top:28px">
+      <table class="dtable">
+        <thead><tr><th>ITEM</th><th>ASSEMBLY</th><th>PARTS</th><th class="r">WINS</th><th class="r">PTS</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    ${titleblock('CONSTRUCTORS — ASSEMBLIES')}`;
+}
+
+function sheetTeam() {
+  const s = season();
+  const teams = teamStandings(App.seasonIdx);
+  const idx = teams.findIndex(t => t.name === App.view.name);
+  if (idx === -1) return `<div class="notice">ASSEMBLY NOT FOUND.</div>${titleblock('ASSEMBLY — VOID')}`;
+  const t = teams[idx];
+  const standings = driverStandings(App.seasonIdx);
+  const squad = standings.filter(d => d.team === t.name);
+  const maxPts = Math.max(1, standings[0] ? standings[0].points : 1);
+
+  const comps = squad.map(d => {
+    const info = driverById(s, d.id) || {};
+    const overall = standings.findIndex(x => x.id == d.id) + 1;
+    return `
+      <button class="comp" data-callout="${overall}" data-go="driver" data-id="${esc(String(d.id))}">
+        <div class="comp-part">PART NO. ${esc(String(info.number ?? '?'))}</div>
+        <div class="comp-name">${esc(d.name)}</div>
+        <div class="comp-meta">P${overall} · ${d.points} PTS · ${d.wins} WINS · ${d.dnfs} FAIL</div>
+        <div class="comp-bar"><i style="width:${d.points / maxPts * 100}%; background:${esc(teamColor(s, t.name))}"></i></div>
+      </button>`;
+  }).join('');
+
+  return `
+    <button class="backbtn" data-go="nav" data-screen="assemblies">← SHEET 4 · ASSEMBLIES</button>
+    <div class="dwg-kicker">SHEET 4 · ASSEMBLY DETAIL</div>
+    <div class="dwg-title">${esc(t.name)}</div>
+    <div class="dwg-sub">POSITION ${idx + 1} OF ${teams.length} · ${s.year} CONSTRUCTORS' CHAMPIONSHIP</div>
+    <div class="specstrip">
+      <div class="cell"><div class="v">${t.points}</div><div class="k">Points</div></div>
+      <div class="cell"><div class="v">${t.wins}</div><div class="k">Wins</div></div>
+      <div class="cell"><div class="v">${t.podiums}</div><div class="k">Podiums</div></div>
+      <div class="cell"><div class="v">${t.poles}</div><div class="k">Poles</div></div>
+    </div>
+    <div class="detail-label"><span class="bubble">A</span><span class="txt">Bill of Parts</span><span class="note">CALLOUT = CHAMPIONSHIP POSITION</span></div>
+    <div class="comp-grid">${comps}</div>
+    ${titleblock(`ASSEMBLY — ${t.name.toUpperCase()}`)}`;
+}
+
+/* ---------------- S5: revision history (archive) ---------------- */
+
+function sheetRevisions() {
+  const rows = [...App.data.seasons].map((s, si) => ({ s, si }))
+    .filter(({ s }) => completedIdxs(s).length)
+    .reverse()
+    .map(({ s, si }) => {
+      const champ = driverStandings(si)[0];
+      const ctor = teamStandings(si)[0];
+      const complete = isComplete(s);
+      return `
+        <tr class="rowlink" data-go="edition" data-si="${si}" tabindex="0">
+          <td class="rev-id">${s.year}</td>
+          <td>
+            <div class="champ-line">${complete ? 'DRIVERS: ' : 'LEADER: '}<span class="b">${esc(champ.name)}</span> — ${esc(champ.team)} · ${champ.points} PTS · ${champ.wins} W</div>
+            <div class="champ-line" style="margin-top:6px">${complete ? 'CONSTRUCTORS: ' : 'LEADING ASSEMBLY: '}<span class="b">${esc(ctor.name)}</span> · ${ctor.points} PTS</div>
+          </td>
+          <td class="r">${complete ? '<span class="up">ISSUED FOR RECORD</span>' : '<span class="rl">IN WORK</span>'}</td>
+        </tr>`;
+    }).join('');
+
+  return `
+    <div class="dwg-kicker">SHEET 5 · REVISION HISTORY</div>
+    <div class="dwg-title">All Editions</div>
+    <div class="dwg-sub">SELECT A REVISION TO OPEN THAT SEASON'S DRAWING SET</div>
+    <div style="margin-top:28px">
+      <table class="rev-table">
+        <thead><tr><th>REV</th><th>DESCRIPTION OF CHANGE</th><th class="r">STATUS</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="3" class="dim2">NO REVISIONS ON FILE.</td></tr>'}</tbody>
+      </table>
+    </div>
+    ${titleblock('PROJECT — REVISION HISTORY')}`;
+}
+
+/* ---------------- input ---------------- */
+
+function handleGoTarget(el) {
+  const kind = el.dataset.go;
+  if (kind === 'nav') go({ type: el.dataset.screen });
+  else if (kind === 'driver') go({ type: 'driver', id: el.dataset.id });
+  else if (kind === 'race') go({ type: 'race', idx: parseInt(el.dataset.idx, 10) });
+  else if (kind === 'team') go({ type: 'team', name: el.dataset.name });
+  else if (kind === 'edition') {
+    App.seasonIdx = parseInt(el.dataset.si, 10);
+    const sel = document.getElementById('seasonSelect');
+    if (sel) sel.value = App.seasonIdx;
+    go({ type: 'standings' });
+  }
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-go]');
+  if (el) handleGoTarget(el);
+});
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const el = e.target.closest && e.target.closest('[data-go]');
+  if (el && el.tagName !== 'BUTTON') { e.preventDefault(); handleGoTarget(el); }
+});
+
+/* ---------------- boot ---------------- */
+
+function buildSeasonSelect() {
+  const sel = document.getElementById('seasonSelect');
+  sel.innerHTML = App.data.seasons.map((s, i) => `<option value="${i}">${s.year}</option>`).join('');
+  sel.value = App.seasonIdx;
+  sel.onchange = () => {
+    App.seasonIdx = parseInt(sel.value, 10);
+    if (['driver', 'race', 'team'].includes(App.view.type)) App.view = { type: 'standings' };
+    render();
+  };
+}
+
+function demoData() {
+  const D = (id, name, team, number, nationality) => ({ id, name, team, number, nationality, birthday: '2000-01-01' });
+  const drivers = [
+    D(1, 'Kai Mercer', 'Vortex Racing', 7, 'GB'), D(2, 'Luca Ferraro', 'Vortex Racing', 11, 'IT'),
+    D(3, 'Ren Takeda', 'Apex GP', 23, 'JP'), D(4, 'Marcus Hale', 'Apex GP', 4, 'US'),
+    D(5, 'Elias Brandt', 'Nordwind', 18, 'DE'), D(6, 'Theo Laurent', 'Nordwind', 31, 'FR'),
+    D(7, 'Santiago Vega', 'Calavera', 9, 'ES'), D(8, 'Oliver Knox', 'Calavera', 88, 'AU')
+  ];
+  const teams = [
+    { name: 'Vortex Racing', color: '#FFD84D' }, { name: 'Apex GP', color: '#7FE3A8' },
+    { name: 'Nordwind', color: '#9DC4FF' }, { name: 'Calavera', color: '#FF8C69' }
+  ];
+  const pointsSystem = { race: { 1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4 }, sprint: {}, fastestLap: 1 };
+  const R = (name, location, date, order, fl, dnfIds = []) => ({
+    name, location, date, status: 'completed',
+    results: order.map((driverId, i) => ({ driverId, position: i + 1, status: dnfIds.includes(driverId) ? 'dnf' : 'finished' })),
+    grid: [...order].reverse().map(driverId => ({ driverId })),
+    fastestLap: { driverId: fl }
+  });
+  return { seasons: [
+    { year: 2024, totalRaces: 5, drivers, teams, pointsSystem, races: [
+      R('Proving Ground GP', 'Test Site A', '2024-03-10', [3, 1, 5, 7, 2, 4, 6, 8], 3),
+      R('Harbour Circuit', 'Test Site B', '2024-04-14', [3, 5, 1, 2, 4, 7, 8, 6], 1),
+      R('Ridge Complex', 'Test Site C', '2024-05-26', [1, 3, 2, 5, 7, 4, 6, 8], 3, [8]),
+      R('Dry Lake Sprint', 'Test Site D', '2024-07-07', [3, 1, 4, 5, 2, 6, 7, 8], 4),
+      R('Closing Spec', 'Test Site E', '2024-09-01', [3, 2, 1, 7, 5, 4, 8, 6], 3)
+    ]},
+    { year: 2025, totalRaces: 6, drivers, teams, pointsSystem, races: [
+      R('Proving Ground GP', 'Test Site A', '2025-03-09', [1, 3, 2, 5, 4, 7, 6, 8], 1),
+      R('Harbour Circuit', 'Test Site B', '2025-04-13', [1, 5, 3, 2, 7, 4, 8, 6], 5),
+      R('Ridge Complex', 'Test Site C', '2025-05-25', [5, 1, 3, 4, 2, 6, 7, 8], 1, [7]),
+      R('Dry Lake Sprint', 'Test Site D', '2025-07-06', [3, 1, 5, 2, 4, 8, 6, 7], 3),
+      { name: 'Closing Spec', location: 'Test Site E', date: '2025-09-07', status: 'upcoming', results: null, grid: null, fastestLap: null },
+      { name: 'Acceptance Run', location: 'Test Site F', date: '2025-11-23', status: 'upcoming', results: null, grid: null, fastestLap: null }
+    ]}
+  ]};
+}
+
+async function boot() {
+  try {
+    const res = await fetch('racing-data-multi-season.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    App.data = await res.json();
+  } catch (e) {
+    App.data = demoData();
+    document.getElementById('demoBadge').classList.add('show');
+  }
+  App.seasonIdx = App.data.seasons.length - 1;
+  buildSeasonSelect();
+  render();
+}
+
+window.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>
