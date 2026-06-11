@@ -663,40 +663,32 @@ button:focus-visible, select:focus-visible, a:focus-visible {
 .tower-row.eliminated .tower-pts { color: #55565F; }
 .tower-row.eliminated .tower-pos { color: #44454E; }
 
-/* ---------- Title fight ---------- */
-.fight-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 1px;
-  background: var(--ink);
-  border: 1px solid var(--ink);
-  margin-top: 14px;
-}
-.fight-card { background: var(--paper); padding: 14px 16px 12px; position: relative; }
-.fight-card .nm {
-  font-family: var(--display);
-  font-weight: 900;
-  font-size: 1.3rem;
-  text-transform: uppercase;
-  line-height: 1;
-}
-.fight-card .tm { font-size: 0.78rem; color: var(--ink-3); }
-.fight-card .row {
-  display: flex;
-  justify-content: space-between;
+/* ---------- Title fight (reach diagram) ---------- */
+.fight-wrap { overflow-x: auto; margin-top: 14px; }
+.fight-wrap svg { display: block; min-width: 620px; width: 100%; height: auto; }
+.fight-tla { font-family: var(--mono); font-size: 12px; font-weight: 600; fill: var(--ink); }
+.fight-tla.lead { fill: var(--purple); }
+.fight-tla.dim { fill: var(--ink-3); font-weight: 400; }
+.fight-bar { fill: rgba(20, 21, 25, 0.14); stroke: var(--ink); stroke-width: 1.25; }
+.fight-bar.lead { fill: rgba(108, 43, 217, 0.16); stroke: var(--purple); }
+.fight-ext { fill: url(#fightHatch); stroke: var(--ink-3); stroke-width: 0.75; stroke-dasharray: 2 2; }
+.fight-anno { font-family: var(--mono); font-size: 11px; fill: var(--ink-2); }
+.fight-anno .b { font-weight: 600; }
+.fight-anno-lead { fill: var(--purple); font-weight: 600; }
+.fight-target { stroke: var(--purple); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.fight-target-label { font-family: var(--mono); font-size: 11px; font-weight: 600; fill: var(--purple); }
+.fight-out {
   font-family: var(--mono);
-  font-size: 0.72rem;
-  margin-top: 8px;
+  font-size: 0.7rem;
+  color: var(--ink-3);
+  margin-top: 10px;
 }
-.fight-card .row .k { color: var(--ink-3); }
-.fight-card .row .v { font-weight: 600; }
-.fight-card .row .v.purple { color: var(--purple); }
-.fight-card.leader { background: var(--purple-2); }
+.fight-out .x { text-decoration: line-through; }
 .fight-note {
   font-family: var(--mono);
   font-size: 0.66rem;
   color: var(--ink-3);
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 /* ---------- Chart mode toggle ---------- */
@@ -1163,26 +1155,62 @@ function buildTitleFight(s, standings) {
   if (alive.length <= 1 && !out.length) return '';
 
   const leader = standings[0];
-  const cards = alive.slice(0, 6).map((d, i) => {
-    const deficit = leader.points - d.points;
-    return `
-      <div class="fight-card${i === 0 ? ' leader' : ''}">
-        <div class="nm">${esc(tla(d.name))} <span style="font-size:0.85rem; color:var(--ink-3)">${esc(d.name)}</span></div>
-        <div class="tm">${esc(d.team)}</div>
-        <div class="row"><span class="k">POINTS</span><span class="v">${d.points}</span></div>
-        <div class="row"><span class="k">${i === 0 ? 'LEAD OVER P2' : 'DEFICIT'}</span><span class="v ${i === 0 ? 'purple' : ''}">${i === 0 ? '+' + (standings[1] ? leader.points - standings[1].points : 0) : '-' + deficit}</span></div>
-        <div class="row"><span class="k">MAX FINISH</span><span class="v">${d.points + maxRemaining}</span></div>
-        ${i > 0 ? `<div class="row"><span class="k">NEEDS SWING OF</span><span class="v purple">+${deficit + 1}</span></div>` : ''}
-      </div>`;
-  }).join('');
+  const shown = alive.slice(0, 8);
+  const N = shown.length;
+
+  const W = 860, rowH = 42, padL = 64, padR = 168, padT = 34, padB = 12;
+  const H = padT + N * rowH + padB;
+  const dom = Math.max(leader.points, ...shown.map(d => d.points + maxRemaining), 1);
+  const x = p => padL + (W - padL - padR) * (p / dom);
+  const targetX = x(leader.points);
+
+  let svg = `<defs>
+    <pattern id="fightHatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#7C7E88" stroke-width="1.4"/>
+    </pattern>
+  </defs>`;
+
+  shown.forEach((d, i) => {
+    const y = padT + i * rowH;
+    const lead = i === 0;
+    const curW = Math.max(2, x(d.points) - padL);
+    const extW = Math.max(0, x(d.points + maxRemaining) - x(d.points));
+
+    svg += `<text class="fight-tla${lead ? ' lead' : ''}" x="${padL - 10}" y="${y + 16}" text-anchor="end">${esc(tla(d.name))}</text>`;
+    if (extW > 0) {
+      svg += `<rect class="fight-ext" x="${x(d.points)}" y="${y}" width="${extW}" height="22"><title>${esc(d.name)} can still score ${maxRemaining} pts (max ${d.points + maxRemaining})</title></rect>`;
+    }
+    svg += `<rect class="fight-bar${lead ? ' lead' : ''}" x="${padL}" y="${y}" width="${curW}" height="22"><title>${esc(d.name)} — ${d.points} pts</title></rect>`;
+    svg += `<rect x="${padL}" y="${y}" width="5" height="22" fill="${esc(teamColor(s, d.team))}"></rect>`;
+
+    const annoX = W - padR + 10;
+    if (lead) {
+      const gap = standings[1] ? leader.points - standings[1].points : 0;
+      svg += `<text class="fight-anno fight-anno-lead" x="${annoX}" y="${y + 16}">${d.points} · LEADS +${gap}</text>`;
+    } else {
+      const deficit = leader.points - d.points;
+      svg += `<text class="fight-anno" x="${annoX}" y="${y + 16}"><tspan class="b">−${deficit}</tspan> · MAX ${d.points + maxRemaining}</text>`;
+    }
+  });
+
+  // target line at the leader's current total
+  svg += `<line class="fight-target" x1="${targetX}" y1="${padT - 16}" x2="${targetX}" y2="${H - padB}"/>`;
+  svg += `<text class="fight-target-label" x="${Math.min(targetX + 6, W - padR - 4)}" y="${padT - 20}">TARGET ${leader.points}</text>`;
+
+  const outLine = out.length
+    ? `<div class="fight-out">OUT OF THE FIGHT (${out.length}): ${out.map(d => `<span class="x">${esc(tla(d.name))}</span>`).join(' · ')}</div>`
+    : '';
 
   return `
     <div class="section-head">
       <div class="section-title">Title Fight</div>
-      <div class="section-note">${maxRemaining} PTS LEFT ON THE TABLE · ${alive.length} STILL ALIVE${out.length ? ` · ${out.length} ELIMINATED` : ''}</div>
+      <div class="section-note">${maxRemaining} PTS STILL AVAILABLE · ${remainingRaces(s)} ROUND${remainingRaces(s) !== 1 ? 'S' : ''} LEFT · ${alive.length} ALIVE</div>
     </div>
-    <div class="fight-grid">${cards}</div>
-    <div class="fight-note">A driver is alive while their maximum possible total still reaches the leader's current score. Swing = points they must outscore the leader by across the remaining ${remainingRaces(s)} round${remainingRaces(s) !== 1 ? 's' : ''}.</div>`;
+    <div class="fight-wrap">
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Title fight: solid bars are points scored, hatched extensions are points still available, the dashed line is the leader's current total">${svg}</svg>
+    </div>
+    ${outLine}
+    <div class="fight-note">SOLID = SCORED · HATCHED = STILL AVAILABLE · A DRIVER IS ALIVE WHILE THEIR HATCHED BAR REACHES THE TARGET LINE</div>`;
 }
 
 function buildMatrix(s, standings) {
