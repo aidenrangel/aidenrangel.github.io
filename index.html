@@ -1953,6 +1953,237 @@
             .h2h-bar { transition: none; }
         }
 
+
+        /* ===== UI polish layer ===== */
+
+        /* Custom scrollbar + selection */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: var(--dark-bg); }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--primary-red), #7a0300);
+            border-radius: 5px;
+            border: 2px solid var(--dark-bg);
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-red); }
+        html { scrollbar-color: var(--primary-red) var(--dark-bg); scrollbar-width: thin; }
+        ::selection { background: var(--accent-yellow); color: #000; }
+
+        /* Season hero */
+        .season-hero {
+            position: relative;
+            background: linear-gradient(135deg, rgba(225, 6, 0, 0.2) 0%, rgba(255, 215, 0, 0.1) 100%);
+            border: 2px solid var(--primary-red);
+            border-radius: 10px;
+            padding: 45px 40px 35px;
+            margin-bottom: 30px;
+            text-align: center;
+            overflow: hidden;
+        }
+        .season-hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 10px;
+            background:
+                repeating-conic-gradient(#ffffff 0% 25%, transparent 0% 50%)
+                0 0 / 20px 20px;
+            opacity: 0.18;
+        }
+        .season-progress {
+            max-width: 520px;
+            height: 10px;
+            margin: 22px auto 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .season-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-red), var(--accent-yellow));
+            border-radius: 5px;
+            transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .season-progress-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+        }
+
+        /* Podium rows in standings */
+        tbody tr.position-1 { background: linear-gradient(90deg, rgba(255, 215, 0, 0.10), transparent 65%); }
+        tbody tr.position-2 { background: linear-gradient(90deg, rgba(192, 192, 192, 0.08), transparent 65%); }
+        tbody tr.position-3 { background: linear-gradient(90deg, rgba(205, 127, 50, 0.08), transparent 65%); }
+        tbody tr.position-1 td:first-child,
+        tbody tr.position-2 td:first-child,
+        tbody tr.position-3 td:first-child {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.25rem;
+        }
+
+        /* Sticky table headers (viewport-relative; requires visible overflow) */
+        .standings-table { overflow: visible; border-radius: 8px; }
+        .standings-table thead th { position: sticky; top: 70px; z-index: 40; }
+
+        /* Animated nav indicator */
+        @media (min-width: 769px) {
+            .top-nav-tabs { position: relative; }
+            .nav-indicator {
+                position: absolute;
+                bottom: 0;
+                height: 3px;
+                background: linear-gradient(90deg, var(--primary-red), var(--accent-yellow));
+                border-radius: 2px 2px 0 0;
+                transition: left 0.3s cubic-bezier(0.22, 1, 0.36, 1), width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+                pointer-events: none;
+            }
+        }
+        @media (max-width: 768px) { .nav-indicator { display: none; } }
+
+        /* Speed-line tab transition */
+        .speed-lines {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2000;
+            overflow: hidden;
+            display: none;
+        }
+        .speed-lines.run { display: block; }
+        .speed-lines span {
+            position: absolute;
+            left: -40%;
+            width: 38%;
+            height: 3px;
+            border-radius: 2px;
+            transform: skewX(-25deg);
+            opacity: 0;
+        }
+        .speed-lines span:nth-child(1) { top: 24%; background: linear-gradient(90deg, transparent, var(--primary-red)); }
+        .speed-lines span:nth-child(2) { top: 50%; background: linear-gradient(90deg, transparent, var(--accent-yellow)); }
+        .speed-lines span:nth-child(3) { top: 76%; background: linear-gradient(90deg, transparent, var(--primary-red)); }
+        .speed-lines.run span { animation: speedSweep 0.45s ease-in forwards; }
+        .speed-lines.run span:nth-child(2) { animation-delay: 0.06s; }
+        .speed-lines.run span:nth-child(3) { animation-delay: 0.12s; }
+        @keyframes speedSweep {
+            0% { left: -40%; opacity: 0; }
+            15% { opacity: 0.9; }
+            100% { left: 115%; opacity: 0; }
+        }
+
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .reveal.revealed { opacity: 1; transform: none; }
+
+        /* Card tilt glow base (transform handled in JS) */
+        .driver-card, .team-card { will-change: transform; }
+
+        /* Modal upgrades */
+        .modal { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.94) translateY(14px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-content { animation: modalPop 0.32s cubic-bezier(0.22, 1, 0.36, 1); border-radius: 10px; }
+
+        /* Skeleton loading */
+        @keyframes shimmer {
+            0% { background-position: -400px 0; }
+            100% { background-position: 400px 0; }
+        }
+        .skel {
+            background: linear-gradient(90deg, #1c1c1c 25%, #262626 37%, #1c1c1c 63%);
+            background-size: 800px 100%;
+            animation: shimmer 1.3s linear infinite;
+            border-radius: 6px;
+        }
+        .skel-row { height: 52px; margin: 8px 5px; }
+        .skel-card { height: 280px; border: 1px solid var(--border-color); }
+        .load-error {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 30px 20px;
+            font-size: 1rem;
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+        }
+
+        /* Back to top */
+        .back-to-top {
+            position: fixed;
+            right: 22px;
+            bottom: 26px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 1px solid var(--primary-red);
+            background: rgba(21, 21, 21, 0.92);
+            color: var(--accent-yellow);
+            font-size: 1.3rem;
+            cursor: pointer;
+            z-index: 1500;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(12px);
+            transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+        }
+        .back-to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
+        .back-to-top:hover { background: var(--primary-red); color: #fff; }
+
+        /* Mobile bottom nav */
+        .bottom-nav { display: none; }
+        @media (max-width: 768px) {
+            .mobile-nav-toggle, .mobile-nav-menu, .mobile-nav-overlay { display: none !important; }
+            body { padding-bottom: 74px; }
+            .back-to-top { bottom: 90px; }
+            .bottom-nav {
+                display: flex;
+                position: fixed;
+                left: 0; right: 0; bottom: 0;
+                height: 64px;
+                background: rgba(15, 15, 15, 0.97);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border-top: 2px solid var(--primary-red);
+                z-index: 1400;
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+            .bottom-nav-item {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 3px;
+                background: none;
+                border: none;
+                color: var(--text-secondary);
+                font-family: 'Barlow', sans-serif;
+                font-size: 0.6rem;
+                font-weight: 700;
+                letter-spacing: 0.5px;
+                cursor: pointer;
+                transition: color 0.2s ease;
+            }
+            .bottom-nav-item svg { width: 21px; height: 21px; }
+            .bottom-nav-item.active { color: var(--accent-yellow); }
+            .bottom-nav-item.active svg { stroke: var(--accent-yellow); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { opacity: 1; transform: none; transition: none; }
+            .speed-lines { display: none !important; }
+            .modal-content { animation: none; }
+            .season-progress-fill { transition: none; }
+        }
+
     </style>
 </head>
 <body>
@@ -1974,6 +2205,7 @@
                 <button class="top-nav-tab" onclick="showTab('schedule')" data-tab="schedule">SCHEDULE</button>
                 <button class="top-nav-tab" onclick="showTab('stats')" data-tab="stats">STANDINGS</button>
                 <button class="top-nav-tab" onclick="showTab('records')" data-tab="records">RECORDS</button>
+                <span class="nav-indicator" id="navIndicator"></span>
             </div>
         </div>
     </nav>
@@ -1993,7 +2225,23 @@
         <button class="tab" onclick="showTab('stats'); toggleMobileNav()">STANDINGS</button>
         <button class="tab" onclick="showTab('records'); toggleMobileNav()">RECORDS</button>
     </div>
-    
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="bottom-nav-item active" data-tab="standings" onclick="showTab('standings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>HOME</span></button>
+        <button class="bottom-nav-item" data-tab="drivers" onclick="showTab('drivers')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg><span>DRIVERS</span></button>
+        <button class="bottom-nav-item" data-tab="teams" onclick="showTab('teams')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4"/><path d="M4 4h13l-2.5 4L17 12H4"/></svg><span>TEAMS</span></button>
+        <button class="bottom-nav-item" data-tab="schedule" onclick="showTab('schedule')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg><span>RACES</span></button>
+        <button class="bottom-nav-item" data-tab="stats" onclick="showTab('stats')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v4a5 5 0 01-10 0V4z"/><path d="M7 6H4a3 3 0 003 4M17 6h3a3 3 0 01-3 4"/><path d="M12 13v4M8 21h8M10 17h4"/></svg><span>POINTS</span></button>
+        <button class="bottom-nav-item" data-tab="records" onclick="showTab('records')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.3.8-4.6 4.3 1.2 6.1L12 16.9 6.4 19.8l1.2-6.1L3 9.4l6.3-.8L12 3z"/></svg><span>RECORDS</span></button>
+    </nav>
+
+    <!-- Speed-line transition overlay -->
+    <div class="speed-lines" id="speedLines"><span></span><span></span><span></span></div>
+
+    <!-- Back to top -->
+    <button class="back-to-top" id="backToTop" title="Back to top" aria-label="Back to top">&#9650;</button>
+
     <div class="container">
         <!-- Season Selector -->
         <div class="season-selector">
@@ -2005,10 +2253,12 @@
         <!-- Standings Tab (Now News) -->
         <div id="standings" class="tab-content active">
             <!-- Hero Section -->
-            <div style="background: linear-gradient(135deg, rgba(225, 6, 0, 0.2) 0%, rgba(255, 215, 0, 0.1) 100%); border: 2px solid var(--primary-red); border-radius: 10px; padding: 40px; margin-bottom: 30px; text-align: center;">
+            <div class="season-hero">
                 <h2 style="font-family: 'Bebas Neue', cursive; font-size: 3.5rem; color: var(--accent-yellow); margin-bottom: 10px;" id="homeSeasonTitle">2025 SEASON</h2>
                 <p style="font-size: 1.3rem; color: var(--text-secondary); margin-bottom: 5px;" id="homeSeasonSubtitle">Round 6 of 9 • 3 Races Remaining</p>
                 <p style="font-size: 1.1rem; color: var(--text-primary);" id="homeChampionshipStatus">Championship Battle Intensifies</p>
+                <div class="season-progress"><div class="season-progress-fill" id="seasonProgressFill"></div></div>
+                <div class="season-progress-label" id="seasonProgressLabel">SEASON PROGRESS</div>
             </div>
 
             <!-- Top 10 Standings Preview -->
@@ -2829,6 +3079,7 @@
                 changeSeason();
             } catch (error) {
                 console.error('Error loading racing data:', error);
+                showLoadError();
             }
         }
 
@@ -3020,6 +3271,17 @@
             }
             
             document.getElementById('homeChampionshipStatus').textContent = statusText;
+
+            // Season progress bar
+            const progressFill = document.getElementById('seasonProgressFill');
+            const progressLabel = document.getElementById('seasonProgressLabel');
+            if (progressFill && progressLabel) {
+                const pct = totalRaces > 0 ? (completedRaces / totalRaces) * 100 : 0;
+                requestAnimationFrame(() => { progressFill.style.width = pct + '%'; });
+                progressLabel.textContent = remainingRaces === 0 && completedRaces > 0
+                    ? 'SEASON COMPLETE'
+                    : `${Math.round(pct)}% OF THE SEASON COMPLETE`;
+            }
 
             // Update top 5 driver standings
             const homeDriverStandings = document.getElementById('homeDriverStandings');
@@ -4435,6 +4697,7 @@
             updateProgressionChart();
             populateH2HSelectors();
             updateHeadToHead();
+            applyScrollReveal();
         }
 
         // Update teams grid with team cards
@@ -4458,6 +4721,7 @@
 
                 const card = document.createElement('div');
                 card.className = 'team-card';
+                card.dataset.color = teamColor;
                 card.onclick = () => openTeamModal(team);
 
                 let driversHTML = '';
@@ -4552,6 +4816,7 @@
                 card.style.borderTop = `6px solid ${teamColor}`;
 
                 card.dataset.search = `${driver.name} ${driver.team} ${driverInfo.number} ${driverInfo.nationality || ''}`.toLowerCase();
+                card.dataset.color = teamColor;
 
                 driversGrid.appendChild(card);
             });
@@ -4599,7 +4864,7 @@
                 }
 
                 row.innerHTML = `
-                    <td>${position}${moveHtml}</td>
+                    <td style="border-left: 4px solid ${getTeamColor(driver.team)};">${position}${moveHtml}</td>
                     <td>
                         <div class="driver-name">${driver.name}</div>
                         <div class="team-name">${driver.team}</div>
@@ -7608,7 +7873,7 @@
                 }
 
                 row.innerHTML = `
-                    <td>${position}${moveHtml}</td>
+                    <td style="border-left: 4px solid ${getTeamColor(team.name)};">${position}${moveHtml}</td>
                     <td>
                         <div class="driver-name">${team.name}</div>
                     </td>
@@ -11164,6 +11429,13 @@
 
             // Scroll back to the top when switching tabs
             window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // UI polish: speed-line sweep, nav indicator, bottom nav state
+            runSpeedLines();
+            positionNavIndicator();
+            document.querySelectorAll('.bottom-nav-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.tab === tabName);
+            });
         }
         
         function toggleMobileNav() {
@@ -11528,6 +11800,143 @@
                 requestAnimationFrame(tick);
             });
         }
+
+        /* ===================================================== */
+        /* ================= UI polish layer =================== */
+        /* ===================================================== */
+
+        const prefersReducedMotion = () =>
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // ---------- Skeleton loading ----------
+        function showSkeletons() {
+            const skelRows = n => Array.from({ length: n }, () => '<div class="skel skel-row"></div>').join('');
+            const skelCards = n => Array.from({ length: n }, () => '<div class="skel skel-card"></div>').join('');
+            const fill = (id, html) => { const el = document.getElementById(id); if (el && !el.children.length) el.innerHTML = html; };
+            fill('homeDriverStandings', skelRows(5));
+            fill('homeConstructorStandings', skelRows(5));
+            fill('newsArticles', skelCards(3));
+            fill('driversGrid', skelCards(8));
+            fill('teamsGrid', skelCards(4));
+            fill('scheduleGrid', skelCards(6));
+        }
+
+        function showLoadError() {
+            const msg = '<div class="load-error">Couldn\'t load season data. Check that racing-data-multi-season.json is reachable, then refresh.</div>';
+            ['homeDriverStandings', 'homeConstructorStandings', 'newsArticles', 'driversGrid', 'teamsGrid', 'scheduleGrid']
+                .forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = msg; });
+        }
+
+        // ---------- Scroll reveal ----------
+        let revealObserver = null;
+        function applyScrollReveal() {
+            if (prefersReducedMotion()) return;
+            if (!revealObserver) {
+                revealObserver = new IntersectionObserver(entries => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('revealed');
+                            revealObserver.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+            }
+            const targets = document.querySelectorAll(
+                '.driver-card, .team-card, .race-card, .news-card, .stat-card'
+            );
+            targets.forEach((el, i) => {
+                if (el.classList.contains('reveal')) return;
+                el.classList.add('reveal');
+                el.style.transitionDelay = `${(i % 8) * 45}ms`;
+                revealObserver.observe(el);
+            });
+        }
+
+        // ---------- 3D card tilt with team-color glow ----------
+        function initCardTilt() {
+            if (prefersReducedMotion()) return;
+            if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+            const MAX_TILT = 6;
+            document.addEventListener('mousemove', e => {
+                const card = e.target.closest && e.target.closest('.driver-card, .team-card');
+                if (!card) return;
+                const rect = card.getBoundingClientRect();
+                const px = (e.clientX - rect.left) / rect.width - 0.5;
+                const py = (e.clientY - rect.top) / rect.height - 0.5;
+                const color = card.dataset.color || '#E10600';
+                card.style.transform =
+                    `perspective(800px) rotateY(${px * MAX_TILT}deg) rotateX(${-py * MAX_TILT}deg) translateY(-6px)`;
+                card.style.boxShadow = `0 18px 40px rgba(0, 0, 0, 0.55), 0 0 24px ${color}40`;
+            });
+            document.addEventListener('mouseout', e => {
+                const card = e.target.closest && e.target.closest('.driver-card, .team-card');
+                if (!card) return;
+                if (card.contains(e.relatedTarget)) return;
+                card.style.transform = '';
+                card.style.boxShadow = '';
+            });
+        }
+
+        // ---------- Animated nav indicator ----------
+        function positionNavIndicator() {
+            const indicator = document.getElementById('navIndicator');
+            if (!indicator) return;
+            const active = document.querySelector('.top-nav-tab.active');
+            if (!active || window.innerWidth <= 768 || active.offsetWidth === 0) {
+                indicator.style.width = '0px';
+                return;
+            }
+            indicator.style.left = active.offsetLeft + 'px';
+            indicator.style.width = active.offsetWidth + 'px';
+        }
+
+        // ---------- Speed-line tab transition ----------
+        let speedLineTimer = null;
+        function runSpeedLines() {
+            if (prefersReducedMotion()) return;
+            const el = document.getElementById('speedLines');
+            if (!el) return;
+            el.classList.remove('run');
+            void el.offsetWidth; // restart animation
+            el.classList.add('run');
+            clearTimeout(speedLineTimer);
+            speedLineTimer = setTimeout(() => el.classList.remove('run'), 650);
+        }
+
+        // ---------- Modal UX: Esc + backdrop click ----------
+        function initModalUX() {
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+                }
+            });
+            document.addEventListener('click', e => {
+                if (e.target.classList && e.target.classList.contains('modal')) {
+                    e.target.classList.remove('active');
+                }
+            });
+        }
+
+        // ---------- Back to top ----------
+        function initBackToTop() {
+            const btn = document.getElementById('backToTop');
+            if (!btn) return;
+            window.addEventListener('scroll', () => {
+                btn.classList.toggle('show', window.scrollY > 600);
+            }, { passive: true });
+            btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            showSkeletons();
+            initCardTilt();
+            initModalUX();
+            initBackToTop();
+            positionNavIndicator();
+        });
+        window.addEventListener('resize', positionNavIndicator);
+        window.addEventListener('load', positionNavIndicator);
 
         window.addEventListener('DOMContentLoaded', initSortableStandings);
 
