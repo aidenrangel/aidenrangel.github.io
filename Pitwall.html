@@ -726,6 +726,33 @@ button:focus-visible, select:focus-visible, a:focus-visible {
   .matrix .drv-cell { position: static; }
   a, button { color: inherit; }
 }
+
+/* ---------- Record book ---------- */
+.rb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  gap: 8px 40px;
+}
+.rb-board { margin-top: 26px; }
+.rb-board .section-head { margin-top: 0; }
+.rb-board .data-table { margin-top: 8px; }
+.rb-board .data-table td { padding: 7px 10px; }
+.rb-rank {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.05rem;
+  width: 34px;
+  color: var(--ink-3);
+}
+.rb-board tr:first-child .rb-rank,
+.rb-board tr:first-child .rb-val { color: var(--purple); }
+.rb-val {
+  font-family: var(--mono);
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+.rb-sub { font-size: 0.74rem; color: var(--ink-3); }
 </style>
 </head>
 <body>
@@ -738,6 +765,7 @@ button:focus-visible, select:focus-visible, a:focus-visible {
   <nav class="masthead-nav" aria-label="Views">
     <button class="nav-btn" data-nav="season" aria-current="true" onclick="go({type:'season'})">SEASON</button>
     <button class="nav-btn" data-nav="teams" aria-current="false" onclick="go({type:'teams'})">TEAMS</button>
+    <button class="nav-btn" data-nav="records" aria-current="false" onclick="go({type:'records'})">RECORDS</button>
     <button class="nav-btn" data-nav="archive" aria-current="false" onclick="go({type:'archive'})">ARCHIVE</button>
     <label class="season-pick">YEAR
       <select id="seasonSelect" aria-label="Select season"></select>
@@ -768,6 +796,7 @@ button:focus-visible, select:focus-visible, a:focus-visible {
     <section class="sheet" id="sheet-team" aria-label="Team sheet"></section>
     <section class="sheet" id="sheet-race" aria-label="Race sheet"></section>
     <section class="sheet" id="sheet-teams" aria-label="Teams sheet"></section>
+    <section class="sheet" id="sheet-records" aria-label="Record book sheet"></section>
     <section class="sheet" id="sheet-archive" aria-label="Archive sheet"></section>
   </main>
 </div>
@@ -962,7 +991,7 @@ function writeHash() {
 }
 
 function applyHash(hash) {
-  const m = /^#(\d{4})\/(season|teams|archive|driver|race|team)(?:\/(.+))?$/.exec(hash || '');
+  const m = /^#(\d{4})\/(season|teams|archive|records|driver|race|team)(?:\/(.+))?$/.exec(hash || '');
   if (!m) return false;
   const si = App.data.seasons.findIndex(s => String(s.year) === m[1]);
   if (si === -1) return false;
@@ -999,7 +1028,7 @@ function changeSeason(idx) {
 /* ---------------- render root ---------------- */
 
 function render() {
-  const navMap = { season: 'season', teams: 'teams', archive: 'archive', driver: 'season', team: 'teams', race: 'season' };
+  const navMap = { season: 'season', teams: 'teams', archive: 'archive', records: 'records', driver: 'season', team: 'teams', race: 'season' };
   document.querySelectorAll('.nav-btn').forEach(b =>
     b.setAttribute('aria-current', String(b.dataset.nav === navMap[App.view.type])));
 
@@ -1012,6 +1041,7 @@ function render() {
     team: renderTeamSheet,
     race: renderRaceSheet,
     teams: renderTeamsSheet,
+    records: renderRecordsSheet,
     archive: renderArchiveSheet
   }[App.view.type] || renderSeasonSheet;
   target();
@@ -1580,6 +1610,137 @@ function renderTeamSheet() {
   `;
 }
 
+/* ---------------- record book ---------------- */
+
+function careerTotals() {
+  const key = 'careers';
+  if (App.caches.has(key)) return App.caches.get(key);
+  const map = new Map();
+  App.data.seasons.forEach((s, si) => {
+    if (!completedIdxs(s).length) return;
+    const st = driverStandings(si);
+    const complete = isComplete(s);
+    st.forEach((d, i) => {
+      if (!map.has(d.id)) {
+        map.set(d.id, {
+          id: d.id, name: d.name, team: d.team, lastSi: si, seasons: 0,
+          starts: 0, points: 0, wins: 0, podiums: 0, poles: 0, fastestLaps: 0, dnfs: 0, titles: 0
+        });
+      }
+      const c = map.get(d.id);
+      if (!d.starts) { /* entered but never started this season */ } 
+      c.seasons++;
+      c.starts += d.starts;
+      c.points += d.points;
+      c.wins += d.wins;
+      c.podiums += d.podiums;
+      c.poles += d.poles;
+      c.fastestLaps += d.fastestLaps;
+      c.dnfs += d.dnfs;
+      if (complete && i === 0) c.titles++;
+      // keep the most recent identity for name/team color
+      c.name = d.name;
+      c.team = d.team;
+      c.lastSi = si;
+    });
+  });
+  const out = [...map.values()];
+  App.caches.set(key, out);
+  return out;
+}
+
+function seasonBests() {
+  let mostWins = null, mostPoints = null, bigMargin = null;
+  App.data.seasons.forEach((s, si) => {
+    if (!completedIdxs(s).length) return;
+    const st = driverStandings(si);
+    st.forEach(d => {
+      if (!mostWins || d.wins > mostWins.v) mostWins = { v: d.wins, who: d.name, year: s.year };
+      if (!mostPoints || d.points > mostPoints.v) mostPoints = { v: d.points, who: d.name, year: s.year };
+    });
+    if (isComplete(s) && st.length > 1) {
+      const margin = st[0].points - st[1].points;
+      if (!bigMargin || margin > bigMargin.v) bigMargin = { v: margin, who: st[0].name, year: s.year };
+    }
+  });
+  return { mostWins, mostPoints, bigMargin };
+}
+
+function rbBoard(title, sub, rows, fmt) {
+  if (!rows.length) return '';
+  const body = rows.map((c, i) => `
+    <tr class="rowlink" data-go="rbdriver" data-si="${c.lastSi}" data-id="${esc(String(c.id))}" tabindex="0">
+      <td class="rb-rank">${i + 1}</td>
+      <td><span class="team-chip" style="background:${esc(teamColor(App.data.seasons[c.lastSi], c.team))}"></span>
+          <strong>${esc(c.name)}</strong>
+          <span class="rb-sub">· ${c.seasons} season${c.seasons !== 1 ? 's' : ''}</span></td>
+      <td class="rb-val">${fmt(c)}</td>
+    </tr>`).join('');
+  return `
+    <div class="rb-board">
+      <div class="section-head">
+        <div class="section-title" style="font-size:1.25rem">${title}</div>
+        <div class="section-note">${sub}</div>
+      </div>
+      <table class="data-table"><tbody>${body}</tbody></table>
+    </div>`;
+}
+
+function renderRecordsSheet() {
+  const el = document.getElementById('sheet-records');
+  el.classList.add('active');
+
+  const careers = careerTotals();
+  if (!careers.length) {
+    el.innerHTML = `
+      <div class="kicker">RECORD BOOK</div>
+      <h1 class="sheet-title">All-Time Records</h1>
+      <div class="notice">The record book opens once a race has been run.</div>`;
+    return;
+  }
+
+  const top = (key, n = 8) => [...careers].filter(c => c[key] > 0)
+    .sort((a, b) => b[key] - a[key] || b.points - a.points).slice(0, n);
+
+  // efficiency boards: adaptive start threshold so young leagues still qualify
+  const maxStarts = Math.max(...careers.map(c => c.starts));
+  const minStarts = Math.min(5, maxStarts);
+  const eligible = careers.filter(c => c.starts >= minStarts);
+  const byWinPct = [...eligible].map(c => ({ ...c, winPct: c.wins / c.starts }))
+    .filter(c => c.winPct > 0).sort((a, b) => b.winPct - a.winPct || b.wins - a.wins).slice(0, 8);
+  const byPps = [...eligible].map(c => ({ ...c, pps: c.points / c.starts }))
+    .filter(c => c.pps > 0).sort((a, b) => b.pps - a.pps || b.points - a.points).slice(0, 8);
+
+  const bests = seasonBests();
+  const bestBlock = (label, b, unit) => b ? `
+    <div class="stat-block">
+      <div class="v">${b.v}${unit || ''}</div>
+      <div class="k">${label} — ${esc(b.who)}, ${b.year}</div>
+    </div>` : '';
+
+  const seasonsCounted = App.data.seasons.filter(s => completedIdxs(s).length).length;
+
+  el.innerHTML = `
+    <div class="kicker">RECORD BOOK</div>
+    <h1 class="sheet-title">All-Time Records</h1>
+    <div class="sheet-sub">Career totals across ${seasonsCounted} season${seasonsCounted !== 1 ? 's' : ''} · tap any driver for their sheet</div>
+    <div class="stat-row">
+      ${bestBlock('MOST WINS IN A SEASON', bests.mostWins)}
+      ${bestBlock('MOST POINTS IN A SEASON', bests.mostPoints)}
+      ${bestBlock('BIGGEST TITLE MARGIN', bests.bigMargin, ' PTS')}
+    </div>
+    <div class="rb-grid">
+      ${rbBoard('Titles', 'COMPLETED SEASONS WON', top('titles'), c => c.titles)}
+      ${rbBoard('Wins', 'ALL-TIME', top('wins'), c => c.wins)}
+      ${rbBoard('Points', 'ALL-TIME', top('points'), c => c.points)}
+      ${rbBoard('Podiums', 'ALL-TIME', top('podiums'), c => c.podiums)}
+      ${rbBoard('Poles', 'ALL-TIME', top('poles'), c => c.poles)}
+      ${rbBoard('Fastest Laps', 'ALL-TIME', top('fastestLaps'), c => c.fastestLaps)}
+      ${rbBoard('Win Rate', `MIN ${minStarts} START${minStarts !== 1 ? 'S' : ''}`, byWinPct, c => Math.round(c.winPct * 100) + '%')}
+      ${rbBoard('Points Per Start', `MIN ${minStarts} START${minStarts !== 1 ? 'S' : ''}`, byPps, c => c.pps.toFixed(1))}
+    </div>`;
+}
+
 /* ---------------- archive sheet ---------------- */
 
 function renderArchiveSheet() {
@@ -1684,6 +1845,13 @@ async function boot() {
 function handleGoTarget(el) {
   const kind = el.dataset.go;
   if (kind === 'tmode') { App.towerMode = el.dataset.mode; renderTower(); return; }
+  if (kind === 'rbdriver') {
+    App.seasonIdx = parseInt(el.dataset.si, 10);
+    const sel = document.getElementById('seasonSelect');
+    if (sel) sel.value = App.seasonIdx;
+    go({ type: 'driver', id: el.dataset.id });
+    return;
+  }
   if (kind === 'cmode') { App.chartMode = el.dataset.mode; render(); return; }
   if (kind === 'driver') go({ type: 'driver', id: el.dataset.id });
   else if (kind === 'race') go({ type: 'race', idx: parseInt(el.dataset.idx, 10) });
