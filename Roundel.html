@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROUNDEL — GT World Championship Yearbook</title>
+<meta name="description" content="The GT World Championship as a vintage racing yearbook.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   ROUNDEL — vintage racing yearbook tokens
+   bone paper · racing orange · prussian blue · typed bulletins
+   ============================================================ */
+:root {
+  --bone:    #F1E9D7;
+  --bone-2:  #E7DCC4;
+  --ink:     #211C14;
+  --ink-2:   #5A5243;
+  --orange:  #E4572E;
+  --blue:    #1B4079;
+  --green:   #4F6D2F;
+  --rule:    #C9BB9D;
+  --white:   #FBF7EE;
+  --display: 'Archivo Black', sans-serif;
+  --body:    'Archivo', sans-serif;
+  --type:    'Courier Prime', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+::selection { background: var(--orange); color: var(--white); }
+
+body {
+  font-family: var(--body);
+  background: var(--bone);
+  color: var(--ink);
+  /* paper grain */
+  background-image: radial-gradient(rgba(33, 28, 20, 0.05) 1px, transparent 1px);
+  background-size: 5px 5px;
+}
+
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+button:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* ---------- Masthead ---------- */
+.masthead {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bone);
+  border-bottom: 3px solid var(--ink);
+}
+.masthead-in {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 12px 20px;
+  flex-wrap: wrap;
+}
+.mark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.mark-circle {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 3px solid var(--ink);
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-size: 1rem;
+}
+.mark-word {
+  font-family: var(--display);
+  font-size: 1.35rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 var(--orange);
+}
+.mast-nav { display: flex; gap: 2px; margin-left: auto; flex-wrap: wrap; }
+.mast-btn {
+  font-family: var(--body);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  color: var(--ink-2);
+}
+.mast-btn:hover { color: var(--ink); text-decoration: underline 2px var(--orange); text-underline-offset: 4px; }
+.mast-btn[aria-current="true"] {
+  background: var(--ink);
+  color: var(--bone);
+}
+.edition-pick {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--type);
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  color: var(--ink-2);
+}
+.edition-pick select {
+  font-family: var(--display);
+  font-size: 1.05rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid var(--orange);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* ---------- Page ---------- */
+.page { max-width: 1080px; margin: 0 auto; padding: 34px 20px 90px; }
+.view { display: none; }
+.view.active { display: block; }
+
+/* ---------- Cover ---------- */
+.cover {
+  position: relative;
+  background: var(--blue);
+  color: var(--bone);
+  padding: 50px 44px 56px;
+  overflow: hidden;
+  margin-bottom: 44px;
+}
+.cover::before {
+  /* diagonal racing band */
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -14%;
+  width: 46%;
+  height: 150%;
+  background: var(--orange);
+  transform: rotate(14deg);
+}
+.cover::after {
+  /* halftone dots on the band */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(33, 28, 20, 0.22) 1.5px, transparent 1.5px);
+  background-size: 9px 9px;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.cover-kicker {
+  font-family: var(--type);
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+}
+.cover-year {
+  font-family: var(--display);
+  font-size: clamp(4.4rem, 13vw, 9.5rem);
+  line-height: 0.85;
+  text-shadow: 5px 5px 0 var(--orange);
+}
+.cover-title {
+  font-family: var(--display);
+  font-size: clamp(1.2rem, 3.4vw, 2rem);
+  text-transform: uppercase;
+  margin-top: 14px;
+  max-width: 540px;
+  line-height: 1.15;
+}
+.cover-foot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-top: 36px;
+  flex-wrap: wrap;
+  z-index: 2;
+}
+.cover-roundel { flex-shrink: 0; }
+.cover-lead .lab {
+  font-family: var(--type);
+  font-size: 0.68rem;
+  letter-spacing: 2px;
+}
+.cover-lead .who {
+  font-family: var(--display);
+  font-size: clamp(1.3rem, 3vw, 1.9rem);
+  text-transform: uppercase;
+}
+.cover-lead .det { font-family: var(--type); font-size: 0.8rem; margin-top: 4px; }
+
+/* ---------- Roundel (signature) ---------- */
+.roundel {
+  border-radius: 50%;
+  background: var(--white);
+  border: 4px solid var(--ink);
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  color: var(--ink);
+  position: relative;
+  box-shadow: 0 3px 0 rgba(33, 28, 20, 0.35);
+}
+.roundel .ring {
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  border: 4px solid currentColor;
+  opacity: 0.95;
+}
+.roundel span { position: relative; }
+.roundel.r-lg { width: 110px; height: 110px; font-size: 2.6rem; }
+.roundel.r-md { width: 76px; height: 76px; font-size: 1.7rem; }
+.roundel.r-sm { width: 46px; height: 46px; font-size: 1rem; border-width: 3px; }
+.roundel.r-sm .ring { inset: 3px; border-width: 3px; }
+
+/* ---------- Chapter heads ---------- */
+.chapter {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin: 52px 0 20px;
+  border-bottom: 3px solid var(--ink);
+  padding-bottom: 8px;
+}
+.chapter-no {
+  font-family: var(--type);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--orange);
+  font-weight: 700;
+}
+.chapter-name {
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 4vw, 2.3rem);
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 var(--bone-2);
+}
+.chapter-note { margin-left: auto; font-family: var(--type); font-size: 0.7rem; color: var(--ink-2); }
+
+/* ---------- Typed bulletin ---------- */
+.bulletin {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  box-shadow: 4px 4px 0 rgba(33, 28, 20, 0.12);
+  padding: 26px 28px;
+  font-family: var(--type);
+  position: relative;
+}
+.bulletin-head {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 10px;
+  margin-bottom: 6px;
+}
+.bulletin-sub { font-size: 0.7rem; color: var(--ink-2); margin-bottom: 14px; }
+.bulletin table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+.bulletin th {
+  text-align: left;
+  font-size: 0.68rem;
+  letter-spacing: 1.5px;
+  padding: 6px 8px;
+  border-bottom: 1px dashed var(--ink-2);
+  font-weight: 700;
+}
+.bulletin td { padding: 7px 8px; border-bottom: 1px dotted var(--rule); }
+.bulletin tr.rowlink { cursor: pointer; }
+.bulletin tr.rowlink:hover td { background: var(--bone); }
+.bulletin .r { text-align: right; }
+.bulletin .b { font-weight: 700; }
+.up { color: var(--green); }
+.dn { color: var(--orange); }
+.dim { color: var(--ink-2); }
+.swatch {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border: 1px solid var(--ink);
+  margin-right: 8px;
+  vertical-align: 0;
+}
+
+/* ink stamp */
+.stamp {
+  position: absolute;
+  top: 16px; right: 18px;
+  font-family: var(--display);
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--orange);
+  border: 3px solid var(--orange);
+  border-radius: 4px;
+  padding: 5px 10px;
+  transform: rotate(7deg);
+  opacity: 0.85;
+}
+.stamp.blue { color: var(--blue); border-color: var(--blue); transform: rotate(-6deg); }
+
+/* ---------- Grid wall ---------- */
+.wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 18px;
+}
+.plate {
+  background: var(--white);
+  border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 rgba(33, 28, 20, 0.16);
+  padding: 18px 14px 16px;
+  text-align: center;
+  transition: transform 0.12s ease;
+}
+.plate:hover, .plate:focus-visible { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 rgba(33, 28, 20, 0.2); }
+.plate .roundel { margin: 0 auto 12px; }
+.plate-name {
+  font-family: var(--display);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  line-height: 1.15;
+}
+.plate-team { font-family: var(--type); font-size: 0.68rem; color: var(--ink-2); margin-top: 5px; }
+.plate-pos {
+  font-family: var(--type);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--blue);
+  margin-top: 8px;
+}
+
+/* ---------- Calendar stubs ---------- */
+.stubs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+.stub {
+  background: var(--white);
+  border: 2px solid var(--ink);
+  padding: 16px;
+  text-align: left;
+  position: relative;
+  box-shadow: 4px 4px 0 rgba(33, 28, 20, 0.16);
+}
+.stub:nth-child(odd) { transform: rotate(-0.6deg); }
+.stub:nth-child(even) { transform: rotate(0.5deg); }
+.stub.clickable:hover, .stub.clickable:focus-visible { transform: rotate(0) translateY(-3px); }
+.stub-rd { font-family: var(--type); font-size: 0.65rem; letter-spacing: 2px; color: var(--ink-2); }
+.stub-name {
+  font-family: var(--display);
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  margin: 6px 0 2px;
+  line-height: 1.15;
+}
+.stub-loc { font-family: var(--type); font-size: 0.72rem; color: var(--ink-2); }
+.stub-result {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--rule);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--type);
+  font-size: 0.72rem;
+}
+.stub-result .w { font-weight: 700; }
+.stub .stamp { top: 10px; right: 10px; font-size: 0.55rem; padding: 3px 7px; }
+.stub .stamp.tba { color: var(--ink-2); border-color: var(--ink-2); }
+
+/* ---------- Spec sheet (driver/team) ---------- */
+.sheet-top {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  flex-wrap: wrap;
+  background: var(--white);
+  border: 2px solid var(--ink);
+  box-shadow: 5px 5px 0 rgba(33, 28, 20, 0.16);
+  padding: 26px 28px;
+  position: relative;
+  margin-bottom: 26px;
+}
+.sheet-top .who {
+  font-family: var(--display);
+  font-size: clamp(1.6rem, 4.5vw, 2.6rem);
+  text-transform: uppercase;
+  line-height: 1;
+}
+.sheet-top .sub { font-family: var(--type); font-size: 0.78rem; color: var(--ink-2); margin-top: 8px; }
+.specs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 2px;
+  background: var(--ink);
+  border: 2px solid var(--ink);
+  margin-bottom: 26px;
+}
+.spec { background: var(--white); padding: 14px 14px 12px; }
+.spec .v { font-family: var(--display); font-size: 1.9rem; line-height: 1; }
+.spec .k {
+  font-family: var(--type);
+  font-size: 0.6rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin-top: 6px;
+}
+.editions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 26px; }
+.edition-chip {
+  background: var(--white);
+  border: 2px solid var(--ink);
+  padding: 10px 14px;
+  font-family: var(--type);
+  font-size: 0.75rem;
+  box-shadow: 3px 3px 0 rgba(33, 28, 20, 0.14);
+}
+.edition-chip .yr { font-weight: 700; }
+.edition-chip.champ { background: var(--orange); color: var(--white); border-color: var(--ink); }
+
+.backbtn {
+  font-family: var(--type);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 18px;
+  display: inline-block;
+  border-bottom: 2px solid var(--orange);
+  padding-bottom: 2px;
+}
+.backbtn:hover { color: var(--orange); }
+
+/* ---------- Podium roundels ---------- */
+.podium {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 26px;
+  margin: 24px 0 30px;
+  flex-wrap: wrap;
+}
+.podium .step { text-align: center; }
+.podium .step .roundel { margin: 0 auto 10px; }
+.podium .plc { font-family: var(--display); font-size: 0.85rem; }
+.podium .nm { font-family: var(--type); font-size: 0.72rem; margin-top: 4px; }
+.podium .step:nth-child(2) { padding-bottom: 26px; }
+.podium .step:nth-child(1), .podium .step:nth-child(3) { padding-bottom: 6px; }
+
+/* ---------- Past editions shelf ---------- */
+.shelf {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 22px;
+}
+.mini-cover {
+  background: var(--blue);
+  color: var(--bone);
+  padding: 22px 18px 18px;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--ink);
+  box-shadow: 5px 5px 0 rgba(33, 28, 20, 0.18);
+  text-align: left;
+}
+.mini-cover:nth-child(even) { background: var(--green); }
+.mini-cover::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -22%;
+  width: 55%;
+  height: 160%;
+  background: var(--orange);
+  transform: rotate(16deg);
+}
+.mini-cover .yr {
+  font-family: var(--display);
+  font-size: 2.6rem;
+  line-height: 0.9;
+  text-shadow: 3px 3px 0 rgba(33, 28, 20, 0.45);
+  position: relative;
+}
+.mini-cover .lab { font-family: var(--type); font-size: 0.6rem; letter-spacing: 2px; margin-top: 10px; position: relative; }
+.mini-cover .who { font-family: var(--display); font-size: 0.95rem; text-transform: uppercase; position: relative; }
+.mini-cover .det { font-family: var(--type); font-size: 0.65rem; position: relative; margin-top: 2px; }
+.mini-cover .wip {
+  position: absolute;
+  top: 12px; right: 10px;
+  font-family: var(--type);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: var(--bone);
+  color: var(--ink);
+  padding: 3px 7px;
+  transform: rotate(6deg);
+  z-index: 2;
+}
+
+.notice {
+  font-family: var(--type);
+  font-size: 0.85rem;
+  color: var(--ink-2);
+  border: 2px dashed var(--rule);
+  background: var(--white);
+  padding: 16px;
+}
+
+.demo-badge {
+  position: fixed;
+  bottom: 12px; left: 12px;
+  z-index: 80;
+  font-family: var(--type);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: var(--ink);
+  color: var(--bone);
+  padding: 7px 10px;
+  display: none;
+  transform: rotate(-2deg);
+}
+.demo-badge.show { display: block; }
+
+.colophon {
+  margin-top: 60px;
+  border-top: 3px solid var(--ink);
+  padding-top: 14px;
+  font-family: var(--type);
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  color: var(--ink-2);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 720px) {
+  .cover { padding: 34px 24px 40px; }
+  .mast-nav { order: 3; width: 100%; }
+  .chapter-note { display: none; }
+  .bulletin { padding: 18px 14px; overflow-x: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .plate, .stub, .stub.clickable { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-in">
+    <div class="mark">
+      <div class="mark-circle" id="markNum">1</div>
+      <div class="mark-word">Roundel</div>
+    </div>
+    <nav class="mast-nav" aria-label="Chapters">
+      <button class="mast-btn" data-nav="annual" aria-current="true" data-go="nav" data-screen="annual">The Annual</button>
+      <button class="mast-btn" data-nav="grid" aria-current="false" data-go="nav" data-screen="grid">The Grid</button>
+      <button class="mast-btn" data-nav="calendar" aria-current="false" data-go="nav" data-screen="calendar">Calendar</button>
+      <button class="mast-btn" data-nav="teams" aria-current="false" data-go="nav" data-screen="teams">Garages</button>
+      <button class="mast-btn" data-nav="editions" aria-current="false" data-go="nav" data-screen="editions">Past Editions</button>
+    </nav>
+    <label class="edition-pick">EDITION
+      <select id="seasonSelect" aria-label="Select season"></select>
+    </label>
+  </div>
+</header>
+
+<main class="page" id="page"></main>
+
+<div class="demo-badge" id="demoBadge">SPECIMEN COPY — JSON NOT FOUND</div>
+
+<script>
+/* ============================================================
+   ROUNDEL · zero dependencies
+   Same structure as the Formula GT Tracker / PITWALL / FINAL LAP:
+   racing-data-multi-season.json, bundled demo fallback.
+   ============================================================ */
+
+'use strict';
+
+const App = { data: null, seasonIdx: 0, view: { type: 'annual' }, caches: new Map() };
+
+/* ---------------- shared math (memoized) ---------------- */
+
+function season() { return App.data.seasons[App.seasonIdx]; }
+function completedIdxs(s) {
+  return s.races.map((r, i) => (r.status === 'completed' && r.results ? i : -1)).filter(i => i >= 0);
+}
+function isComplete(s) { return s.races.length > 0 && s.races.every(r => r.status === 'completed'); }
+
+function driverStandings(si, upto = Infinity) {
+  const key = `drv|${si}|${upto}`;
+  if (App.caches.has(key)) return App.caches.get(key);
+  const s = App.data.seasons[si];
+  const map = new Map();
+  s.drivers.forEach(d => map.set(d.id, {
+    id: d.id, name: d.name, team: d.team, number: d.number,
+    points: 0, wins: 0, podiums: 0, poles: 0, fastestLaps: 0, dnfs: 0
+  }));
+  s.races.forEach((race, i) => {
+    if (i > upto || race.status !== 'completed' || !race.results) return;
+    if (race.grid && race.grid.length) {
+      const pole = map.get(race.grid[0].driverId);
+      if (pole) pole.poles++;
+    }
+    race.results.forEach(res => {
+      const d = map.get(res.driverId);
+      if (!d) return;
+      d.points += s.pointsSystem.race[res.position] || 0;
+      if (res.position === 1) d.wins++;
+      if (res.position <= 3) d.podiums++;
+      if (res.status && res.status !== 'finished') d.dnfs++;
+      if (race.fastestLap && race.fastestLap.driverId == res.driverId) {
+        d.fastestLaps++;
+        if (res.position <= 10 && res.status === 'finished') d.points += s.pointsSystem.fastestLap || 0;
+      }
+    });
+  });
+  const out = [...map.values()].sort((a, b) => b.points - a.points || b.wins - a.wins || b.podiums - a.podiums);
+  App.caches.set(key, out);
+  return out;
+}
+
+function teamStandings(si) {
+  const key = `team|${si}`;
+  if (App.caches.has(key)) return App.caches.get(key);
+  const s = App.data.seasons[si];
+  const drivers = driverStandings(si);
+  const map = new Map();
+  [...new Set(s.drivers.map(d => d.team))].forEach(t => map.set(t, { name: t, points: 0, wins: 0, podiums: 0, poles: 0 }));
+  drivers.forEach(d => {
+    const t = map.get(d.team);
+    if (t) { t.points += d.points; t.wins += d.wins; t.podiums += d.podiums; t.poles += d.poles; }
+  });
+  const out = [...map.values()].sort((a, b) => b.points - a.points || b.wins - a.wins);
+  App.caches.set(key, out);
+  return out;
+}
+
+function movementMap(si) {
+  const s = App.data.seasons[si];
+  const done = completedIdxs(s);
+  const map = new Map();
+  if (done.length < 2) return map;
+  const prev = driverStandings(si, done[done.length - 2]);
+  const prevPos = new Map(prev.map((d, i) => [d.id, i + 1]));
+  driverStandings(si).forEach((d, i) => {
+    if (prevPos.has(d.id)) map.set(d.id, prevPos.get(d.id) - (i + 1));
+  });
+  return map;
+}
+
+function teamColor(s, name) {
+  const t = s.teams.find(t => t.name === name);
+  return t && t.color ? t.color : '#555';
+}
+function driverById(s, id) { return s.drivers.find(d => d.id == id); }
+function esc(str) {
+  return String(str).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function roundel(num, color, size) {
+  return `<span class="roundel ${size}" style="color:${esc(color)}"><i class="ring" aria-hidden="true"></i><span>${esc(String(num ?? '?'))}</span></span>`;
+}
+
+/* ---------------- navigation ---------------- */
+
+function go(view) {
+  App.view = view;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function render() {
+  const navMap = { annual: 'annual', grid: 'grid', driver: 'grid', calendar: 'calendar', race: 'calendar', teams: 'teams', team: 'teams', editions: 'editions' };
+  document.querySelectorAll('.mast-btn').forEach(b =>
+    b.setAttribute('aria-current', String(b.dataset.nav === navMap[App.view.type])));
+
+  const leader = driverStandings(App.seasonIdx)[0];
+  const leaderInfo = leader && driverById(season(), leader.id);
+  document.getElementById('markNum').textContent = leaderInfo && leaderInfo.number != null ? leaderInfo.number : '1';
+
+  const fn = {
+    annual: viewAnnual, grid: viewGrid, driver: viewDriver,
+    calendar: viewCalendar, race: viewRace,
+    teams: viewTeams, team: viewTeam, editions: viewEditions
+  }[App.view.type] || viewAnnual;
+
+  document.getElementById('page').innerHTML = fn() + colophon();
+}
+
+function colophon() {
+  const s = season();
+  return `
+    <div class="colophon">
+      <span>ROUNDEL · THE GT WORLD CHAMPIONSHIP YEARBOOK · ${s.year} EDITION</span>
+      <span>SET IN ARCHIVO &amp; COURIER · PRINTED NOWHERE</span>
+    </div>`;
+}
+
+/* ---------------- views ---------------- */
+
+function viewAnnual() {
+  const s = season();
+  const standings = driverStandings(App.seasonIdx);
+  const moves = movementMap(App.seasonIdx);
+  const done = completedIdxs(s);
+  const leader = standings[0];
+  const leaderInfo = leader && driverById(s, leader.id);
+  const complete = isComplete(s);
+
+  const coverFoot = done.length && leader ? `
+    <div class="cover-foot">
+      <span class="cover-roundel">${roundel(leaderInfo ? leaderInfo.number : '?', teamColor(s, leader.team), 'r-lg')}</span>
+      <div class="cover-lead">
+        <div class="lab">${complete ? 'WORLD CHAMPION' : 'CHAMPIONSHIP LEADER, AS WE GO TO PRESS'}</div>
+        <div class="who">${esc(leader.name)}</div>
+        <div class="det">${esc(leader.team)} · ${leader.points} PTS · ${leader.wins} WINS · AFTER ROUND ${done.length} OF ${s.races.length}</div>
+      </div>
+    </div>` : `
+    <div class="cover-foot"><div class="cover-lead"><div class="lab">THE SEASON AWAITS ITS FIRST ROUND</div></div></div>`;
+
+  const rows = standings.map((d, i) => {
+    const mv = moves.get(d.id);
+    const mvTxt = mv === undefined ? '' : mv > 0 ? `<span class="up">+${mv}</span>` : mv < 0 ? `<span class="dn">−${-mv}</span>` : '<span class="dim">·</span>';
+    return `
+      <tr class="rowlink" data-go="driver" data-id="${esc(String(d.id))}" tabindex="0">
+        <td class="b">${i + 1}.</td>
+        <td><span class="swatch" style="background:${esc(teamColor(s, d.team))}"></span>${esc(d.name).toUpperCase()}</td>
+        <td class="dim">${esc(d.team)}</td>
+        <td class="r">${mvTxt}</td>
+        <td class="r">${d.wins}</td>
+        <td class="r b">${d.points}</td>
+      </tr>`;
+  }).join('');
+
+  return `
+    <div class="view active">
+      <div class="cover">
+        <div class="cover-kicker">EST. EACH SEASON · OFFICIAL RECORD OF THE SERIES</div>
+        <div class="cover-year">${s.year}</div>
+        <div class="cover-title">The GT World Championship Yearbook</div>
+        ${coverFoot}
+      </div>
+
+      <div class="chapter">
+        <span class="chapter-no">CH.01</span>
+        <span class="chapter-name">Classification</span>
+        <span class="chapter-note">AFTER ROUND ${done.length} OF ${s.races.length}</span>
+      </div>
+      <div class="bulletin">
+        <div class="stamp${complete ? '' : ' blue'}">${complete ? 'FINAL' : 'PROVISIONAL'}</div>
+        <div class="bulletin-head">DRIVERS' CHAMPIONSHIP — OFFICIAL CLASSIFICATION</div>
+        <div class="bulletin-sub">ISSUED BY RACE CONTROL · ${s.year} SEASON · MOVEMENT SHOWN VERSUS PREVIOUS ROUND</div>
+        <table>
+          <thead><tr><th>POS</th><th>DRIVER</th><th>ENTRANT</th><th class="r">MOV</th><th class="r">WINS</th><th class="r">PTS</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function viewGrid() {
+  const s = season();
+  const standings = driverStandings(App.seasonIdx);
+
+  const plates = standings.map((d, i) => {
+    const info = driverById(s, d.id) || {};
+    return `
+      <button class="plate" data-go="driver" data-id="${esc(String(d.id))}">
+        ${roundel(info.number, teamColor(s, d.team), 'r-md')}
+        <div class="plate-name">${esc(d.name)}</div>
+        <div class="plate-team">${esc(d.team)}${info.nationality ? ' · ' + esc(info.nationality) : ''}</div>
+        <div class="plate-pos">NO.${esc(String(info.number ?? '?'))} · P${i + 1} · ${d.points} PTS</div>
+      </button>`;
+  }).join('');
+
+  return `
+    <div class="view active">
+      <div class="chapter">
+        <span class="chapter-no">CH.02</span>
+        <span class="chapter-name">The Grid</span>
+        <span class="chapter-note">${standings.length} ENTRANTS · ${s.year}</span>
+      </div>
+      <div class="wall">${plates}</div>
+    </div>`;
+}
+
+function viewDriver() {
+  const s = season();
+  const standings = driverStandings(App.seasonIdx);
+  const idx = standings.findIndex(d => d.id == App.view.id);
+  if (idx === -1) return '<div class="view active"><div class="notice">THIS ENTRANT DOES NOT APPEAR IN THE CURRENT EDITION.</div></div>';
+  const d = standings[idx];
+  const info = driverById(s, d.id) || {};
+  const color = teamColor(s, d.team);
+
+  // editions across seasons
+  const editions = [];
+  App.data.seasons.forEach((cs, csi) => {
+    if (!cs.drivers.find(x => x.id == d.id) || !completedIdxs(cs).length) return;
+    const st = driverStandings(csi);
+    const p = st.findIndex(x => x.id == d.id);
+    if (p === -1) return;
+    editions.push({ year: cs.year, pos: p + 1, pts: st[p].points, champ: isComplete(cs) && p === 0 });
+  });
+
+  const logRows = s.races.map((race, i) => {
+    if (race.status !== 'completed' || !race.results) return '';
+    const res = race.results.find(r => r.driverId == d.id);
+    if (!res) return '';
+    const g = race.grid ? (race.grid.findIndex(x => x.driverId == d.id) + 1) : 0;
+    const dnf = res.status && res.status !== 'finished';
+    const fl = race.fastestLap && race.fastestLap.driverId == d.id;
+    const pts = (s.pointsSystem.race[res.position] || 0) + (fl && res.position <= 10 && !dnf ? (s.pointsSystem.fastestLap || 0) : 0);
+    return `
+      <tr class="rowlink" data-go="race" data-idx="${i}" tabindex="0">
+        <td class="b">R${i + 1}</td>
+        <td>${esc(race.name).toUpperCase()}</td>
+        <td class="r">${g ? 'P' + g : '—'}</td>
+        <td class="r">${dnf ? '<span class="dn b">RET</span>' : 'P' + res.position}${res.position === 1 && !dnf ? ' <span class="b">★</span>' : ''}${fl ? ' <span class="dim">FL</span>' : ''}</td>
+        <td class="r b">${pts || '—'}</td>
+      </tr>`;
+  }).join('');
+
+  return `
+    <div class="view active">
+      <button class="backbtn" data-go="nav" data-screen="grid">← BACK TO THE GRID</button>
+      <div class="sheet-top">
+        <div class="stamp blue">ENTRANT FILE</div>
+        ${roundel(info.number, color, 'r-lg')}
+        <div>
+          <div class="who">${esc(d.name)}</div>
+          <div class="sub">NO.${esc(String(info.number ?? '?'))} · ${esc(d.team)} · ${esc(info.nationality || '')} · CURRENTLY P${idx + 1}, ${s.year} CHAMPIONSHIP</div>
+        </div>
+      </div>
+      <div class="specs">
+        <div class="spec"><div class="v">${d.points}</div><div class="k">Points</div></div>
+        <div class="spec"><div class="v">${d.wins}</div><div class="k">Wins</div></div>
+        <div class="spec"><div class="v">${d.podiums}</div><div class="k">Podiums</div></div>
+        <div class="spec"><div class="v">${d.poles}</div><div class="k">Poles</div></div>
+        <div class="spec"><div class="v">${d.fastestLaps}</div><div class="k">Fastest laps</div></div>
+        <div class="spec"><div class="v">${d.dnfs}</div><div class="k">Retirements</div></div>
+      </div>
+      ${editions.length ? `
+        <div class="chapter" style="margin-top:30px">
+          <span class="chapter-no">RECORD</span>
+          <span class="chapter-name" style="font-size:1.3rem">Appears in ${editions.length} edition${editions.length !== 1 ? 's' : ''}</span>
+        </div>
+        <div class="editions">
+          ${editions.map(e => `
+            <div class="edition-chip${e.champ ? ' champ' : ''}">
+              <span class="yr">${e.year}</span> · P${e.pos} · ${e.pts} PTS${e.champ ? ' · CHAMPION' : ''}
+            </div>`).join('')}
+        </div>` : ''}
+      <div class="bulletin">
+        <div class="bulletin-head">SEASON LOG — ${s.year}</div>
+        <div class="bulletin-sub">TAP A ROUND FOR ITS RACE BULLETIN</div>
+        <table>
+          <thead><tr><th>RD</th><th>EVENT</th><th class="r">GRID</th><th class="r">FINISH</th><th class="r">PTS</th></tr></thead>
+          <tbody>${logRows || '<tr><td colspan="5" class="dim">NO ROUNDS RUN.</td></tr>'}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function viewCalendar() {
+  const s = season();
+
+  const stubs = s.races.map((race, i) => {
+    const done = race.status === 'completed' && race.results;
+    let resultHtml = '', stampHtml = '<div class="stamp tba">TO BE RUN</div>', cls = '', tag = 'div', extra = '';
+    if (done) {
+      const win = race.results.find(r => r.position === 1);
+      const winner = win && driverById(s, win.driverId);
+      cls = ' clickable';
+      tag = 'button';
+      extra = ` data-go="race" data-idx="${i}"`;
+      stampHtml = '<div class="stamp">RUN</div>';
+      resultHtml = winner ? `
+        <div class="stub-result">
+          ${roundel(winner.number, teamColor(s, winner.team), 'r-sm')}
+          <span><span class="w">WINNER: ${esc(winner.name).toUpperCase()}</span><br>${esc(winner.team)}</span>
+        </div>` : '';
+    }
+    return `
+      <${tag} class="stub${cls}"${extra}>
+        ${stampHtml}
+        <div class="stub-rd">ROUND ${String(i + 1).padStart(2, '0')}${race.date ? ' · ' + esc(race.date) : ''}</div>
+        <div class="stub-name">${esc(race.name)}</div>
+        <div class="stub-loc">${esc(race.location || '')}</div>
+        ${resultHtml}
+      </${tag}>`;
+  }).join('');
+
+  return `
+    <div class="view active">
+      <div class="chapter">
+        <span class="chapter-no">CH.03</span>
+        <span class="chapter-name">The Calendar</span>
+        <span class="chapter-note">${completedIdxs(s).length} OF ${s.races.length} ROUNDS RUN</span>
+      </div>
+      <div class="stubs">${stubs}</div>
+    </div>`;
+}
+
+function viewRace() {
+  const s = season();
+  const i = App.view.idx;
+  const race = s.races[i];
+  if (!race || race.status !== 'completed' || !race.results) {
+    return '<div class="view active"><div class="notice">THIS ROUND HAS NOT BEEN RUN.</div></div>';
+  }
+
+  const gridPos = new Map((race.grid || []).map((g, gi) => [g.driverId, gi + 1]));
+  const top3 = race.results.slice(0, 3).map(res => ({ res, d: driverById(s, res.driverId) })).filter(x => x.d);
+  const order = [1, 0, 2]; // 2nd, 1st, 3rd visual order
+
+  const podium = `
+    <div class="podium">
+      ${order.map(n => top3[n] ? `
+        <div class="step">
+          ${roundel(top3[n].d.number, teamColor(s, top3[n].d.team), n === 0 ? 'r-lg' : 'r-md')}
+          <div class="plc">${['FIRST', 'SECOND', 'THIRD'][n]}</div>
+          <div class="nm">${esc(top3[n].d.name).toUpperCase()}<br><span class="dim">${esc(top3[n].d.team)}</span></div>
+        </div>` : '').join('')}
+    </div>`;
+
+  const rows = race.results.map(res => {
+    const d = driverById(s, res.driverId);
+    if (!d) return '';
+    const g = gridPos.get(res.driverId);
+    const delta = g === undefined ? null : g - res.position;
+    const dnf = res.status && res.status !== 'finished';
+    const fl = race.fastestLap && race.fastestLap.driverId == res.driverId;
+    const pts = (s.pointsSystem.race[res.position] || 0) + (fl && res.position <= 10 && !dnf ? (s.pointsSystem.fastestLap || 0) : 0);
+    return `
+      <tr class="rowlink" data-go="driver" data-id="${esc(String(d.id))}" tabindex="0">
+        <td class="b">${res.position}.</td>
+        <td><span class="swatch" style="background:${esc(teamColor(s, d.team))}"></span>${esc(d.name).toUpperCase()}${dnf ? ' <span class="dn b">RET</span>' : ''}${fl ? ' <span class="dim">FL</span>' : ''}</td>
+        <td class="dim">${esc(d.team)}</td>
+        <td class="r">${g ? 'P' + g : '—'}</td>
+        <td class="r">${delta === null ? '' : delta > 0 ? `<span class="up">+${delta}</span>` : delta < 0 ? `<span class="dn">−${-delta}</span>` : '<span class="dim">·</span>'}</td>
+        <td class="r b">${pts || '—'}</td>
+      </tr>`;
+  }).join('');
+
+  // previous runnings
+  const prev = [];
+  App.data.seasons.forEach((cs, csi) => {
+    cs.races.forEach((r, ri) => {
+      if (r.name !== race.name || r.status !== 'completed' || !r.results) return;
+      if (csi === App.seasonIdx && ri === i) return;
+      const win = r.results.find(res => res.position === 1);
+      const winner = win && driverById(cs, win.driverId);
+      if (winner) prev.push(`${cs.year}: ${esc(winner.name).toUpperCase()}`);
+    });
+  });
+
+  return `
+    <div class="view active">
+      <button class="backbtn" data-go="nav" data-screen="calendar">← BACK TO THE CALENDAR</button>
+      <div class="chapter">
+        <span class="chapter-no">ROUND ${String(i + 1).padStart(2, '0')}</span>
+        <span class="chapter-name">${esc(race.name)}</span>
+        <span class="chapter-note">${esc(race.location || '')}${race.date ? ' · ' + esc(race.date) : ''}</span>
+      </div>
+      ${podium}
+      <div class="bulletin">
+        <div class="stamp">RESULT</div>
+        <div class="bulletin-head">RACE BULLETIN — OFFICIAL CLASSIFICATION</div>
+        <div class="bulletin-sub">${prev.length ? 'PREVIOUS WINNERS — ' + prev.join(' · ') : 'FIRST RUNNING OF THIS EVENT'}</div>
+        <table>
+          <thead><tr><th>POS</th><th>DRIVER</th><th>ENTRANT</th><th class="r">GRID</th><th class="r">+/−</th><th class="r">PTS</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function viewTeams() {
+  const s = season();
+  const teams = teamStandings(App.seasonIdx);
+  const drivers = driverStandings(App.seasonIdx);
+
+  const rows = teams.map((t, i) => {
+    const squad = drivers.filter(d => d.team === t.name);
+    return `
+      <tr class="rowlink" data-go="team" data-name="${esc(t.name)}" tabindex="0">
+        <td class="b">${i + 1}.</td>
+        <td><span class="swatch" style="background:${esc(teamColor(s, t.name))}"></span>${esc(t.name).toUpperCase()}</td>
+        <td class="dim">${squad.map(d => esc(d.name.split(/\s+/).pop()).toUpperCase()).join(' / ')}</td>
+        <td class="r">${t.wins}</td>
+        <td class="r b">${t.points}</td>
+      </tr>`;
+  }).join('');
+
+  return `
+    <div class="view active">
+      <div class="chapter">
+        <span class="chapter-no">CH.04</span>
+        <span class="chapter-name">The Garages</span>
+        <span class="chapter-note">${teams.length} ENTRANTS · ${s.year}</span>
+      </div>
+      <div class="bulletin">
+        <div class="stamp blue">${isComplete(s) ? 'FINAL' : 'PROVISIONAL'}</div>
+        <div class="bulletin-head">CONSTRUCTORS' CHAMPIONSHIP — OFFICIAL CLASSIFICATION</div>
+        <div class="bulletin-sub">COMBINED SCORE OF EACH GARAGE'S DRIVERS</div>
+        <table>
+          <thead><tr><th>POS</th><th>ENTRANT</th><th>DRIVERS</th><th class="r">WINS</th><th class="r">PTS</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function viewTeam() {
+  const s = season();
+  const teams = teamStandings(App.seasonIdx);
+  const idx = teams.findIndex(t => t.name === App.view.name);
+  if (idx === -1) return '<div class="view active"><div class="notice">GARAGE NOT FOUND.</div></div>';
+  const t = teams[idx];
+  const color = teamColor(s, t.name);
+  const standings = driverStandings(App.seasonIdx);
+  const squad = standings.filter(d => d.team === t.name);
+
+  const plates = squad.map(d => {
+    const info = driverById(s, d.id) || {};
+    const overall = standings.findIndex(x => x.id == d.id) + 1;
+    return `
+      <button class="plate" data-go="driver" data-id="${esc(String(d.id))}">
+        ${roundel(info.number, color, 'r-md')}
+        <div class="plate-name">${esc(d.name)}</div>
+        <div class="plate-team">P${overall} · ${d.points} PTS · ${d.wins} WINS</div>
+      </button>`;
+  }).join('');
+
+  return `
+    <div class="view active">
+      <button class="backbtn" data-go="nav" data-screen="teams">← BACK TO THE GARAGES</button>
+      <div class="sheet-top" style="border-left: 14px solid ${esc(color)}">
+        <div class="stamp blue">GARAGE FILE</div>
+        <div>
+          <div class="who">${esc(t.name)}</div>
+          <div class="sub">P${idx + 1}, ${s.year} CONSTRUCTORS' CHAMPIONSHIP</div>
+        </div>
+      </div>
+      <div class="specs">
+        <div class="spec"><div class="v">${t.points}</div><div class="k">Points</div></div>
+        <div class="spec"><div class="v">${t.wins}</div><div class="k">Wins</div></div>
+        <div class="spec"><div class="v">${t.podiums}</div><div class="k">Podiums</div></div>
+        <div class="spec"><div class="v">${t.poles}</div><div class="k">Poles</div></div>
+      </div>
+      <div class="wall" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr))">${plates}</div>
+    </div>`;
+}
+
+function viewEditions() {
+  const covers = [...App.data.seasons].map((s, si) => ({ s, si }))
+    .filter(({ s }) => completedIdxs(s).length)
+    .reverse()
+    .map(({ s, si }) => {
+      const champ = driverStandings(si)[0];
+      const ctor = teamStandings(si)[0];
+      const complete = isComplete(s);
+      return `
+        <button class="mini-cover" data-go="edition" data-si="${si}">
+          ${complete ? '' : '<span class="wip">IN PRESS</span>'}
+          <div class="yr">${s.year}</div>
+          <div class="lab">${complete ? 'WORLD CHAMPION' : 'LEADER'}</div>
+          <div class="who">${esc(champ.name)}</div>
+          <div class="det">${esc(champ.team)} · ${champ.points} PTS</div>
+          <div class="lab" style="margin-top:8px">${complete ? 'CONSTRUCTORS' : 'LEADING GARAGE'}</div>
+          <div class="who" style="font-size:0.8rem">${esc(ctor.name)}</div>
+        </button>`;
+    }).join('');
+
+  return `
+    <div class="view active">
+      <div class="chapter">
+        <span class="chapter-no">CH.05</span>
+        <span class="chapter-name">Past Editions</span>
+        <span class="chapter-note">TAP A COVER TO OPEN THAT EDITION</span>
+      </div>
+      <div class="shelf">${covers || '<div class="notice">NO EDITIONS PRINTED YET.</div>'}</div>
+    </div>`;
+}
+
+/* ---------------- input ---------------- */
+
+function handleGoTarget(el) {
+  const kind = el.dataset.go;
+  if (kind === 'nav') go({ type: el.dataset.screen });
+  else if (kind === 'driver') go({ type: 'driver', id: el.dataset.id });
+  else if (kind === 'race') go({ type: 'race', idx: parseInt(el.dataset.idx, 10) });
+  else if (kind === 'team') go({ type: 'team', name: el.dataset.name });
+  else if (kind === 'edition') {
+    App.seasonIdx = parseInt(el.dataset.si, 10);
+    const sel = document.getElementById('seasonSelect');
+    if (sel) sel.value = App.seasonIdx;
+    go({ type: 'annual' });
+  }
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-go]');
+  if (el) handleGoTarget(el);
+});
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const el = e.target.closest && e.target.closest('[data-go]');
+  if (el && el.tagName !== 'BUTTON') { e.preventDefault(); handleGoTarget(el); }
+});
+
+/* ---------------- boot ---------------- */
+
+function buildSeasonSelect() {
+  const sel = document.getElementById('seasonSelect');
+  sel.innerHTML = App.data.seasons.map((s, i) => `<option value="${i}">${s.year}</option>`).join('');
+  sel.value = App.seasonIdx;
+  sel.onchange = () => {
+    App.seasonIdx = parseInt(sel.value, 10);
+    if (['driver', 'race', 'team'].includes(App.view.type)) App.view = { type: 'annual' };
+    render();
+  };
+}
+
+function demoData() {
+  const D = (id, name, team, number, nationality) => ({ id, name, team, number, nationality, birthday: '2000-01-01' });
+  const drivers = [
+    D(1, 'Kai Mercer', 'Vortex Racing', 7, 'GB'), D(2, 'Luca Ferraro', 'Vortex Racing', 11, 'IT'),
+    D(3, 'Ren Takeda', 'Apex GP', 23, 'JP'), D(4, 'Marcus Hale', 'Apex GP', 4, 'US'),
+    D(5, 'Elias Brandt', 'Nordwind', 18, 'DE'), D(6, 'Theo Laurent', 'Nordwind', 31, 'FR'),
+    D(7, 'Santiago Vega', 'Calavera', 9, 'ES'), D(8, 'Oliver Knox', 'Calavera', 88, 'AU')
+  ];
+  const teams = [
+    { name: 'Vortex Racing', color: '#1B4079' }, { name: 'Apex GP', color: '#4F6D2F' },
+    { name: 'Nordwind', color: '#3E7CB1' }, { name: 'Calavera', color: '#E4572E' }
+  ];
+  const pointsSystem = { race: { 1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4 }, sprint: {}, fastestLap: 1 };
+  const R = (name, location, date, order, fl, dnfIds = []) => ({
+    name, location, date, status: 'completed',
+    results: order.map((driverId, i) => ({ driverId, position: i + 1, status: dnfIds.includes(driverId) ? 'dnf' : 'finished' })),
+    grid: [...order].reverse().map(driverId => ({ driverId })),
+    fastestLap: { driverId: fl }
+  });
+  return { seasons: [
+    { year: 2024, totalRaces: 5, drivers, teams, pointsSystem, races: [
+      R('Coupe d\'Aurore', 'Reims', '2024-03-10', [3, 1, 5, 7, 2, 4, 6, 8], 3),
+      R('Targa Marittima', 'Liguria', '2024-04-14', [3, 5, 1, 2, 4, 7, 8, 6], 1),
+      R('Six Hours of Brackley', 'Brackley', '2024-05-26', [1, 3, 2, 5, 7, 4, 6, 8], 3, [8]),
+      R('Grand Prix du Sable', 'Agadir', '2024-07-07', [3, 1, 4, 5, 2, 6, 7, 8], 4),
+      R('Copa de Otoño', 'Jarama', '2024-09-01', [3, 2, 1, 7, 5, 4, 8, 6], 3)
+    ]},
+    { year: 2025, totalRaces: 6, drivers, teams, pointsSystem, races: [
+      R('Coupe d\'Aurore', 'Reims', '2025-03-09', [1, 3, 2, 5, 4, 7, 6, 8], 1),
+      R('Targa Marittima', 'Liguria', '2025-04-13', [1, 5, 3, 2, 7, 4, 8, 6], 5),
+      R('Six Hours of Brackley', 'Brackley', '2025-05-25', [5, 1, 3, 4, 2, 6, 7, 8], 1, [7]),
+      R('Grand Prix du Sable', 'Agadir', '2025-07-06', [3, 1, 5, 2, 4, 8, 6, 7], 3),
+      { name: 'Copa de Otoño', location: 'Jarama', date: '2025-09-07', status: 'upcoming', results: null, grid: null, fastestLap: null },
+      { name: 'Finale di Stagione', location: 'Monza', date: '2025-11-23', status: 'upcoming', results: null, grid: null, fastestLap: null }
+    ]}
+  ]};
+}
+
+async function boot() {
+  try {
+    const res = await fetch('racing-data-multi-season.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    App.data = await res.json();
+  } catch (e) {
+    App.data = demoData();
+    document.getElementById('demoBadge').classList.add('show');
+  }
+  App.seasonIdx = App.data.seasons.length - 1;
+  buildSeasonSelect();
+  render();
+}
+
+window.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>
