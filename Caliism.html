@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caliism Data Solutions — Certified Data Destruction & Data Center Decommissioning</title>
+<meta name="description" content="Bay Area certified data destruction, data center decommissioning, and asset recovery. NIST 800-88 compliant wiping with verifiable certificates.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0E1116;
+  --panel:#151A21;
+  --panel2:#1A2029;
+  --line:#262D38;
+  --line2:#313A48;
+  --text:#E8ECF2;
+  --dim:#8B95A5;
+  --faint:#5A6373;
+  --amber:#FFB020;
+  --amber-dim:rgba(255,176,32,.12);
+  --green:#2FD672;
+  --green-dim:rgba(47,214,114,.12);
+  --red:#FF5C5C;
+  --blue:#4DA3FF;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'IBM Plex Sans',sans-serif;
+  --disp:'Chakra Petch',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--amber);color:#0E1116}
+a{color:inherit;text-decoration:none}
+a:focus-visible,button:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+
+/* ---------- top status bar ---------- */
+.statusbar{border-bottom:1px solid var(--line);background:#0B0E12;font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--faint)}
+.statusbar .wrap{display:flex;justify-content:space-between;align-items:center;height:34px}
+.statusbar .led{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:7px;box-shadow:0 0 6px var(--green);vertical-align:1px}
+.statusbar a{color:var(--dim)}
+.statusbar a:hover{color:var(--amber)}
+.statusbar .right span{margin-left:22px}
+@media(max-width:720px){.statusbar .right span:not(:last-child){display:none}}
+
+/* ---------- nav ---------- */
+nav{position:sticky;top:0;z-index:50;background:rgba(14,17,22,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;height:66px;gap:40px}
+.logo{font-family:var(--disp);font-weight:700;font-size:21px;letter-spacing:.06em;display:flex;align-items:center;gap:11px}
+.logo .mark{width:26px;height:26px;border:2px solid var(--amber);position:relative;flex-shrink:0}
+.logo .mark::after{content:'';position:absolute;inset:5px;background:var(--amber);animation:markBlink 3s infinite}
+@keyframes markBlink{0%,88%,100%{opacity:1}92%,96%{opacity:.15}}
+.logo span b{color:var(--amber)}
+.navlinks{display:flex;gap:30px;font-size:14px;color:var(--dim);margin-left:auto}
+.navlinks a{position:relative;padding:4px 0;transition:color .2s}
+.navlinks a:hover{color:var(--text)}
+.navlinks a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--amber);transition:width .25s}
+.navlinks a:hover::after{width:100%}
+.nav-cta{font-family:var(--mono);font-size:13px;background:var(--amber);color:#0E1116;padding:10px 20px;font-weight:500;letter-spacing:.03em;transition:transform .15s, box-shadow .15s;border:none;cursor:pointer}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(255,176,32,.35)}
+@media(max-width:860px){.navlinks{display:none}}
+
+/* ---------- hero ---------- */
+.hero{position:relative;padding:84px 0 90px;border-bottom:1px solid var(--line);overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:
+  linear-gradient(rgba(38,45,56,.22) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(38,45,56,.22) 1px,transparent 1px);
+  background-size:44px 44px;mask-image:radial-gradient(ellipse 80% 70% at 70% 30%,#000 30%,transparent 75%)}
+.hero .wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:70px;align-items:center;position:relative}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.eyebrow::before{content:'';width:28px;height:1px;background:var(--amber)}
+h1{font-family:var(--disp);font-weight:700;font-size:clamp(38px,4.6vw,58px);line-height:1.06;letter-spacing:-.01em;margin-bottom:24px}
+h1 .zero{color:var(--amber);position:relative}
+.hero p.sub{color:var(--dim);font-size:17.5px;max-width:520px;margin-bottom:36px}
+.hero-ctas{display:flex;gap:16px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:14px;padding:15px 28px;letter-spacing:.03em;cursor:pointer;border:none;transition:all .18s;display:inline-block}
+.btn-primary{background:var(--amber);color:#0E1116;font-weight:500}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(255,176,32,.4)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line2)}
+.btn-ghost:hover{border-color:var(--amber);color:var(--amber)}
+.hero-trust{margin-top:42px;display:flex;gap:28px;font-family:var(--mono);font-size:12px;color:var(--faint);flex-wrap:wrap}
+.hero-trust span{display:flex;align-items:center;gap:8px}
+.hero-trust .tick{color:var(--green)}
+
+/* ---------- the bench (signature) ---------- */
+.bench{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line2);box-shadow:0 24px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.04);position:relative}
+.bench::before,.bench::after{content:'';position:absolute;width:10px;height:10px;border:2px solid var(--line2);border-radius:50%;top:12px}
+.bench::before{left:12px}.bench::after{right:12px}
+.bench-head{display:flex;justify-content:space-between;align-items:center;padding:16px 22px 14px 34px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;color:var(--dim)}
+.bench-head .live{color:var(--green);display:flex;align-items:center;gap:7px}
+.bench-head .live i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.3}}
+.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:20px 22px}
+.slot{background:#0C0F13;border:1px solid var(--line);padding:10px 11px 9px;position:relative;cursor:default;transition:border-color .25s}
+.slot:hover{border-color:var(--line2)}
+.slot .sid{font-family:var(--mono);font-size:9.5px;color:var(--faint);display:flex;justify-content:space-between;margin-bottom:7px;letter-spacing:.05em}
+.slot .lamp{width:6px;height:6px;border-radius:50%;background:#333A46;transition:all .3s}
+.slot .bar{height:5px;background:#1B212B;position:relative;overflow:hidden;margin-bottom:7px}
+.slot .bar i{position:absolute;left:0;top:0;bottom:0;width:0%;background:var(--amber);transition:width .45s linear}
+.slot .st{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;color:var(--faint);white-space:nowrap;overflow:hidden}
+.slot[data-state="wiping"]{border-color:rgba(255,176,32,.45)}
+.slot[data-state="wiping"] .lamp{background:var(--amber);box-shadow:0 0 7px var(--amber);animation:pulse 1s infinite}
+.slot[data-state="wiping"] .st{color:var(--amber)}
+.slot[data-state="verifying"] .lamp{background:var(--blue);box-shadow:0 0 7px var(--blue)}
+.slot[data-state="verifying"] .st{color:var(--blue)}
+.slot[data-state="verifying"] .bar i{background:var(--blue)}
+.slot[data-state="done"]{border-color:rgba(47,214,114,.4)}
+.slot[data-state="done"] .lamp{background:var(--green);box-shadow:0 0 7px var(--green)}
+.slot[data-state="done"] .st{color:var(--green)}
+.slot[data-state="done"] .bar i{background:var(--green);width:100%}
+.bench-foot{border-top:1px solid var(--line);padding:13px 22px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.05em}
+.bench-foot b{color:var(--green);font-weight:500}
+@media(max-width:980px){
+  .hero .wrap{grid-template-columns:1fr;gap:56px}
+  .slots{grid-template-columns:repeat(4,1fr)}
+}
+@media(max-width:480px){.slots{grid-template-columns:repeat(3,1fr)}.slot:nth-child(n+19){display:none}}
+
+/* ---------- stats strip ---------- */
+.stats{border-bottom:1px solid var(--line);background:#0B0E12}
+.stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);}
+.stat{padding:34px 26px;border-left:1px solid var(--line)}
+.stat:last-child{border-right:1px solid var(--line)}
+.stat .num{font-family:var(--disp);font-weight:700;font-size:34px;color:var(--text);line-height:1.1}
+.stat .num em{color:var(--amber);font-style:normal}
+.stat .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--faint);text-transform:uppercase;margin-top:6px}
+@media(max-width:860px){.stats .wrap{grid-template-columns:repeat(2,1fr)}.stat{border-bottom:1px solid var(--line)}}
+
+/* ---------- section scaffolding ---------- */
+section{padding:96px 0}
+.sec-head{margin-bottom:54px;max-width:640px}
+h2{font-family:var(--disp);font-weight:700;font-size:clamp(28px,3.2vw,40px);line-height:1.12;margin-bottom:16px}
+.sec-head p{color:var(--dim);font-size:16.5px}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ---------- services ---------- */
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.svc{background:var(--bg);padding:34px 30px 38px;position:relative;transition:background .25s;overflow:hidden}
+.svc:hover{background:var(--panel)}
+.svc::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:var(--amber);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.svc:hover::before{transform:scaleX(1)}
+.svc .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--faint);margin-bottom:18px;display:block}
+.svc:hover .tag{color:var(--amber)}
+.svc h3{font-family:var(--disp);font-weight:600;font-size:19px;margin-bottom:12px}
+.svc p{color:var(--dim);font-size:14.5px;line-height:1.65}
+.svc .more{font-family:var(--mono);font-size:12px;color:var(--faint);margin-top:20px;display:inline-flex;align-items:center;gap:8px;transition:color .2s,gap .2s}
+.svc:hover .more{color:var(--amber);gap:13px}
+@media(max-width:980px){.svc-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.svc-grid{grid-template-columns:1fr}}
+
+/* ---------- free offer band ---------- */
+.offer{background:var(--amber);color:#0E1116;padding:0;border:none}
+.offer .wrap{display:grid;grid-template-columns:1.3fr 1fr;gap:60px;align-items:center;padding-top:74px;padding-bottom:74px}
+.offer .eyebrow{color:#0E1116;opacity:.65}
+.offer .eyebrow::before{background:#0E1116}
+.offer h2{color:#0E1116}
+.offer p{color:rgba(14,17,22,.78);font-size:16.5px;max-width:520px}
+.offer .btn-dark{background:#0E1116;color:var(--amber);margin-top:30px}
+.offer .btn-dark:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(0,0,0,.35)}
+.cert{background:#0E1116;color:var(--text);padding:30px 28px;font-family:var(--mono);font-size:12.5px;line-height:2.1;box-shadow:12px 12px 0 rgba(14,17,22,.18);position:relative}
+.cert .ch{color:var(--amber);letter-spacing:.14em;font-size:11px;border-bottom:1px solid var(--line2);padding-bottom:10px;margin-bottom:12px;display:flex;justify-content:space-between}
+.cert .row{display:flex;justify-content:space-between;gap:20px}
+.cert .row span:first-child{color:var(--faint)}
+.cert .ok{color:var(--green)}
+.cert .stamp{position:absolute;right:22px;bottom:20px;border:2px solid var(--green);color:var(--green);font-size:10px;letter-spacing:.18em;padding:5px 11px;transform:rotate(-7deg);opacity:.9}
+@media(max-width:900px){.offer .wrap{grid-template-columns:1fr;gap:46px}}
+
+/* ---------- process ---------- */
+.proc{counter-reset:step}
+.proc-row{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.step{background:var(--bg);padding:30px 24px 34px;position:relative;transition:background .25s}
+.step:hover{background:var(--panel)}
+.step .n{font-family:var(--mono);font-size:11px;color:var(--amber);letter-spacing:.1em;margin-bottom:16px;display:block}
+.step h4{font-family:var(--disp);font-weight:600;font-size:16px;margin-bottom:10px}
+.step p{color:var(--dim);font-size:13.5px;line-height:1.6}
+.step::after{content:'→';position:absolute;right:-9px;top:34px;color:var(--faint);font-size:14px;z-index:2;background:var(--bg);padding:2px}
+.step:last-child::after{display:none}
+@media(max-width:980px){.proc-row{grid-template-columns:1fr 1fr}.step::after{display:none}}
+@media(max-width:560px){.proc-row{grid-template-columns:1fr}}
+
+/* ---------- partners ---------- */
+.partners{background:#0B0E12;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.pt{background:#0B0E12;padding:34px 28px;transition:background .25s}
+.pt:hover{background:var(--panel)}
+.pt .nm{font-family:var(--disp);font-weight:600;font-size:18px;letter-spacing:.02em;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.pt .nm i{width:8px;height:8px;background:var(--amber);flex-shrink:0;transition:transform .3s}
+.pt:hover .nm i{transform:rotate(45deg)}
+.pt p{color:var(--dim);font-size:13.5px;line-height:1.6}
+@media(max-width:900px){.pt-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:540px){.pt-grid{grid-template-columns:1fr}}
+
+/* ---------- about ---------- */
+.about .wrap{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:start}
+.about p{color:var(--dim);font-size:16px;margin-bottom:18px}
+.about .vals{border-left:2px solid var(--amber);padding-left:28px;display:flex;flex-direction:column;gap:26px}
+.about .vals h5{font-family:var(--disp);font-size:16px;font-weight:600;margin-bottom:6px}
+.about .vals p{font-size:14.5px;margin:0}
+@media(max-width:860px){.about .wrap{grid-template-columns:1fr;gap:46px}}
+
+/* ---------- contact ---------- */
+.contact{border-top:1px solid var(--line)}
+.contact .wrap{display:grid;grid-template-columns:1fr 1fr;gap:70px}
+.c-line{display:flex;gap:18px;padding:20px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.c-line .k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--faint);text-transform:uppercase;width:90px;flex-shrink:0}
+.c-line .v{font-size:16px}
+.c-line .v a:hover{color:var(--amber)}
+.bigphone{font-family:var(--disp);font-weight:700;font-size:clamp(26px,3vw,36px);color:var(--amber);display:inline-block;margin-top:8px}
+.bigphone:hover{text-decoration:underline;text-underline-offset:6px}
+@media(max-width:860px){.contact .wrap{grid-template-columns:1fr;gap:40px}}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);background:#0B0E12;padding:30px 0}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11.5px;color:var(--faint);letter-spacing:.04em;flex-wrap:wrap;gap:14px}
+footer a:hover{color:var(--amber)}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="statusbar">
+  <div class="wrap">
+    <div><span class="led"></span>WIPE BENCH ONLINE · SANTA CLARA, CA</div>
+    <div class="right">
+      <span>NIST 800-88 COMPLIANT</span>
+      <span>CERTIFIED DESTRUCTION</span>
+      <span><a href="tel:+18885990571">+1 (888) 599-0571</a></span>
+    </div>
+  </div>
+</div>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#"><span class="mark"></span><span>CALI<b>ISM</b></span></a>
+    <div class="navlinks">
+      <a href="#services">Services</a>
+      <a href="#free">Free Destruction</a>
+      <a href="#process">Process</a>
+      <a href="#partners">Partners</a>
+      <a href="#about">About</a>
+    </div>
+    <a href="#contact" style="margin-left:auto"><button class="nav-cta">GET A QUOTE</button></a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Bay Area · Silicon Valley</div>
+      <h1>Every byte<br>down to <span class="zero" id="zeroWord">zero</span>.<br>Certified.</h1>
+      <p class="sub">Caliism Data Solutions wipes, shreds, and decommissions at data center scale. Every drive leaves with a verifiable certificate of destruction — or it doesn't leave at all.</p>
+      <div class="hero-ctas">
+        <a href="#contact"><button class="btn btn-primary">SCHEDULE A WIPE</button></a>
+        <a href="#free"><button class="btn btn-ghost">FREE DESTRUCTION ↓</button></a>
+      </div>
+      <div class="hero-trust">
+        <span><span class="tick">✓</span> KillDisk Industrial</span>
+        <span><span class="tick">✓</span> NIST 800-88</span>
+        <span><span class="tick">✓</span> Per-drive certificates</span>
+      </div>
+    </div>
+
+    <div class="bench" aria-label="Live drive wipe bench visualization">
+      <div class="bench-head">
+        <span>JBOD-04 · BAY STATUS · 24 SLOTS</span>
+        <span class="live"><i></i>LIVE</span>
+      </div>
+      <div class="slots" id="slots"></div>
+      <div class="bench-foot">
+        <span>SANITIZED THIS SESSION: <b id="wipeCount">0</b></span>
+        <span>METHOD: <b style="color:var(--amber)">3-PASS DoD</b></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="wrap">
+    <div class="stat"><div class="num"><em>+</em><span data-count="48000">0</span></div><div class="lbl">Drives sanitized</div></div>
+    <div class="stat"><div class="num"><span data-count="240">0</span></div><div class="lbl">Concurrent wipe slots</div></div>
+    <div class="stat"><div class="num"><span data-count="100">0</span><em>%</em></div><div class="lbl">Certificate coverage</div></div>
+    <div class="stat"><div class="num"><span data-count="24">0</span><em>h</em></div><div class="lbl">Typical turnaround</div></div>
+  </div>
+</div>
+
+<section id="services">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">What we do</div>
+      <h2>Full lifecycle, from rack to certificate</h2>
+      <p>One team handles your hardware from the moment it powers down to the moment its data is provably gone.</p>
+    </div>
+    <div class="svc-grid">
+      <div class="svc reveal"><span class="tag">SVC / DESTRUCT</span><h3>Data Destruction</h3><p>Secure wiping, physical shredding, and hydraulic crushing across the Bay Area. Software sanitization for drives with resale value, physical destruction for everything else.</p><span class="more">Learn more →</span></div>
+      <div class="svc reveal"><span class="tag">SVC / DECOM</span><h3>Data Center Decommissioning</h3><p>End-to-end teardown: planning, de-racking, chain-of-custody logistics, and disposal. We manage every cable, drive, and chassis so your team doesn't have to.</p><span class="more">Learn more →</span></div>
+      <div class="svc reveal"><span class="tag">SVC / RECOVER</span><h3>Asset Recovery</h3><p>End-of-life hardware still has value. We test, grade, and remarket equipment to maximize return on assets you no longer need.</p><span class="more">Learn more →</span></div>
+      <div class="svc reveal"><span class="tag">SVC / DEPLOY</span><h3>Deployment Services</h3><p>New equipment racked, cabled, and live faster — so the benefits of your IT investment start sooner, not next quarter.</p><span class="more">Learn more →</span></div>
+      <div class="svc reveal"><span class="tag">SVC / MIGRATE</span><h3>Relocation & Migration</h3><p>Moving a data center is a thousand small risks. We plan, transport, and re-commission with full inventory tracking at every step.</p><span class="more">Learn more →</span></div>
+      <div class="svc reveal"><span class="tag">SVC / ADVISE</span><h3>Consulting & Staffing</h3><p>IT policy, decommissioning strategy, and skilled hands on site. Align your infrastructure decisions with where the business is actually going.</p><span class="more">Learn more →</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="offer" id="free">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">No-cost program</div>
+      <h2>Free certified data destruction</h2>
+      <p>Let us keep the drives after they're wiped and verified, and the entire service is free — professional KillDisk sanitization, per-drive certificates, zero invoice. You get compliance. We recover the hardware. Everyone wins.</p>
+      <a href="#contact"><button class="btn btn-dark">CLAIM FREE DESTRUCTION</button></a>
+    </div>
+    <div class="cert reveal" aria-label="Sample certificate of destruction">
+      <div class="ch"><span>CERTIFICATE OF DESTRUCTION</span><span>№ CD-2611</span></div>
+      <div class="row"><span>DEVICE</span><span>ST8000NM0055</span></div>
+      <div class="row"><span>SERIAL</span><span>ZA1C••••K9</span></div>
+      <div class="row"><span>METHOD</span><span>DoD 5220.22-M / 3-PASS</span></div>
+      <div class="row"><span>VERIFY</span><span class="ok">PASS · 100% SECTORS</span></div>
+      <div class="row"><span>OPERATOR</span><span>CALIISM-BENCH-04</span></div>
+      <div class="row"><span>DATE</span><span id="certDate">—</span></div>
+      <div class="stamp">VERIFIED</div>
+    </div>
+  </div>
+</section>
+
+<section id="process">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Chain of custody</div>
+      <h2>Five steps. No gaps.</h2>
+      <p>Every drive follows the same audited path — the order matters, and we never skip a step.</p>
+    </div>
+    <div class="proc-row reveal">
+      <div class="step"><span class="n">STEP 01</span><h4>Intake & Audit</h4><p>Serial numbers logged, assets tagged, chain of custody opens the moment hardware reaches us.</p></div>
+      <div class="step"><span class="n">STEP 02</span><h4>Secure Wipe</h4><p>KillDisk Industrial multi-pass sanitization across our 240-slot bench, monitored in real time.</p></div>
+      <div class="step"><span class="n">STEP 03</span><h4>Verification</h4><p>Full-surface read-back confirms every sector returns zero. Drives that fail get shredded.</p></div>
+      <div class="step"><span class="n">STEP 04</span><h4>Certification</h4><p>A per-drive certificate with serial, method, and verification result — your audit trail.</p></div>
+      <div class="step"><span class="n">STEP 05</span><h4>Recover or Recycle</h4><p>Sanitized drives re-enter the market; everything else is responsibly recycled.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="partners" id="partners">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Vendor partners</div>
+      <h2>Hardware from names you already trust</h2>
+      <p>As a value-added reseller, Caliism supplies and supports the platforms that run serious infrastructure.</p>
+    </div>
+    <div class="pt-grid">
+      <div class="pt reveal"><div class="nm"><i></i>Opengear</div><p>Network Resilience Platform with Smart Out-of-Band™ management, Lighthouse® software, and 5-year hardware warranty.</p></div>
+      <div class="pt reveal"><div class="nm"><i></i>Arista</div><p>Client-to-cloud networking for massive data centers and campuses, built on a data-driven network operating system.</p></div>
+      <div class="pt reveal"><div class="nm"><i></i>Fortinet</div><p>Integrated, automated security across the full attack surface — data center to cloud to remote work.</p></div>
+      <div class="pt reveal"><div class="nm"><i></i>Vertiv</div><p>Mission-critical power, cooling, and infrastructure for data centers and communication networks.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">The company</div>
+      <h2>A different kind of reseller</h2>
+      <p>Caliism Data Solutions is an IT solutions provider with a worldwide distribution footprint, covering the full spectrum of data center needs — vendor hardware, software, support, and end-to-end asset recovery, decommissioning, and data wiping.</p>
+      <p>Decades in the technology business taught us what actually matters: a reseller that puts customers and employees first, together. We built Caliism on that foundation, for the long haul.</p>
+    </div>
+    <div class="vals reveal">
+      <div><h5>Integrity first</h5><p>Trust and transparency in every engagement — we'd rather lose a deal than cut a corner.</p></div>
+      <div><h5>Customers and employees, together</h5><p>Tenured people doing careful work produce satisfied customers. That order isn't an accident.</p></div>
+      <div><h5>Built for the long haul</h5><p>Work-life balance isn't a perk here. It's how you keep the best people for decades.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">Get started</div>
+      <h2>Tell us what's powering down</h2>
+      <p style="color:var(--dim);max-width:440px">One call covers it — drive counts, timelines, on-site vs. drop-off, and whether the free program fits your situation.</p>
+      <a class="bigphone" href="tel:+18885990571">+1 (888) 599-0571</a>
+    </div>
+    <div class="reveal">
+      <div class="c-line"><span class="k">Email</span><span class="v"><a href="mailto:info@caliism.com">info@caliism.com</a></span></div>
+      <div class="c-line"><span class="k">Address</span><span class="v">3964 Rivermark Plaza, Suite 147<br>Santa Clara, CA 95054</span></div>
+      <div class="c-line"><span class="k">Service area</span><span class="v">San Francisco Bay Area & Silicon Valley</span></div>
+      <div class="c-line"><span class="k">Hours</span><span class="v">Mon–Fri, 8:00–18:00 PT</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 CALIISM DATA SOLUTIONS — ALL RIGHTS RESERVED</span>
+    <span>SANTA CLARA, CA · <a href="tel:+18885990571">+1 (888) 599-0571</a> · <a href="mailto:info@caliism.com">INFO@CALIISM.COM</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- cert date ---- */
+  var d = new Date();
+  document.getElementById('certDate').textContent =
+    d.toISOString().slice(0,10);
+
+  /* ---- build bench ---- */
+  var slotsEl = document.getElementById('slots');
+  var SLOTS = 24, slots = [];
+  var statuses = {queued:'QUEUED', wiping:'PASS', verifying:'VERIFY', done:'CERTIFIED'};
+  function serial(){
+    var c='ABCDEFGHJKMNPQRSTVWXYZ0123456789', s='';
+    for(var i=0;i<4;i++) s+=c[Math.floor(Math.random()*c.length)];
+    return s;
+  }
+  for(var i=0;i<SLOTS;i++){
+    var el=document.createElement('div');
+    el.className='slot';
+    el.innerHTML='<div class="sid"><span>S'+String(i+1).padStart(2,'0')+'</span><span class="lamp"></span></div>'+
+                 '<div class="bar"><i></i></div><div class="st">EMPTY</div>';
+    slotsEl.appendChild(el);
+    slots.push({el:el, bar:el.querySelector('.bar i'), st:el.querySelector('.st'),
+                state:'empty', prog:0, pass:1, speed:0, sn:serial()});
+  }
+
+  var wiped = 0;
+  var countEl = document.getElementById('wipeCount');
+
+  function start(s){
+    s.state='wiping'; s.prog=0; s.pass=1;
+    s.speed = 0.8 + Math.random()*1.8;
+    s.sn = serial();
+    s.el.dataset.state='wiping';
+    s.st.textContent='PASS 1/3 · '+s.sn;
+  }
+
+  function tick(){
+    slots.forEach(function(s){
+      if(s.state==='wiping'){
+        s.prog += s.speed;
+        if(s.prog>=100){
+          if(s.pass<3){ s.pass++; s.prog=0; s.st.textContent='PASS '+s.pass+'/3 · '+s.sn; }
+          else { s.state='verifying'; s.prog=0; s.el.dataset.state='verifying'; s.st.textContent='VERIFYING…'; s.speed*=2.2; }
+        }
+      } else if(s.state==='verifying'){
+        s.prog += s.speed;
+        if(s.prog>=100){
+          s.state='done'; s.prog=100; s.el.dataset.state='done';
+          s.st.textContent='CERTIFIED ✓';
+          wiped++; countEl.textContent=wiped;
+          setTimeout(function(){ if(s.state==='done'){ s.state='empty'; s.el.dataset.state=''; s.bar.style.width='0%'; s.st.textContent='EMPTY'; } }, 5000+Math.random()*7000);
+        }
+      } else if(s.state==='empty'){
+        if(Math.random()<0.025) start(s);
+      }
+      if(s.state==='wiping'||s.state==='verifying') s.bar.style.width=Math.min(s.prog,100)+'%';
+    });
+  }
+
+  // seed some initial activity
+  slots.forEach(function(s,idx){
+    var r=Math.random();
+    if(r<0.45){ start(s); s.prog=Math.random()*90; s.pass=1+Math.floor(Math.random()*3); s.st.textContent='PASS '+s.pass+'/3 · '+s.sn; }
+    else if(r<0.6){ s.state='done'; s.el.dataset.state='done'; s.st.textContent='CERTIFIED ✓'; s.bar.style.width='100%';
+      setTimeout(function(){ s.state='empty'; s.el.dataset.state=''; s.bar.style.width='0%'; s.st.textContent='EMPTY'; }, 4000+Math.random()*8000); }
+  });
+
+  if(!reduced){ setInterval(tick, 380); }
+  else {
+    // static but meaningful frame for reduced motion
+    slots.forEach(function(s){ if(s.state==='wiping') s.bar.style.width=s.prog+'%'; });
+  }
+
+  /* ---- zero word flicker ---- */
+  if(!reduced){
+    var zw=document.getElementById('zeroWord'), glyphs='01x0█0', orig='zero';
+    setInterval(function(){
+      if(Math.random()<0.18){
+        var i=Math.floor(Math.random()*orig.length);
+        var g=glyphs[Math.floor(Math.random()*glyphs.length)];
+        zw.textContent=orig.slice(0,i)+g+orig.slice(i+1);
+        setTimeout(function(){ zw.textContent=orig; }, 140);
+      }
+    }, 900);
+  }
+
+  /* ---- scroll reveals ---- */
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+  /* ---- stat counters ---- */
+  var io2=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      io2.unobserve(e.target);
+      var el=e.target, target=+el.dataset.count;
+      if(reduced){ el.textContent=target.toLocaleString(); return; }
+      var t0=null;
+      function frame(t){
+        if(!t0) t0=t;
+        var p=Math.min((t-t0)/1400,1);
+        p=1-Math.pow(1-p,3);
+        el.textContent=Math.round(target*p).toLocaleString();
+        if(p<1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    });
+  },{threshold:0.5});
+  document.querySelectorAll('[data-count]').forEach(function(el){ io2.observe(el); });
+})();
+</script>
+</body>
+</html>
