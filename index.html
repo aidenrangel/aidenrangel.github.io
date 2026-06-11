@@ -2027,52 +2027,6 @@
         .standings-table { overflow: visible; border-radius: 8px; }
         .standings-table thead th { position: sticky; top: 70px; z-index: 40; }
 
-        /* Animated nav indicator */
-        @media (min-width: 769px) {
-            .top-nav-tabs { position: relative; }
-            .nav-indicator {
-                position: absolute;
-                bottom: 0;
-                height: 3px;
-                background: linear-gradient(90deg, var(--primary-red), var(--accent-yellow));
-                border-radius: 2px 2px 0 0;
-                transition: left 0.3s cubic-bezier(0.22, 1, 0.36, 1), width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-                pointer-events: none;
-            }
-        }
-        @media (max-width: 768px) { .nav-indicator { display: none; } }
-
-        /* Speed-line tab transition */
-        .speed-lines {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 2000;
-            overflow: hidden;
-            display: none;
-        }
-        .speed-lines.run { display: block; }
-        .speed-lines span {
-            position: absolute;
-            left: -40%;
-            width: 38%;
-            height: 3px;
-            border-radius: 2px;
-            transform: skewX(-25deg);
-            opacity: 0;
-        }
-        .speed-lines span:nth-child(1) { top: 24%; background: linear-gradient(90deg, transparent, var(--primary-red)); }
-        .speed-lines span:nth-child(2) { top: 50%; background: linear-gradient(90deg, transparent, var(--accent-yellow)); }
-        .speed-lines span:nth-child(3) { top: 76%; background: linear-gradient(90deg, transparent, var(--primary-red)); }
-        .speed-lines.run span { animation: speedSweep 0.45s ease-in forwards; }
-        .speed-lines.run span:nth-child(2) { animation-delay: 0.06s; }
-        .speed-lines.run span:nth-child(3) { animation-delay: 0.12s; }
-        @keyframes speedSweep {
-            0% { left: -40%; opacity: 0; }
-            15% { opacity: 0.9; }
-            100% { left: 115%; opacity: 0; }
-        }
-
         /* Scroll reveal */
         .reveal {
             opacity: 0;
@@ -2179,7 +2133,6 @@
 
         @media (prefers-reduced-motion: reduce) {
             .reveal { opacity: 1; transform: none; transition: none; }
-            .speed-lines { display: none !important; }
             .modal-content { animation: none; }
             .season-progress-fill { transition: none; }
         }
@@ -2205,7 +2158,6 @@
                 <button class="top-nav-tab" onclick="showTab('schedule')" data-tab="schedule">SCHEDULE</button>
                 <button class="top-nav-tab" onclick="showTab('stats')" data-tab="stats">STANDINGS</button>
                 <button class="top-nav-tab" onclick="showTab('records')" data-tab="records">RECORDS</button>
-                <span class="nav-indicator" id="navIndicator"></span>
             </div>
         </div>
     </nav>
@@ -2235,9 +2187,6 @@
         <button class="bottom-nav-item" data-tab="stats" onclick="showTab('stats')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v4a5 5 0 01-10 0V4z"/><path d="M7 6H4a3 3 0 003 4M17 6h3a3 3 0 01-3 4"/><path d="M12 13v4M8 21h8M10 17h4"/></svg><span>POINTS</span></button>
         <button class="bottom-nav-item" data-tab="records" onclick="showTab('records')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.3.8-4.6 4.3 1.2 6.1L12 16.9 6.4 19.8l1.2-6.1L3 9.4l6.3-.8L12 3z"/></svg><span>RECORDS</span></button>
     </nav>
-
-    <!-- Speed-line transition overlay -->
-    <div class="speed-lines" id="speedLines"><span></span><span></span><span></span></div>
 
     <!-- Back to top -->
     <button class="back-to-top" id="backToTop" title="Back to top" aria-label="Back to top">&#9650;</button>
@@ -11430,9 +11379,7 @@
             // Scroll back to the top when switching tabs
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            // UI polish: speed-line sweep, nav indicator, bottom nav state
-            runSpeedLines();
-            positionNavIndicator();
+            // UI polish: bottom nav state
             document.querySelectorAll('.bottom-nav-item').forEach(item => {
                 item.classList.toggle('active', item.dataset.tab === tabName);
             });
@@ -11878,32 +11825,6 @@
             });
         }
 
-        // ---------- Animated nav indicator ----------
-        function positionNavIndicator() {
-            const indicator = document.getElementById('navIndicator');
-            if (!indicator) return;
-            const active = document.querySelector('.top-nav-tab.active');
-            if (!active || window.innerWidth <= 768 || active.offsetWidth === 0) {
-                indicator.style.width = '0px';
-                return;
-            }
-            indicator.style.left = active.offsetLeft + 'px';
-            indicator.style.width = active.offsetWidth + 'px';
-        }
-
-        // ---------- Speed-line tab transition ----------
-        let speedLineTimer = null;
-        function runSpeedLines() {
-            if (prefersReducedMotion()) return;
-            const el = document.getElementById('speedLines');
-            if (!el) return;
-            el.classList.remove('run');
-            void el.offsetWidth; // restart animation
-            el.classList.add('run');
-            clearTimeout(speedLineTimer);
-            speedLineTimer = setTimeout(() => el.classList.remove('run'), 650);
-        }
-
         // ---------- Modal UX: Esc + backdrop click ----------
         function initModalUX() {
             document.addEventListener('keydown', e => {
@@ -11933,10 +11854,7 @@
             initCardTilt();
             initModalUX();
             initBackToTop();
-            positionNavIndicator();
         });
-        window.addEventListener('resize', positionNavIndicator);
-        window.addEventListener('load', positionNavIndicator);
 
         window.addEventListener('DOMContentLoaded', initSortableStandings);
 
