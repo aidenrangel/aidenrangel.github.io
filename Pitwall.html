@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PITWALL — GT World Championship</title>
+<meta name="description" content="Timing, standings and records for the GT World Championship.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Extra+Condensed:wght@600;800;900&family=Saira:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   PITWALL — design tokens
+   paper-and-ink timing sheet · purple = fastest · mono data
+   ============================================================ */
+:root {
+  --paper:    #EDECE7;
+  --paper-2:  #E4E3DD;
+  --ink:      #141519;
+  --ink-2:    #43454E;
+  --ink-3:    #7C7E88;
+  --line:     #C8C7BF;
+  --purple:   #6428E0;
+  --purple-2: #EFE8FD;
+  --green:    #15803D;
+  --green-2:  #E3F2E8;
+  --red:      #C92A2A;
+  --red-2:    #FBE9E9;
+  --tower-w:  300px;
+  --display:  'Saira Extra Condensed', sans-serif;
+  --body:     'Saira', sans-serif;
+  --mono:     'IBM Plex Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scrollbar-color: var(--ink) var(--paper); }
+::selection { background: var(--purple); color: #fff; }
+
+body {
+  font-family: var(--body);
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+button:focus-visible, select:focus-visible, a:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+
+/* ---------- Header ---------- */
+.masthead {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 2px solid var(--ink);
+  background: var(--paper);
+  position: sticky;
+  top: 0;
+  z-index: 60;
+}
+.masthead::after {
+  /* start-line chequer, the one decorative flourish */
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -10px;
+  height: 8px;
+  background: repeating-conic-gradient(var(--ink) 0% 25%, transparent 0% 50%) 0 0 / 16px 16px;
+  opacity: 0.12;
+  pointer-events: none;
+}
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 14px 22px;
+  border-right: 1px solid var(--line);
+}
+.brand-mark {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 2rem;
+  line-height: 1;
+  letter-spacing: 0.5px;
+}
+.brand-mark .fast { color: var(--purple); }
+.brand-sub {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 1.5px;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+.masthead-nav {
+  display: flex;
+  align-items: stretch;
+  margin-left: auto;
+}
+.nav-btn {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: 1px;
+  padding: 0 22px;
+  border-left: 1px solid var(--line);
+  color: var(--ink-2);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.nav-btn:hover { background: var(--paper-2); color: var(--ink); }
+.nav-btn[aria-current="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+.season-pick {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 18px;
+  border-left: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  color: var(--ink-3);
+}
+.season-pick select {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 1.2rem;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* ---------- Shell ---------- */
+.shell {
+  display: grid;
+  grid-template-columns: var(--tower-w) 1fr;
+  min-height: calc(100vh - 60px);
+}
+
+/* ---------- Timing tower (signature element) ---------- */
+.tower {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 18px 0 30px;
+  position: relative;
+}
+.tower-inner { position: sticky; top: 78px; }
+.tower-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0 18px 10px;
+  border-bottom: 1px solid #2C2D35;
+}
+.tower-title {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+}
+.tower-meta {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  color: #8A8C99;
+}
+.tower-rows { max-height: calc(100vh - 170px); overflow-y: auto; }
+.tower-rows::-webkit-scrollbar { width: 6px; }
+.tower-rows::-webkit-scrollbar-thumb { background: #33343D; border-radius: 3px; }
+.tower-row {
+  display: grid;
+  grid-template-columns: 34px 6px 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 7px 16px 7px 10px;
+  border-bottom: 1px solid #23242B;
+  color: var(--paper);
+  transition: background 0.12s ease;
+}
+.tower-row:hover { background: #20212A; }
+.tower-row.selected { background: #2A2342; box-shadow: inset 3px 0 0 var(--purple); }
+.tower-pos {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.35rem;
+  text-align: right;
+  line-height: 1;
+  color: #C9CAD3;
+}
+.tower-row:nth-child(1) .tower-pos { color: var(--paper); }
+.tower-tab { width: 6px; height: 26px; border-radius: 1px; }
+.tower-name { min-width: 0; }
+.tower-tla {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 1px;
+}
+.tower-team {
+  font-size: 0.62rem;
+  color: #8A8C99;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tower-delta {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  min-width: 26px;
+  text-align: right;
+}
+.tower-delta.up { color: #4ADE80; }
+.tower-delta.down { color: #F87171; }
+.tower-delta.same { color: #55565F; }
+.tower-pts {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 1.15rem;
+  min-width: 36px;
+  text-align: right;
+}
+.tower-foot {
+  padding: 12px 18px 0;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  color: #6E707C;
+}
+
+/* ---------- Canvas / sheets ---------- */
+.canvas { padding: 30px 34px 70px; min-width: 0; }
+.sheet { display: none; animation: sheetIn 0.3s ease; }
+.sheet.active { display: block; }
+@keyframes sheetIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.kicker {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--purple);
+  margin-bottom: 4px;
+}
+.sheet-title {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  line-height: 0.95;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.sheet-sub { color: var(--ink-3); font-size: 0.95rem; margin-top: 6px; }
+
+/* Leader strip */
+.leader-strip {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 26px;
+  align-items: end;
+  margin: 26px 0 8px;
+  padding: 20px 24px;
+  border: 1px solid var(--ink);
+  background:
+    repeating-linear-gradient(-45deg, transparent 0 14px, rgba(20,21,25,0.035) 14px 28px);
+}
+.leader-num {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(4rem, 9vw, 7rem);
+  line-height: 0.82;
+  color: var(--purple);
+}
+.leader-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 1.5px;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+.leader-name {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+.leader-team { font-size: 0.9rem; color: var(--ink-2); }
+.leader-gap { text-align: right; }
+.leader-gap-num {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 0.9;
+}
+.season-bar {
+  height: 6px;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  margin: 14px 0 40px;
+  position: relative;
+}
+.season-bar-fill { height: 100%; background: var(--ink); transition: width 0.8s ease; }
+.season-bar-label {
+  position: absolute;
+  right: 0; top: 10px;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 1px;
+  color: var(--ink-3);
+}
+
+/* Section heads */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 6px;
+  margin: 44px 0 0;
+}
+.section-title {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.7rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.section-note {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 1px;
+  color: var(--ink-3);
+}
+
+/* ---------- Results matrix ---------- */
+.matrix-scroll { overflow-x: auto; }
+.matrix {
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  min-width: 100%;
+}
+.matrix th, .matrix td {
+  border: 1px solid var(--line);
+  padding: 0;
+  text-align: center;
+}
+.matrix thead th {
+  background: var(--paper-2);
+  font-weight: 600;
+  font-size: 0.62rem;
+  letter-spacing: 1px;
+}
+.matrix thead th.round-h button {
+  width: 100%;
+  padding: 8px 6px;
+  font: inherit;
+  letter-spacing: 1px;
+}
+.matrix thead th.round-h button:hover { background: var(--ink); color: var(--paper); }
+.matrix .drv-cell {
+  text-align: left;
+  padding: 6px 10px 6px 8px;
+  white-space: nowrap;
+  background: var(--paper);
+  position: sticky;
+  left: 0;
+  border-right: 2px solid var(--ink);
+  z-index: 2;
+}
+.matrix .drv-cell .tla { font-weight: 600; }
+.matrix .drv-cell .chip {
+  display: inline-block;
+  width: 5px; height: 14px;
+  margin-right: 8px;
+  vertical-align: -2px;
+}
+.matrix .pts-cell {
+  font-weight: 600;
+  background: var(--paper-2);
+  padding: 6px 10px;
+  border-left: 2px solid var(--ink);
+}
+.mx { display: block; padding: 7px 0; min-width: 44px; position: relative; }
+.mx-win { background: var(--purple); color: #fff; font-weight: 600; }
+.mx-podium { background: var(--ink); color: var(--paper); }
+.mx-points { background: var(--green-2); color: var(--green); font-weight: 500; }
+.mx-none { color: var(--ink-3); }
+.mx-dnf { background: var(--red-2); color: var(--red); font-size: 0.62rem; letter-spacing: 0.5px; }
+.mx-blank { color: var(--line); }
+.mx sup {
+  position: absolute;
+  top: 2px; right: 3px;
+  font-size: 0.5rem;
+  line-height: 1;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  color: var(--ink-3);
+}
+.legend .sw {
+  display: inline-block;
+  width: 12px; height: 12px;
+  vertical-align: -2px;
+  margin-right: 5px;
+  border: 1px solid var(--line);
+}
+
+/* ---------- SVG chart ---------- */
+.chart-wrap { margin-top: 14px; }
+.chart-wrap svg { width: 100%; height: auto; display: block; }
+.chart-grid-line { stroke: var(--line); stroke-width: 1; }
+.chart-axis-label { font-family: var(--mono); font-size: 11px; fill: var(--ink-3); }
+.chart-tla { font-family: var(--mono); font-size: 11px; font-weight: 600; }
+.chart-series { fill: none; stroke-width: 2.5; }
+.chart-dot { stroke: var(--paper); stroke-width: 1.5; }
+
+/* ---------- Generic data tables ---------- */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  margin-top: 14px;
+}
+.data-table th {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--ink);
+}
+.data-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+.data-table tr.rowlink { cursor: pointer; }
+.data-table tr.rowlink:hover td { background: var(--paper-2); }
+.data-table .num { font-family: var(--mono); }
+.data-table .pos {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.25rem;
+  width: 40px;
+}
+.team-chip {
+  display: inline-block;
+  width: 5px; height: 18px;
+  margin-right: 10px;
+  vertical-align: -4px;
+}
+.delta-up { color: var(--green); font-family: var(--mono); font-size: 0.78rem; }
+.delta-down { color: var(--red); font-family: var(--mono); font-size: 0.78rem; }
+.delta-same { color: var(--ink-3); font-family: var(--mono); font-size: 0.78rem; }
+.tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  padding: 2px 7px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+.tag.purple { color: var(--purple); background: var(--purple-2); }
+.tag.muted { color: var(--ink-3); }
+
+/* ---------- Stat blocks ---------- */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1px;
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  margin-top: 20px;
+}
+.stat-block { background: var(--paper); padding: 14px 16px; }
+.stat-block .v {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 2.1rem;
+  line-height: 1;
+}
+.stat-block .k {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-top: 4px;
+}
+
+/* ---------- Back link / breadcrumb ---------- */
+.backlink {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 1px;
+  color: var(--ink-2);
+  margin-bottom: 18px;
+  display: inline-block;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 2px;
+}
+.backlink:hover { color: var(--purple); border-color: var(--purple); }
+
+/* ---------- Career strip (driver sheet) ---------- */
+.career-strip {
+  display: flex;
+  gap: 1px;
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  margin-top: 14px;
+  overflow-x: auto;
+}
+.career-year {
+  background: var(--paper);
+  padding: 12px 16px;
+  min-width: 96px;
+  text-align: center;
+  flex: 1;
+}
+.career-year.title-year { background: var(--purple-2); }
+.career-year .yr { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 1px; color: var(--ink-3); }
+.career-year .p {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 2rem;
+  line-height: 1;
+}
+.career-year.title-year .p { color: var(--purple); }
+.career-year .pt { font-family: var(--mono); font-size: 0.62rem; color: var(--ink-3); }
+
+/* ---------- Archive roll ---------- */
+.roll { margin-top: 14px; }
+.roll-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 1fr;
+  gap: 18px;
+  align-items: center;
+  padding: 16px 4px;
+  border-bottom: 1px solid var(--line);
+}
+.roll-year {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 2.6rem;
+  line-height: 0.9;
+}
+.roll-entry .lab {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 1.5px;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+.roll-entry .who {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+}
+.roll-entry .det { font-family: var(--mono); font-size: 0.68rem; color: var(--ink-2); }
+
+/* ---------- States ---------- */
+.notice {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.5px;
+  color: var(--ink-2);
+  border: 1px dashed var(--ink-3);
+  padding: 14px 16px;
+  margin-top: 20px;
+}
+.demo-badge {
+  position: fixed;
+  bottom: 14px;
+  left: 14px;
+  z-index: 100;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 6px 10px;
+  display: none;
+}
+.demo-badge.show { display: block; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 920px) {
+  .shell { grid-template-columns: 1fr; }
+  .tower { padding: 0; }
+  .tower-inner { position: static; }
+  .tower-head { padding: 12px 16px 8px; }
+  .tower-rows {
+    display: flex;
+    overflow-x: auto;
+    max-height: none;
+    border-bottom: 2px solid var(--ink);
+  }
+  .tower-row {
+    flex: 0 0 auto;
+    grid-template-columns: auto 5px auto auto;
+    gap: 8px;
+    border-bottom: none;
+    border-right: 1px solid #23242B;
+    padding: 10px 12px;
+  }
+  .tower-team, .tower-delta { display: none; }
+  .tower-foot { display: none; }
+  .canvas { padding: 22px 16px 60px; }
+  .brand-sub { display: none; }
+  .nav-btn { padding: 0 12px; font-size: 1rem; }
+  .leader-strip { grid-template-columns: auto 1fr; }
+  .leader-gap { display: none; }
+  .roll-row { grid-template-columns: 80px 1fr; }
+  .roll-row .roll-entry:last-child { grid-column: 2; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet { animation: none; }
+  .season-bar-fill { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="brand">
+    <div class="brand-mark">PIT<span class="fast">WALL</span></div>
+    <div class="brand-sub">GT World Championship · Timing &amp; Records</div>
+  </div>
+  <nav class="masthead-nav" aria-label="Views">
+    <button class="nav-btn" data-nav="season" aria-current="true" onclick="go({type:'season'})">SEASON</button>
+    <button class="nav-btn" data-nav="teams" aria-current="false" onclick="go({type:'teams'})">TEAMS</button>
+    <button class="nav-btn" data-nav="archive" aria-current="false" onclick="go({type:'archive'})">ARCHIVE</button>
+    <label class="season-pick">YEAR
+      <select id="seasonSelect" aria-label="Select season"></select>
+    </label>
+  </nav>
+</header>
+
+<div class="shell">
+  <aside class="tower" aria-label="Championship timing tower">
+    <div class="tower-inner">
+      <div class="tower-head">
+        <div class="tower-title">TOWER</div>
+        <div class="tower-meta" id="towerMeta">—</div>
+      </div>
+      <div class="tower-rows" id="towerRows"></div>
+      <div class="tower-foot">▲▼ vs previous round · tap a driver for their sheet</div>
+    </div>
+  </aside>
+
+  <main class="canvas">
+    <section class="sheet" id="sheet-season" aria-label="Season sheet"></section>
+    <section class="sheet" id="sheet-driver" aria-label="Driver sheet"></section>
+    <section class="sheet" id="sheet-team" aria-label="Team sheet"></section>
+    <section class="sheet" id="sheet-race" aria-label="Race sheet"></section>
+    <section class="sheet" id="sheet-teams" aria-label="Teams sheet"></section>
+    <section class="sheet" id="sheet-archive" aria-label="Archive sheet"></section>
+  </main>
+</div>
+
+<div class="demo-badge" id="demoBadge">DEMO DATA — racing-data-multi-season.json not found</div>
+
+<script>
+/* ============================================================
+   PITWALL · zero dependencies
+   Reads racing-data-multi-season.json (same structure as the
+   Formula GT Tracker). Falls back to bundled demo data so the
+   file can be opened standalone.
+   ============================================================ */
+
+'use strict';
+
+const App = {
+  data: null,
+  seasonIdx: 0,
+  view: { type: 'season' },
+  caches: new Map()
+};
+
+/* ---------------- data access + memoized math ---------------- */
+
+function season() { return App.data.seasons[App.seasonIdx]; }
+
+function completedIdxs(s) {
+  return s.races.map((r, i) => (r.status === 'completed' && r.results ? i : -1)).filter(i => i >= 0);
+}
+
+function cacheKey(parts) { return parts.join('|'); }
+
+/** Driver standings up to and including race index `upto` (default: all). Memoized. */
+function driverStandings(seasonIndex, upto = Infinity) {
+  const key = cacheKey(['drv', seasonIndex, upto]);
+  if (App.caches.has(key)) return App.caches.get(key);
+
+  const s = App.data.seasons[seasonIndex];
+  const map = new Map();
+  s.drivers.forEach(d => map.set(d.id, {
+    id: d.id, name: d.name, team: d.team, number: d.number,
+    points: 0, wins: 0, podiums: 0, poles: 0, fastestLaps: 0, dnfs: 0, starts: 0
+  }));
+
+  s.races.forEach((race, i) => {
+    if (i > upto || race.status !== 'completed' || !race.results) return;
+    if (race.grid && race.grid.length) {
+      const pole = map.get(race.grid[0].driverId);
+      if (pole) pole.poles++;
+    }
+    race.results.forEach(res => {
+      const d = map.get(res.driverId);
+      if (!d) return;
+      d.starts++;
+      d.points += s.pointsSystem.race[res.position] || 0;
+      if (res.position === 1) d.wins++;
+      if (res.position <= 3) d.podiums++;
+      if (res.status && res.status !== 'finished') d.dnfs++;
+      if (race.fastestLap && race.fastestLap.driverId == res.driverId) {
+        d.fastestLaps++;
+        if (res.position <= 10 && res.status === 'finished') {
+          d.points += s.pointsSystem.fastestLap || 0;
+        }
+      }
+    });
+  });
+
+  const out = [...map.values()].sort((a, b) =>
+    b.points - a.points || b.wins - a.wins || b.podiums - a.podiums);
+  App.caches.set(key, out);
+  return out;
+}
+
+/** Constructor standings, memoized. */
+function teamStandings(seasonIndex, upto = Infinity) {
+  const key = cacheKey(['team', seasonIndex, upto]);
+  if (App.caches.has(key)) return App.caches.get(key);
+
+  const s = App.data.seasons[seasonIndex];
+  const drivers = driverStandings(seasonIndex, upto);
+  const map = new Map();
+  [...new Set(s.drivers.map(d => d.team))].forEach(t =>
+    map.set(t, { name: t, points: 0, wins: 0, podiums: 0, poles: 0 }));
+  drivers.forEach(d => {
+    const t = map.get(d.team);
+    if (!t) return;
+    t.points += d.points; t.wins += d.wins; t.podiums += d.podiums; t.poles += d.poles;
+  });
+
+  const out = [...map.values()].sort((a, b) =>
+    b.points - a.points || b.wins - a.wins || b.podiums - a.podiums);
+  App.caches.set(key, out);
+  return out;
+}
+
+function teamColor(s, name) {
+  const t = s.teams.find(t => t.name === name);
+  return t && t.color ? t.color : '#888';
+}
+
+function tla(name) {
+  const last = name.trim().split(/\s+/).pop();
+  return last.slice(0, 3).toUpperCase();
+}
+
+function esc(str) {
+  return String(str).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function driverById(s, id) { return s.drivers.find(d => d.id == id); }
+
+function movementMap(seasonIndex) {
+  const s = App.data.seasons[seasonIndex];
+  const done = completedIdxs(s);
+  const map = new Map();
+  if (done.length < 2) return map;
+  const prev = driverStandings(seasonIndex, done[done.length - 2]);
+  const prevPos = new Map(prev.map((d, i) => [d.id, i + 1]));
+  driverStandings(seasonIndex).forEach((d, i) => {
+    if (prevPos.has(d.id)) map.set(d.id, prevPos.get(d.id) - (i + 1));
+  });
+  return map;
+}
+
+function isComplete(s) {
+  return s.races.length > 0 && s.races.every(r => r.status === 'completed');
+}
+
+/* ---------------- navigation ---------------- */
+
+function go(view) {
+  App.view = view;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function changeSeason(idx) {
+  App.seasonIdx = idx;
+  // leave caches: keyed by season index, still valid
+  if (App.view.type === 'driver' || App.view.type === 'race' || App.view.type === 'team') {
+    App.view = { type: 'season' };
+  }
+  render();
+}
+
+/* ---------------- render root ---------------- */
+
+function render() {
+  const navMap = { season: 'season', teams: 'teams', archive: 'archive', driver: 'season', team: 'teams', race: 'season' };
+  document.querySelectorAll('.nav-btn').forEach(b =>
+    b.setAttribute('aria-current', String(b.dataset.nav === navMap[App.view.type])));
+
+  renderTower();
+
+  document.querySelectorAll('.sheet').forEach(sh => sh.classList.remove('active'));
+  const target = {
+    season: renderSeasonSheet,
+    driver: renderDriverSheet,
+    team: renderTeamSheet,
+    race: renderRaceSheet,
+    teams: renderTeamsSheet,
+    archive: renderArchiveSheet
+  }[App.view.type] || renderSeasonSheet;
+  target();
+}
+
+/* ---------------- tower ---------------- */
+
+function renderTower() {
+  const s = season();
+  const rows = document.getElementById('towerRows');
+  const standings = driverStandings(App.seasonIdx);
+  const moves = movementMap(App.seasonIdx);
+  const done = completedIdxs(s).length;
+
+  document.getElementById('towerMeta').textContent =
+    `${s.year} · RD ${done}/${s.races.length}`;
+
+  rows.innerHTML = standings.map((d, i) => {
+    const mv = moves.get(d.id);
+    const deltaHtml = mv === undefined
+      ? '<span class="tower-delta same"></span>'
+      : mv > 0 ? `<span class="tower-delta up">▲${mv}</span>`
+      : mv < 0 ? `<span class="tower-delta down">▼${-mv}</span>`
+      : '<span class="tower-delta same">·</span>';
+    const sel = App.view.type === 'driver' && App.view.id == d.id ? ' selected' : '';
+    return `
+      <button class="tower-row${sel}" data-go="driver" data-id="${esc(String(d.id))}" aria-label="${esc(d.name)}, P${i + 1}, ${d.points} points">
+        <span class="tower-pos">${i + 1}</span>
+        <span class="tower-tab" style="background:${esc(teamColor(s, d.team))}"></span>
+        <span class="tower-name">
+          <span class="tower-tla">${esc(tla(d.name))}</span>
+          <div class="tower-team">${esc(d.team)}</div>
+        </span>
+        ${deltaHtml}
+        <span class="tower-pts">${d.points}</span>
+      </button>`;
+  }).join('');
+}
+
+/* ---------------- season sheet ---------------- */
+
+function renderSeasonSheet() {
+  const s = season();
+  const el = document.getElementById('sheet-season');
+  el.classList.add('active');
+
+  const standings = driverStandings(App.seasonIdx);
+  const done = completedIdxs(s);
+  const leader = standings[0];
+  const gap = standings.length > 1 ? leader.points - standings[1].points : 0;
+  const pct = s.races.length ? Math.round(done.length / s.races.length * 100) : 0;
+  const complete = isComplete(s);
+
+  let leaderHtml = '';
+  if (done.length && leader) {
+    leaderHtml = `
+      <div class="leader-strip">
+        <div>
+          <div class="leader-label">${complete ? 'CHAMPION · FINAL' : 'CHAMPIONSHIP LEADER'}</div>
+          <div class="leader-num">${leader.points}</div>
+          <div class="leader-label">POINTS</div>
+        </div>
+        <div>
+          <div class="leader-name">${esc(leader.name)}</div>
+          <div class="leader-team">${esc(leader.team)} · ${leader.wins} wins · ${leader.podiums} podiums</div>
+        </div>
+        <div class="leader-gap">
+          <div class="leader-label">GAP TO P2</div>
+          <div class="leader-gap-num">+${gap}</div>
+        </div>
+      </div>
+      <div class="season-bar">
+        <div class="season-bar-fill" style="width:${pct}%"></div>
+        <div class="season-bar-label">ROUND ${done.length} OF ${s.races.length} · ${pct}%</div>
+      </div>`;
+  } else {
+    leaderHtml = '<div class="notice">No completed rounds yet — the matrix fills in as results land.</div>';
+  }
+
+  el.innerHTML = `
+    <div class="kicker">SEASON SHEET</div>
+    <h1 class="sheet-title">${s.year} GT World Championship</h1>
+    <div class="sheet-sub">${s.drivers.length} drivers · ${s.teams.length} teams · ${s.races.length} rounds</div>
+    ${leaderHtml}
+    <div class="section-head">
+      <div class="section-title">Results Matrix</div>
+      <div class="section-note">TAP A ROUND HEADER FOR THE RACE SHEET</div>
+    </div>
+    <div class="matrix-scroll">${buildMatrix(s, standings)}</div>
+    <div class="legend">
+      <span><span class="sw" style="background:var(--purple)"></span>WIN</span>
+      <span><span class="sw" style="background:var(--ink)"></span>PODIUM</span>
+      <span><span class="sw" style="background:var(--green-2)"></span>POINTS</span>
+      <span><span class="sw" style="background:var(--red-2)"></span>DNF</span>
+      <span>ᴾ POLE · ᶠ FASTEST LAP</span>
+    </div>
+    ${done.length >= 2 ? `
+      <div class="section-head">
+        <div class="section-title">Points Progression</div>
+        <div class="section-note">TOP 8 · CUMULATIVE</div>
+      </div>
+      <div class="chart-wrap">${buildProgressionSVG(s, standings)}</div>` : ''}
+  `;
+}
+
+function buildMatrix(s, standings) {
+  const pointsCutoff = Math.max(...Object.keys(s.pointsSystem.race).map(Number));
+  const heads = s.races.map((race, i) =>
+    `<th class="round-h"><button data-go="race" data-idx="${i}" title="${esc(race.name)}">R${i + 1}</button></th>`).join('');
+
+  const rows = standings.map(d => {
+    const cells = s.races.map(race => {
+      if (race.status !== 'completed' || !race.results) return '<td><span class="mx mx-blank">·</span></td>';
+      const res = race.results.find(r => r.driverId == d.id);
+      if (!res) return '<td><span class="mx mx-blank">–</span></td>';
+
+      const pole = race.grid && race.grid.length && race.grid[0].driverId == d.id;
+      const fl = race.fastestLap && race.fastestLap.driverId == d.id;
+      const sups = `${pole ? '<sup>P</sup>' : ''}${fl && !pole ? '<sup>F</sup>' : ''}`;
+
+      if (res.status && res.status !== 'finished') {
+        return `<td><span class="mx mx-dnf">DNF${sups}</span></td>`;
+      }
+      const cls = res.position === 1 ? 'mx-win'
+        : res.position <= 3 ? 'mx-podium'
+        : res.position <= pointsCutoff ? 'mx-points'
+        : 'mx-none';
+      return `<td><span class="mx ${cls}">${res.position}${sups}</span></td>`;
+    }).join('');
+
+    return `
+      <tr>
+        <td class="drv-cell">
+          <span class="chip" style="background:${esc(teamColor(s, d.team))}"></span>
+          <span class="tla">${esc(tla(d.name))}</span>
+          <span style="color:var(--ink-3)"> ${esc(d.name)}</span>
+        </td>
+        ${cells}
+        <td class="pts-cell">${d.points}</td>
+      </tr>`;
+  }).join('');
+
+  return `
+    <table class="matrix">
+      <thead><tr><th class="drv-cell">DRIVER</th>${heads}<th class="pts-cell">PTS</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function buildProgressionSVG(s, standings) {
+  const done = completedIdxs(s);
+  const top = standings.slice(0, 8);
+  const snaps = done.map(idx => {
+    const st = driverStandings(App.seasonIdx, idx);
+    return new Map(st.map(d => [d.id, d.points]));
+  });
+
+  const W = 860, H = 320, padL = 40, padR = 70, padT = 16, padB = 30;
+  const maxPts = Math.max(1, ...top.map(d => d.points));
+  const x = i => padL + (done.length === 1 ? 0 : i * (W - padL - padR) / (done.length - 1));
+  const y = p => padT + (H - padT - padB) * (1 - p / maxPts);
+
+  // gridlines
+  const steps = 4;
+  let grid = '';
+  for (let g = 0; g <= steps; g++) {
+    const val = Math.round(maxPts * g / steps);
+    const gy = y(val);
+    grid += `<line class="chart-grid-line" x1="${padL}" y1="${gy}" x2="${W - padR}" y2="${gy}"/>` +
+            `<text class="chart-axis-label" x="${padL - 6}" y="${gy + 4}" text-anchor="end">${val}</text>`;
+  }
+  const xLabels = done.map((idx, i) =>
+    `<text class="chart-axis-label" x="${x(i)}" y="${H - 8}" text-anchor="middle">R${i + 1}</text>`).join('');
+
+  const series = top.map(d => {
+    const color = teamColor(s, d.team);
+    const pts = snaps.map((snap, i) => `${x(i)},${y(snap.get(d.id) || 0)}`);
+    const dots = snaps.map((snap, i) =>
+      `<circle class="chart-dot" cx="${x(i)}" cy="${y(snap.get(d.id) || 0)}" r="3" fill="${esc(color)}"><title>${esc(d.name)} — ${snap.get(d.id) || 0} pts after ${esc(s.races[done[i]].name)}</title></circle>`).join('');
+    const last = snaps[snaps.length - 1].get(d.id) || 0;
+    return `
+      <polyline class="chart-series" stroke="${esc(color)}" points="${pts.join(' ')}"/>
+      ${dots}
+      <text class="chart-tla" fill="${esc(color)}" x="${W - padR + 8}" y="${y(last) + 4}">${esc(tla(d.name))}</text>`;
+  }).join('');
+
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cumulative points by round for the top 8 drivers">${grid}${xLabels}${series}</svg>`;
+}
+
+/* ---------------- race sheet ---------------- */
+
+function renderRaceSheet() {
+  const s = season();
+  const el = document.getElementById('sheet-race');
+  el.classList.add('active');
+
+  const idx = App.view.idx;
+  const race = s.races[idx];
+  if (!race) { el.innerHTML = '<div class="notice">Race not found.</div>'; return; }
+
+  let body = '';
+  if (race.status !== 'completed' || !race.results) {
+    body = `<div class="notice">R${idx + 1} has not been run yet${race.date ? ` — scheduled ${esc(race.date)}` : ''}.</div>`;
+  } else {
+    const gridPos = new Map((race.grid || []).map((g, i) => [g.driverId, i + 1]));
+    const pole = race.grid && race.grid.length ? driverById(s, race.grid[0].driverId) : null;
+    const flDriver = race.fastestLap ? driverById(s, race.fastestLap.driverId) : null;
+
+    const rows = race.results.map(res => {
+      const d = driverById(s, res.driverId);
+      if (!d) return '';
+      const g = gridPos.get(res.driverId);
+      const delta = g === undefined ? null : g - res.position;
+      const deltaHtml = delta === null ? '<span class="delta-same">–</span>'
+        : delta > 0 ? `<span class="delta-up">▲${delta}</span>`
+        : delta < 0 ? `<span class="delta-down">▼${-delta}</span>`
+        : '<span class="delta-same">·</span>';
+      const dnf = res.status && res.status !== 'finished';
+      const pts = (s.pointsSystem.race[res.position] || 0) +
+        (race.fastestLap && race.fastestLap.driverId == res.driverId && res.position <= 10 && !dnf
+          ? (s.pointsSystem.fastestLap || 0) : 0);
+      return `
+        <tr class="rowlink" data-go="driver" data-id="${esc(String(d.id))}" tabindex="0">
+          <td class="pos">${res.position}</td>
+          <td><span class="team-chip" style="background:${esc(teamColor(s, d.team))}"></span>
+              <strong>${esc(d.name)}</strong>
+              ${dnf ? ' <span class="tag" style="color:var(--red)">DNF</span>' : ''}
+              ${race.fastestLap && race.fastestLap.driverId == d.id ? ' <span class="tag purple">FL</span>' : ''}
+          </td>
+          <td style="color:var(--ink-3)">${esc(d.team)}</td>
+          <td class="num">${g ? 'P' + g : '–'}</td>
+          <td>${deltaHtml}</td>
+          <td class="num"><strong>${pts || ''}</strong></td>
+        </tr>`;
+    }).join('');
+
+    body = `
+      <div class="stat-row">
+        <div class="stat-block"><div class="v">${esc(pole ? tla(pole.name) : '–')}</div><div class="k">Pole position</div></div>
+        <div class="stat-block"><div class="v">${esc(flDriver ? tla(flDriver.name) : '–')}</div><div class="k">Fastest lap</div></div>
+        <div class="stat-block"><div class="v">${race.results.filter(r => !r.status || r.status === 'finished').length}</div><div class="k">Classified finishers</div></div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Pos</th><th>Driver</th><th>Team</th><th>Grid</th><th>+/−</th><th>Pts</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  el.innerHTML = `
+    <button class="backlink" onclick="go({type:'season'})">← SEASON SHEET</button>
+    <div class="kicker">RACE SHEET · ROUND ${idx + 1} OF ${s.races.length}</div>
+    <h1 class="sheet-title">${esc(race.name)}</h1>
+    <div class="sheet-sub">${esc(race.location || '')}${race.date ? ' · ' + esc(race.date) : ''}</div>
+    ${body}
+    ${buildCircuitHistory(race)}
+  `;
+}
+
+function buildCircuitHistory(race) {
+  const runnings = [];
+  App.data.seasons.forEach((s, si) => {
+    s.races.forEach((r, ri) => {
+      if (r.name !== race.name || r.status !== 'completed' || !r.results) return;
+      const win = r.results.find(res => res.position === 1);
+      const winner = win && driverById(s, win.driverId);
+      if (!winner) return;
+      runnings.push({ year: s.year, winner, color: teamColor(s, winner.team), si, ri });
+    });
+  });
+  if (!runnings.length) return '';
+  runnings.sort((a, b) => b.year - a.year);
+
+  const rows = runnings.map(r => `
+    <tr class="rowlink" data-go="crace" data-si="${r.si}" data-ri="${r.ri}" tabindex="0">
+      <td class="pos" style="font-size:1.1rem">${r.year}</td>
+      <td><span class="team-chip" style="background:${esc(r.color)}"></span><strong>${esc(r.winner.name)}</strong></td>
+      <td style="color:var(--ink-3)">${esc(r.winner.team)}</td>
+    </tr>`).join('');
+
+  return `
+    <div class="section-head">
+      <div class="section-title">At this circuit</div>
+      <div class="section-note">${runnings.length} RUNNING${runnings.length !== 1 ? 'S' : ''} · ALL SEASONS</div>
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Year</th><th>Winner</th><th>Team</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+/* ---------------- driver sheet ---------------- */
+
+function renderDriverSheet() {
+  const s = season();
+  const el = document.getElementById('sheet-driver');
+  el.classList.add('active');
+
+  const standings = driverStandings(App.seasonIdx);
+  const idx = standings.findIndex(d => d.id == App.view.id);
+  if (idx === -1) { el.innerHTML = '<div class="notice">Driver not found in this season.</div>'; return; }
+  const d = standings[idx];
+  const info = driverById(s, d.id) || {};
+
+  // season log
+  const logRows = s.races.map((race, i) => {
+    if (race.status !== 'completed' || !race.results) return '';
+    const res = race.results.find(r => r.driverId == d.id);
+    if (!res) return '';
+    const g = race.grid ? (race.grid.findIndex(x => x.driverId == d.id) + 1) : 0;
+    const dnf = res.status && res.status !== 'finished';
+    const pts = (s.pointsSystem.race[res.position] || 0) +
+      (race.fastestLap && race.fastestLap.driverId == d.id && res.position <= 10 && !dnf
+        ? (s.pointsSystem.fastestLap || 0) : 0);
+    return `
+      <tr class="rowlink" data-go="race" data-idx="${i}" tabindex="0">
+        <td class="num">R${i + 1}</td>
+        <td><strong>${esc(race.name)}</strong></td>
+        <td class="num">${g ? 'P' + g : '–'}</td>
+        <td class="num">${dnf ? '<span style="color:var(--red)">DNF</span>' : 'P' + res.position}</td>
+        <td>${res.position === 1 ? '<span class="tag purple">WIN</span>' : res.position <= 3 && !dnf ? '<span class="tag muted">PODIUM</span>' : ''}</td>
+        <td class="num"><strong>${pts || ''}</strong></td>
+      </tr>`;
+  }).join('');
+
+  // career across seasons (id is stable across seasons)
+  const career = [];
+  App.data.seasons.forEach((cs, csi) => {
+    if (!cs.drivers.find(x => x.id == d.id)) return;
+    if (!completedIdxs(cs).length) return;
+    const st = driverStandings(csi);
+    const p = st.findIndex(x => x.id == d.id);
+    if (p === -1) return;
+    career.push({ year: cs.year, pos: p + 1, pts: st[p].points, title: isComplete(cs) && p === 0 });
+  });
+
+  const careerHtml = career.length >= 2 ? `
+    <div class="section-head">
+      <div class="section-title">Career</div>
+      <div class="section-note">CHAMPIONSHIP FINISH BY YEAR</div>
+    </div>
+    <div class="career-strip">
+      ${career.map(c => `
+        <div class="career-year${c.title ? ' title-year' : ''}">
+          <div class="yr">${c.year}${c.title ? ' ★' : ''}</div>
+          <div class="p">P${c.pos}</div>
+          <div class="pt">${c.pts} pts</div>
+        </div>`).join('')}
+    </div>` : '';
+
+  el.innerHTML = `
+    <button class="backlink" onclick="go({type:'season'})">← SEASON SHEET</button>
+    <div class="kicker">DRIVER SHEET · #${esc(info.number ?? '')} · ${esc(info.nationality || '')}</div>
+    <h1 class="sheet-title">${esc(d.name)}</h1>
+    <div class="sheet-sub">
+      <span class="team-chip" style="background:${esc(teamColor(s, d.team))}"></span>${esc(d.team)} ·
+      currently P${idx + 1} in the ${s.year} championship
+    </div>
+    <div class="stat-row">
+      <div class="stat-block"><div class="v">${d.points}</div><div class="k">Points</div></div>
+      <div class="stat-block"><div class="v">${d.wins}</div><div class="k">Wins</div></div>
+      <div class="stat-block"><div class="v">${d.podiums}</div><div class="k">Podiums</div></div>
+      <div class="stat-block"><div class="v">${d.poles}</div><div class="k">Poles</div></div>
+      <div class="stat-block"><div class="v">${d.fastestLaps}</div><div class="k">Fastest laps</div></div>
+      <div class="stat-block"><div class="v">${d.dnfs}</div><div class="k">DNFs</div></div>
+    </div>
+    ${careerHtml}
+    <div class="section-head">
+      <div class="section-title">${s.year} Season Log</div>
+      <div class="section-note">TAP A ROUND FOR THE RACE SHEET</div>
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Rd</th><th>Race</th><th>Grid</th><th>Finish</th><th></th><th>Pts</th></tr></thead>
+      <tbody>${logRows || '<tr><td colspan="6" style="color:var(--ink-3)">No races yet.</td></tr>'}</tbody>
+    </table>
+  `;
+}
+
+/* ---------------- teams + team sheets ---------------- */
+
+function renderTeamsSheet() {
+  const s = season();
+  const el = document.getElementById('sheet-teams');
+  el.classList.add('active');
+
+  const teams = teamStandings(App.seasonIdx);
+  const drivers = driverStandings(App.seasonIdx);
+  const maxPts = Math.max(1, ...teams.map(t => t.points));
+
+  const rows = teams.map((t, i) => {
+    const color = teamColor(s, t.name);
+    const squad = drivers.filter(d => d.team === t.name);
+    const segs = squad.map(d => {
+      const w = t.points ? (d.points / maxPts * 100) : 0;
+      return `<div title="${esc(d.name)} — ${d.points} pts" style="width:${w}%; background:${esc(color)}; opacity:${1 - squad.indexOf(d) * 0.35}; height:100%"></div>`;
+    }).join('');
+    return `
+      <tr class="rowlink" data-go="team" data-name="${esc(t.name)}" tabindex="0">
+        <td class="pos">${i + 1}</td>
+        <td><span class="team-chip" style="background:${esc(color)}"></span><strong>${esc(t.name)}</strong>
+            <div style="font-size:0.75rem; color:var(--ink-3)">${squad.map(d => esc(tla(d.name))).join(' · ')}</div></td>
+        <td style="width:36%">
+          <div style="display:flex; height:14px; background:var(--paper-2); border:1px solid var(--line)">${segs}</div>
+        </td>
+        <td class="num">${t.wins}</td>
+        <td class="num"><strong>${t.points}</strong></td>
+      </tr>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="kicker">CONSTRUCTORS SHEET</div>
+    <h1 class="sheet-title">${s.year} Teams</h1>
+    <div class="sheet-sub">Bar shows each driver's share of the points haul</div>
+    <table class="data-table">
+      <thead><tr><th>Pos</th><th>Team</th><th>Points split</th><th>Wins</th><th>Pts</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+function renderTeamSheet() {
+  const s = season();
+  const el = document.getElementById('sheet-team');
+  el.classList.add('active');
+
+  const teams = teamStandings(App.seasonIdx);
+  const idx = teams.findIndex(t => t.name === App.view.name);
+  if (idx === -1) { el.innerHTML = '<div class="notice">Team not found.</div>'; return; }
+  const t = teams[idx];
+  const color = teamColor(s, t.name);
+  const squad = driverStandings(App.seasonIdx).filter(d => d.team === t.name);
+
+  const squadRows = squad.map(d => {
+    const overall = driverStandings(App.seasonIdx).findIndex(x => x.id == d.id) + 1;
+    return `
+      <tr class="rowlink" data-go="driver" data-id="${esc(String(d.id))}" tabindex="0">
+        <td class="pos" style="font-size:1.1rem">P${overall}</td>
+        <td><strong>${esc(d.name)}</strong></td>
+        <td class="num">${d.wins}</td>
+        <td class="num">${d.podiums}</td>
+        <td class="num">${d.poles}</td>
+        <td class="num"><strong>${d.points}</strong></td>
+      </tr>`;
+  }).join('');
+
+  el.innerHTML = `
+    <button class="backlink" onclick="go({type:'teams'})">← TEAMS</button>
+    <div class="kicker">TEAM SHEET</div>
+    <h1 class="sheet-title"><span class="team-chip" style="background:${esc(color)}; height:34px; width:10px"></span>${esc(t.name)}</h1>
+    <div class="sheet-sub">P${idx + 1} in the ${s.year} constructors' championship</div>
+    <div class="stat-row">
+      <div class="stat-block"><div class="v">${t.points}</div><div class="k">Points</div></div>
+      <div class="stat-block"><div class="v">${t.wins}</div><div class="k">Wins</div></div>
+      <div class="stat-block"><div class="v">${t.podiums}</div><div class="k">Podiums</div></div>
+      <div class="stat-block"><div class="v">${t.poles}</div><div class="k">Poles</div></div>
+    </div>
+    <div class="section-head">
+      <div class="section-title">Squad</div>
+      <div class="section-note">${s.year}</div>
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Champ</th><th>Driver</th><th>Wins</th><th>Pod</th><th>Poles</th><th>Pts</th></tr></thead>
+      <tbody>${squadRows}</tbody>
+    </table>
+  `;
+}
+
+/* ---------------- archive sheet ---------------- */
+
+function renderArchiveSheet() {
+  const el = document.getElementById('sheet-archive');
+  el.classList.add('active');
+
+  const rows = [...App.data.seasons].map((s, si) => ({ s, si }))
+    .filter(({ s }) => completedIdxs(s).length)
+    .reverse()
+    .map(({ s, si }) => {
+      const champ = driverStandings(si)[0];
+      const ctor = teamStandings(si)[0];
+      const complete = isComplete(s);
+      return `
+        <div class="roll-row">
+          <div class="roll-year">${s.year}${complete ? '' : '<div style="font-size:0.55rem; font-family:var(--mono); letter-spacing:1px; color:var(--purple)">IN PROGRESS</div>'}</div>
+          <div class="roll-entry">
+            <div class="lab">${complete ? "Drivers' champion" : 'Leader'}</div>
+            <div class="who" style="border-left:5px solid ${esc(teamColor(s, champ.team))}; padding-left:10px">${esc(champ.name)}</div>
+            <div class="det">${esc(champ.team)} · ${champ.points} pts · ${champ.wins} wins</div>
+          </div>
+          <div class="roll-entry">
+            <div class="lab">${complete ? "Constructors' champion" : 'Leading team'}</div>
+            <div class="who" style="border-left:5px solid ${esc(teamColor(s, ctor.name))}; padding-left:10px">${esc(ctor.name)}</div>
+            <div class="det">${ctor.points} pts · ${ctor.wins} wins</div>
+          </div>
+        </div>`;
+    }).join('');
+
+  el.innerHTML = `
+    <div class="kicker">ARCHIVE</div>
+    <h1 class="sheet-title">Roll of Champions</h1>
+    <div class="sheet-sub">Every season in the record book</div>
+    <div class="roll">${rows || '<div class="notice">No completed races in any season yet.</div>'}</div>
+  `;
+}
+
+/* ---------------- boot ---------------- */
+
+function buildSeasonSelect() {
+  const sel = document.getElementById('seasonSelect');
+  sel.innerHTML = App.data.seasons.map((s, i) =>
+    `<option value="${i}">${s.year}</option>`).join('');
+  sel.value = App.seasonIdx;
+  sel.onchange = () => changeSeason(parseInt(sel.value, 10));
+}
+
+function demoData() {
+  const D = (id, name, team, number, nationality) => ({ id, name, team, number, nationality, birthday: '2000-01-01' });
+  const drivers = [
+    D(1, 'Kai Mercer', 'Vortex Racing', 7, 'GB'), D(2, 'Luca Ferraro', 'Vortex Racing', 11, 'IT'),
+    D(3, 'Ren Takeda', 'Apex GP', 23, 'JP'), D(4, 'Marcus Hale', 'Apex GP', 4, 'US'),
+    D(5, 'Elias Brandt', 'Nordwind', 18, 'DE'), D(6, 'Theo Laurent', 'Nordwind', 31, 'FR'),
+    D(7, 'Santiago Vega', 'Calavera', 9, 'ES'), D(8, 'Oliver Knox', 'Calavera', 88, 'AU')
+  ];
+  const teams = [
+    { name: 'Vortex Racing', color: '#5A2DD8' }, { name: 'Apex GP', color: '#0F8A4F' },
+    { name: 'Nordwind', color: '#1F6FEB' }, { name: 'Calavera', color: '#D6452A' }
+  ];
+  const pointsSystem = { race: { 1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4 }, sprint: {}, fastestLap: 1 };
+  const R = (name, location, date, order, fl, dnfIds = []) => ({
+    name, location, date, status: 'completed',
+    results: order.map((driverId, i) => ({ driverId, position: i + 1, status: dnfIds.includes(driverId) ? 'dnf' : 'finished' })),
+    grid: [...order].reverse().slice(0, order.length).map((driverId) => ({ driverId })),
+    fastestLap: { driverId: fl }
+  });
+  return { seasons: [
+    { year: 2024, totalRaces: 5, drivers, teams, pointsSystem, races: [
+      R('Aurora Park GP', 'Calgary', '2024-03-10', [3, 1, 5, 7, 2, 4, 6, 8], 3),
+      R('Marina Bend GP', 'Lisbon', '2024-04-14', [3, 5, 1, 2, 4, 7, 8, 6], 1),
+      R('Silverline GP', 'Leeds', '2024-05-26', [1, 3, 2, 5, 7, 4, 6, 8], 3, [8]),
+      R('Kaze Circuit GP', 'Sendai', '2024-07-07', [3, 1, 4, 5, 2, 6, 7, 8], 4),
+      R('Calavera GP', 'Valencia', '2024-09-01', [3, 2, 1, 7, 5, 4, 8, 6], 3)
+    ]},
+    { year: 2025, totalRaces: 6, drivers, teams, pointsSystem, races: [
+      R('Aurora Park GP', 'Calgary', '2025-03-09', [1, 3, 2, 5, 4, 7, 6, 8], 1),
+      R('Marina Bend GP', 'Lisbon', '2025-04-13', [1, 5, 3, 2, 7, 4, 8, 6], 5),
+      R('Silverline GP', 'Leeds', '2025-05-25', [5, 1, 3, 4, 2, 6, 7, 8], 1, [7]),
+      R('Kaze Circuit GP', 'Sendai', '2025-07-06', [3, 1, 5, 2, 4, 8, 6, 7], 3),
+      { name: 'Calavera GP', location: 'Valencia', date: '2025-09-07', status: 'upcoming', results: null, grid: null, fastestLap: null },
+      { name: 'Vortex Finale', location: 'Abu Dhabi', date: '2025-11-23', status: 'upcoming', results: null, grid: null, fastestLap: null }
+    ]}
+  ]};
+}
+
+async function boot() {
+  try {
+    const res = await fetch('racing-data-multi-season.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    App.data = await res.json();
+  } catch (e) {
+    App.data = demoData();
+    document.getElementById('demoBadge').classList.add('show');
+  }
+  App.seasonIdx = App.data.seasons.length - 1;
+  buildSeasonSelect();
+  render();
+}
+
+function handleGoTarget(el) {
+  const kind = el.dataset.go;
+  if (kind === 'driver') go({ type: 'driver', id: el.dataset.id });
+  else if (kind === 'race') go({ type: 'race', idx: parseInt(el.dataset.idx, 10) });
+  else if (kind === 'team') go({ type: 'team', name: el.dataset.name });
+  else if (kind === 'crace') {
+    App.seasonIdx = parseInt(el.dataset.si, 10);
+    const sel = document.getElementById('seasonSelect');
+    if (sel) sel.value = App.seasonIdx;
+    go({ type: 'race', idx: parseInt(el.dataset.ri, 10) });
+  }
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-go]');
+  if (el) handleGoTarget(el);
+});
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const el = e.target.closest && e.target.closest('[data-go]');
+  if (el && el.tagName !== 'BUTTON') { e.preventDefault(); handleGoTarget(el); }
+});
+
+window.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>
