@@ -638,6 +638,102 @@ button:focus-visible, select:focus-visible, a:focus-visible {
   .sheet { animation: none; }
   .season-bar-fill { transition: none; }
 }
+
+/* ---------- Tower display modes ---------- */
+.tower-modes {
+  display: flex;
+  gap: 4px;
+  padding: 8px 16px 6px;
+}
+.tower-mode {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 1px;
+  padding: 4px 9px;
+  border: 1px solid #33343D;
+  color: #8A8C99;
+}
+.tower-mode:hover { color: var(--paper); border-color: #55565F; }
+.tower-mode[aria-pressed="true"] {
+  background: var(--paper);
+  color: var(--ink);
+  border-color: var(--paper);
+}
+.tower-row.eliminated .tower-tla,
+.tower-row.eliminated .tower-pts { color: #55565F; }
+.tower-row.eliminated .tower-pos { color: #44454E; }
+
+/* ---------- Title fight ---------- */
+.fight-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1px;
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  margin-top: 14px;
+}
+.fight-card { background: var(--paper); padding: 14px 16px 12px; position: relative; }
+.fight-card .nm {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.fight-card .tm { font-size: 0.78rem; color: var(--ink-3); }
+.fight-card .row {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  margin-top: 8px;
+}
+.fight-card .row .k { color: var(--ink-3); }
+.fight-card .row .v { font-weight: 600; }
+.fight-card .row .v.purple { color: var(--purple); }
+.fight-card.leader { background: var(--purple-2); }
+.fight-note {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  color: var(--ink-3);
+  margin-top: 10px;
+}
+
+/* ---------- Chart mode toggle ---------- */
+.chart-toggle { display: flex; gap: 6px; }
+.chart-mode {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+}
+.chart-mode:hover { border-color: var(--ink); color: var(--ink); }
+.chart-mode[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+/* ---------- Print: it's a timing sheet, let it print like one ---------- */
+@media print {
+  :root {
+    --paper: #FFFFFF;
+    --paper-2: #F2F2F2;
+    --ink: #000000;
+    --ink-2: #222222;
+    --ink-3: #555555;
+    --line: #999999;
+  }
+  body { background: #fff; }
+  .masthead, .tower, .demo-badge, .chart-toggle, .tower-modes { display: none !important; }
+  .shell { display: block; min-height: 0; }
+  .canvas { padding: 0; }
+  .sheet { animation: none; }
+  .matrix .drv-cell { position: static; }
+  a, button { color: inherit; }
+}
 </style>
 </head>
 <body>
@@ -663,6 +759,11 @@ button:focus-visible, select:focus-visible, a:focus-visible {
       <div class="tower-head">
         <div class="tower-title">TOWER</div>
         <div class="tower-meta" id="towerMeta">—</div>
+      </div>
+      <div class="tower-modes" role="group" aria-label="Tower display mode">
+        <button class="tower-mode" data-go="tmode" data-mode="pts" aria-pressed="true">PTS</button>
+        <button class="tower-mode" data-go="tmode" data-mode="gap" aria-pressed="false">GAP</button>
+        <button class="tower-mode" data-go="tmode" data-mode="int" aria-pressed="false">INT</button>
       </div>
       <div class="tower-rows" id="towerRows"></div>
       <div class="tower-foot">▲▼ vs previous round · tap a driver for their sheet</div>
@@ -695,7 +796,10 @@ const App = {
   data: null,
   seasonIdx: 0,
   view: { type: 'season' },
-  caches: new Map()
+  caches: new Map(),
+  towerMode: 'pts',
+  chartMode: 'drivers',
+  _hash: ''
 };
 
 /* ---------------- data access + memoized math ---------------- */
@@ -781,6 +885,12 @@ function tla(name) {
   return last.slice(0, 3).toUpperCase();
 }
 
+function teamCode(name) {
+  // First word carries the identity for team names ("Vortex Racing" -> VOR)
+  const first = name.trim().split(/\s+/)[0];
+  return first.slice(0, 3).toUpperCase();
+}
+
 function esc(str) {
   return String(str).replace(/[&<>"']/g, c =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -805,13 +915,84 @@ function isComplete(s) {
   return s.races.length > 0 && s.races.every(r => r.status === 'completed');
 }
 
+/* ---------------- title fight ---------------- */
+
+function maxPerRace(s) {
+  const vals = Object.values(s.pointsSystem.race || {}).map(Number).filter(n => !isNaN(n));
+  return (vals.length ? Math.max(...vals) : 0) + (s.pointsSystem.fastestLap || 0);
+}
+
+function remainingRaces(s) {
+  return s.races.filter(r => r.status !== 'completed').length;
+}
+
+/** Drivers who can still mathematically reach the leader's current total. */
+function titleContenders(si) {
+  const s = App.data.seasons[si];
+  const standings = driverStandings(si);
+  if (!standings.length) return { alive: [], out: [], maxRemaining: 0 };
+  const maxRemaining = remainingRaces(s) * maxPerRace(s);
+  const leaderPts = standings[0].points;
+  const alive = [], out = [];
+  standings.forEach(d => {
+    (d.points + maxRemaining >= leaderPts ? alive : out).push(d);
+  });
+  return { alive, out, maxRemaining };
+}
+
 /* ---------------- navigation ---------------- */
 
 function go(view) {
   App.view = view;
+  writeHash();
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+/* ---------------- hash routing (shareable URLs) ---------------- */
+
+function buildHash() {
+  const y = season().year;
+  const v = App.view;
+  if (v.type === 'driver') return `#${y}/driver/${encodeURIComponent(v.id)}`;
+  if (v.type === 'race') return `#${y}/race/${v.idx}`;
+  if (v.type === 'team') return `#${y}/team/${encodeURIComponent(v.name)}`;
+  return `#${y}/${v.type}`;
+}
+
+function writeHash() {
+  if (!App.data) return;
+  const h = buildHash();
+  App._hash = h;
+  if (window.location.hash !== h) {
+    try { history.replaceState(null, '', h); } catch (e) { window.location.hash = h; }
+  }
+}
+
+function applyHash(hash) {
+  const m = /^#(\d{4})\/(season|teams|archive|driver|race|team)(?:\/(.+))?$/.exec(hash || '');
+  if (!m) return false;
+  const si = App.data.seasons.findIndex(s => String(s.year) === m[1]);
+  if (si === -1) return false;
+  App.seasonIdx = si;
+  const sel = document.getElementById('seasonSelect');
+  if (sel) sel.value = si;
+  const type = m[2];
+  const param = m[3] !== undefined ? decodeURIComponent(m[3]) : undefined;
+  if (type === 'driver' && param !== undefined) App.view = { type, id: param };
+  else if (type === 'race' && param !== undefined) App.view = { type, idx: parseInt(param, 10) };
+  else if (type === 'team' && param !== undefined) App.view = { type, name: param };
+  else App.view = { type };
+  return true;
+}
+
+window.addEventListener('hashchange', () => {
+  if (window.location.hash === App._hash || !App.data) return;
+  if (applyHash(window.location.hash)) {
+    App._hash = window.location.hash;
+    render();
+  }
+});
 
 function changeSeason(idx) {
   App.seasonIdx = idx;
@@ -819,6 +1000,7 @@ function changeSeason(idx) {
   if (App.view.type === 'driver' || App.view.type === 'race' || App.view.type === 'team') {
     App.view = { type: 'season' };
   }
+  writeHash();
   render();
 }
 
@@ -851,9 +1033,18 @@ function renderTower() {
   const standings = driverStandings(App.seasonIdx);
   const moves = movementMap(App.seasonIdx);
   const done = completedIdxs(s).length;
+  const complete = isComplete(s);
+  const { out } = titleContenders(App.seasonIdx);
+  const outIds = new Set(out.map(d => d.id));
+  const showElim = done > 0 && !complete;
 
   document.getElementById('towerMeta').textContent =
     `${s.year} · RD ${done}/${s.races.length}`;
+
+  document.querySelectorAll('.tower-mode').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset.mode === App.towerMode)));
+
+  const leaderPts = standings.length ? standings[0].points : 0;
 
   rows.innerHTML = standings.map((d, i) => {
     const mv = moves.get(d.id);
@@ -862,9 +1053,20 @@ function renderTower() {
       : mv > 0 ? `<span class="tower-delta up">▲${mv}</span>`
       : mv < 0 ? `<span class="tower-delta down">▼${-mv}</span>`
       : '<span class="tower-delta same">·</span>';
+
+    let display;
+    if (App.towerMode === 'gap') {
+      display = i === 0 ? String(d.points) : `-${leaderPts - d.points}`;
+    } else if (App.towerMode === 'int') {
+      display = i === 0 ? String(d.points) : `-${standings[i - 1].points - d.points}`;
+    } else {
+      display = String(d.points);
+    }
+
     const sel = App.view.type === 'driver' && App.view.id == d.id ? ' selected' : '';
+    const elim = showElim && outIds.has(d.id) ? ' eliminated' : '';
     return `
-      <button class="tower-row${sel}" data-go="driver" data-id="${esc(String(d.id))}" aria-label="${esc(d.name)}, P${i + 1}, ${d.points} points">
+      <button class="tower-row${sel}${elim}" data-go="driver" data-id="${esc(String(d.id))}" aria-label="${esc(d.name)}, P${i + 1}, ${d.points} points${elim ? ', out of title contention' : ''}">
         <span class="tower-pos">${i + 1}</span>
         <span class="tower-tab" style="background:${esc(teamColor(s, d.team))}"></span>
         <span class="tower-name">
@@ -872,9 +1074,16 @@ function renderTower() {
           <div class="tower-team">${esc(d.team)}</div>
         </span>
         ${deltaHtml}
-        <span class="tower-pts">${d.points}</span>
+        <span class="tower-pts">${display}</span>
       </button>`;
   }).join('');
+
+  const foot = document.querySelector('.tower-foot');
+  if (foot) {
+    foot.textContent = showElim && out.length
+      ? `▲▼ vs previous round · greyed = out of the title fight (${out.length})`
+      : '▲▼ vs previous round · tap a driver for their sheet';
+  }
 }
 
 /* ---------------- season sheet ---------------- */
@@ -922,6 +1131,7 @@ function renderSeasonSheet() {
     <h1 class="sheet-title">${s.year} GT World Championship</h1>
     <div class="sheet-sub">${s.drivers.length} drivers · ${s.teams.length} teams · ${s.races.length} rounds</div>
     ${leaderHtml}
+    ${buildTitleFight(s, standings)}
     <div class="section-head">
       <div class="section-title">Results Matrix</div>
       <div class="section-note">TAP A ROUND HEADER FOR THE RACE SHEET</div>
@@ -937,10 +1147,42 @@ function renderSeasonSheet() {
     ${done.length >= 2 ? `
       <div class="section-head">
         <div class="section-title">Points Progression</div>
-        <div class="section-note">TOP 8 · CUMULATIVE</div>
+        <div class="chart-toggle" role="group" aria-label="Chart mode">
+          <button class="chart-mode" data-go="cmode" data-mode="drivers" aria-pressed="${App.chartMode === 'drivers'}">DRIVERS · TOP 8</button>
+          <button class="chart-mode" data-go="cmode" data-mode="teams" aria-pressed="${App.chartMode === 'teams'}">TEAMS</button>
+        </div>
       </div>
       <div class="chart-wrap">${buildProgressionSVG(s, standings)}</div>` : ''}
   `;
+}
+
+function buildTitleFight(s, standings) {
+  const done = completedIdxs(s);
+  if (!done.length || isComplete(s)) return '';
+  const { alive, out, maxRemaining } = titleContenders(App.seasonIdx);
+  if (alive.length <= 1 && !out.length) return '';
+
+  const leader = standings[0];
+  const cards = alive.slice(0, 6).map((d, i) => {
+    const deficit = leader.points - d.points;
+    return `
+      <div class="fight-card${i === 0 ? ' leader' : ''}">
+        <div class="nm">${esc(tla(d.name))} <span style="font-size:0.85rem; color:var(--ink-3)">${esc(d.name)}</span></div>
+        <div class="tm">${esc(d.team)}</div>
+        <div class="row"><span class="k">POINTS</span><span class="v">${d.points}</span></div>
+        <div class="row"><span class="k">${i === 0 ? 'LEAD OVER P2' : 'DEFICIT'}</span><span class="v ${i === 0 ? 'purple' : ''}">${i === 0 ? '+' + (standings[1] ? leader.points - standings[1].points : 0) : '-' + deficit}</span></div>
+        <div class="row"><span class="k">MAX FINISH</span><span class="v">${d.points + maxRemaining}</span></div>
+        ${i > 0 ? `<div class="row"><span class="k">NEEDS SWING OF</span><span class="v purple">+${deficit + 1}</span></div>` : ''}
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="section-head">
+      <div class="section-title">Title Fight</div>
+      <div class="section-note">${maxRemaining} PTS LEFT ON THE TABLE · ${alive.length} STILL ALIVE${out.length ? ` · ${out.length} ELIMINATED` : ''}</div>
+    </div>
+    <div class="fight-grid">${cards}</div>
+    <div class="fight-note">A driver is alive while their maximum possible total still reaches the leader's current score. Swing = points they must outscore the leader by across the remaining ${remainingRaces(s)} round${remainingRaces(s) !== 1 ? 's' : ''}.</div>`;
 }
 
 function buildMatrix(s, standings) {
@@ -989,9 +1231,14 @@ function buildMatrix(s, standings) {
 
 function buildProgressionSVG(s, standings) {
   const done = completedIdxs(s);
-  const top = standings.slice(0, 8);
+  const teamMode = App.chartMode === 'teams';
+  const top = teamMode
+    ? teamStandings(App.seasonIdx).map(t => ({ id: t.name, name: t.name, team: t.name, points: t.points }))
+    : standings.slice(0, 8);
   const snaps = done.map(idx => {
-    const st = driverStandings(App.seasonIdx, idx);
+    const st = teamMode
+      ? teamStandings(App.seasonIdx, idx).map(t => ({ id: t.name, points: t.points }))
+      : driverStandings(App.seasonIdx, idx);
     return new Map(st.map(d => [d.id, d.points]));
   });
 
@@ -1012,6 +1259,7 @@ function buildProgressionSVG(s, standings) {
   const xLabels = done.map((idx, i) =>
     `<text class="chart-axis-label" x="${x(i)}" y="${H - 8}" text-anchor="middle">R${i + 1}</text>`).join('');
 
+  const code = teamMode ? teamCode : tla;
   const series = top.map(d => {
     const color = teamColor(s, d.team);
     const pts = snaps.map((snap, i) => `${x(i)},${y(snap.get(d.id) || 0)}`);
@@ -1021,7 +1269,7 @@ function buildProgressionSVG(s, standings) {
     return `
       <polyline class="chart-series" stroke="${esc(color)}" points="${pts.join(' ')}"/>
       ${dots}
-      <text class="chart-tla" fill="${esc(color)}" x="${W - padR + 8}" y="${y(last) + 4}">${esc(tla(d.name))}</text>`;
+      <text class="chart-tla" fill="${esc(color)}" x="${W - padR + 8}" y="${y(last) + 4}">${esc(code(d.name))}</text>`;
   }).join('');
 
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cumulative points by round for the top 8 drivers">${grid}${xLabels}${series}</svg>`;
@@ -1399,12 +1647,16 @@ async function boot() {
     document.getElementById('demoBadge').classList.add('show');
   }
   App.seasonIdx = App.data.seasons.length - 1;
+  applyHash(window.location.hash);
   buildSeasonSelect();
+  writeHash();
   render();
 }
 
 function handleGoTarget(el) {
   const kind = el.dataset.go;
+  if (kind === 'tmode') { App.towerMode = el.dataset.mode; renderTower(); return; }
+  if (kind === 'cmode') { App.chartMode = el.dataset.mode; render(); return; }
   if (kind === 'driver') go({ type: 'driver', id: el.dataset.id });
   else if (kind === 'race') go({ type: 'race', idx: parseInt(el.dataset.idx, 10) });
   else if (kind === 'team') go({ type: 'team', name: el.dataset.name });
