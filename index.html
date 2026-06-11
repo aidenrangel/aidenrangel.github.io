@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <style>
         :root {
             --primary-red: #E10600;
@@ -1709,6 +1710,249 @@
         .record-type-content.active {
             display: block;
         }
+
+        /* ===== Interactivity upgrades ===== */
+
+        /* Tab fade transition */
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tab-content.active {
+            animation: fadeSlideIn 0.35s ease;
+        }
+
+        /* Championship battle chart */
+        .chart-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .chart-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .chart-section-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2rem;
+            letter-spacing: 2px;
+            color: var(--accent-yellow);
+        }
+        .chart-toggle {
+            display: flex;
+            gap: 8px;
+        }
+        .chart-toggle-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-family: 'Barlow', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .chart-toggle-btn:hover {
+            border-color: var(--primary-red);
+            color: var(--text-primary);
+        }
+        .chart-toggle-btn.active {
+            background: var(--primary-red);
+            border-color: var(--primary-red);
+            color: #fff;
+        }
+        .chart-canvas-wrap {
+            position: relative;
+            height: 420px;
+        }
+        .chart-hint {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            .chart-canvas-wrap { height: 320px; }
+        }
+
+        /* Sortable table headers */
+        th.sortable {
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.2s ease;
+            white-space: nowrap;
+        }
+        th.sortable:hover { color: var(--accent-yellow); }
+        th.sortable .sort-arrow {
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 0.7rem;
+            opacity: 0.4;
+        }
+        th.sortable.sorted .sort-arrow { opacity: 1; color: var(--accent-yellow); }
+
+        /* Position movement indicators */
+        .pos-move {
+            display: inline-block;
+            margin-left: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            vertical-align: middle;
+        }
+        .pos-move.up { color: #2ECC40; }
+        .pos-move.down { color: #FF4136; }
+        .pos-move.same { color: var(--text-secondary); opacity: 0.5; }
+
+        /* Driver search */
+        .driver-search-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+        .driver-search {
+            width: 100%;
+            max-width: 450px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Barlow', sans-serif;
+            font-size: 1rem;
+            padding: 12px 18px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .driver-search:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(225, 6, 0, 0.15);
+        }
+        .driver-search::placeholder { color: var(--text-secondary); }
+        .driver-search-empty {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 40px 20px;
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        /* Head-to-head comparison */
+        .h2h-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 35px;
+        }
+        .h2h-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2rem;
+            letter-spacing: 2px;
+            color: var(--accent-yellow);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .h2h-selectors {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .h2h-select {
+            background: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Barlow', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 10px 15px;
+            min-width: 200px;
+            cursor: pointer;
+        }
+        .h2h-select:focus { outline: none; border-color: var(--primary-red); }
+        .h2h-vs {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.8rem;
+            color: var(--primary-red);
+            letter-spacing: 2px;
+        }
+        .h2h-results { margin-top: 25px; display: none; }
+        .h2h-names {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            gap: 10px;
+        }
+        .h2h-name {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+        .h2h-name .h2h-team {
+            display: block;
+            font-family: 'Barlow', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 0;
+            color: var(--text-secondary);
+        }
+        .h2h-name.right { text-align: right; }
+        .h2h-stat-row { margin-bottom: 16px; }
+        .h2h-stat-label {
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        .h2h-bars {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .h2h-value {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.3rem;
+            min-width: 48px;
+            color: var(--text-primary);
+        }
+        .h2h-value.left { text-align: right; }
+        .h2h-bar-track {
+            flex: 1;
+            height: 14px;
+            background: var(--dark-bg);
+            border-radius: 7px;
+            overflow: hidden;
+            display: flex;
+        }
+        .h2h-bar-track.left { justify-content: flex-end; }
+        .h2h-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 7px;
+            transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .h2h-winner { color: var(--accent-yellow); }
+        @media (max-width: 600px) {
+            .h2h-value { font-size: 1rem; min-width: 36px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .tab-content.active { animation: none; }
+            .h2h-bar { transition: none; }
+        }
+
     </style>
 </head>
 <body>
@@ -1811,6 +2055,23 @@
                 <h2 class="drivers-title">GT WORLD CHAMPIONSHIP DRIVERS <span id="driversYear"></span></h2>
                 <p class="drivers-subtitle">Find the current GT World Championship drivers for the <span id="driversYearSubtitle"></span> season</p>
             </div>
+
+            <!-- Head-to-Head Comparison -->
+            <div class="h2h-section">
+                <div class="h2h-title">HEAD TO HEAD</div>
+                <div class="h2h-selectors">
+                    <select class="h2h-select" id="h2hSelectA" onchange="updateHeadToHead()"></select>
+                    <span class="h2h-vs">VS</span>
+                    <select class="h2h-select" id="h2hSelectB" onchange="updateHeadToHead()"></select>
+                </div>
+                <div class="h2h-results" id="h2hResults"></div>
+            </div>
+
+            <!-- Driver Search -->
+            <div class="driver-search-wrap">
+                <input type="text" class="driver-search" id="driverSearch" placeholder="Search drivers by name, team, or number" oninput="applyDriverSearch()">
+            </div>
+            <div class="driver-search-empty" id="driverSearchEmpty">No drivers match your search</div>
             <div class="drivers-grid" id="driversGrid">
                 <!-- Driver cards will be populated here -->
             </div>
@@ -1852,6 +2113,21 @@
                     <div class="stat-label">RECORDS BROKEN</div>
                     <div class="stat-value" id="recordsBroken">0</div>
                 </div>
+            </div>
+
+            <!-- Championship Battle Chart -->
+            <div class="chart-section" id="chartSection">
+                <div class="chart-section-header">
+                    <div class="chart-section-title">CHAMPIONSHIP BATTLE</div>
+                    <div class="chart-toggle">
+                        <button class="chart-toggle-btn active" id="chartToggleDrivers" onclick="setChartMode('drivers')">DRIVERS</button>
+                        <button class="chart-toggle-btn" id="chartToggleConstructors" onclick="setChartMode('constructors')">CONSTRUCTORS</button>
+                    </div>
+                </div>
+                <div class="chart-canvas-wrap">
+                    <canvas id="progressionChart"></canvas>
+                </div>
+                <div class="chart-hint">Points after each round &middot; Click a name in the legend to hide or show that line</div>
             </div>
 
             <!-- Standings Type Selector -->
@@ -4156,6 +4432,9 @@
             updateStats();
             updateConstructorStandings();
             updateRecords();
+            updateProgressionChart();
+            populateH2HSelectors();
+            updateHeadToHead();
         }
 
         // Update teams grid with team cards
@@ -4272,8 +4551,12 @@
                 // Add team color bar at top
                 card.style.borderTop = `6px solid ${teamColor}`;
 
+                card.dataset.search = `${driver.name} ${driver.team} ${driverInfo.number} ${driverInfo.nationality || ''}`.toLowerCase();
+
                 driversGrid.appendChild(card);
             });
+
+            applyDriverSearch();
         }
 
         // Update header with season info
@@ -4289,15 +4572,34 @@
             const tbody = document.getElementById('standingsBody');
             tbody.innerHTML = '';
 
-            calculatedDriverStats.forEach((driver, index) => {
-                const position = index + 1;
+            const champPos = new Map(calculatedDriverStats.map((d, i) => [d.id, i + 1]));
+            const movement = getDriverMovementMap();
+            const sort = standingsSort.driver;
+
+            const rows = [...calculatedDriverStats].sort((a, b) => {
+                const va = a[sort.key], vb = b[sort.key];
+                if (typeof va === 'string') return va.localeCompare(vb) * sort.dir;
+                if (vb !== va) return (va - vb) * sort.dir;
+                return champPos.get(a.id) - champPos.get(b.id);
+            });
+
+            rows.forEach(driver => {
+                const position = champPos.get(driver.id);
                 const row = document.createElement('tr');
                 row.className = `position-${position}`;
                 row.onclick = () => openDriverModal(driver);
                 row.style.cursor = 'pointer';
-                
+
+                let moveHtml = '';
+                if (movement.has(driver.id)) {
+                    const mv = movement.get(driver.id);
+                    if (mv > 0) moveHtml = `<span class="pos-move up" title="Up ${mv} since last round">&#9650;${mv}</span>`;
+                    else if (mv < 0) moveHtml = `<span class="pos-move down" title="Down ${-mv} since last round">&#9660;${-mv}</span>`;
+                    else moveHtml = `<span class="pos-move same" title="No change since last round">&ndash;</span>`;
+                }
+
                 row.innerHTML = `
-                    <td>${position}</td>
+                    <td>${position}${moveHtml}</td>
                     <td>
                         <div class="driver-name">${driver.name}</div>
                         <div class="team-name">${driver.team}</div>
@@ -4310,6 +4612,8 @@
                 
                 tbody.appendChild(row);
             });
+
+            updateSortArrows('driver');
         }
 
         // Update race schedule
@@ -6516,6 +6820,8 @@
                     <div class="stat-value">${recordsBrokenCount}</div>
                 </div>
             `;
+
+            animateStatValues(statsGrid);
         }
 
         // Store records broken for the current season
@@ -7275,15 +7581,34 @@
             const tbody = document.getElementById('constructorStandingsBody');
             tbody.innerHTML = '';
 
-            calculatedTeamStats.forEach((team, index) => {
-                const position = index + 1;
+            const champPos = new Map(calculatedTeamStats.map((t, i) => [t.name, i + 1]));
+            const movement = getConstructorMovementMap();
+            const sort = standingsSort.constructor;
+
+            const rows = [...calculatedTeamStats].sort((a, b) => {
+                const va = a[sort.key], vb = b[sort.key];
+                if (typeof va === 'string') return va.localeCompare(vb) * sort.dir;
+                if (vb !== va) return (va - vb) * sort.dir;
+                return champPos.get(a.name) - champPos.get(b.name);
+            });
+
+            rows.forEach(team => {
+                const position = champPos.get(team.name);
                 const row = document.createElement('tr');
                 row.className = `position-${position}`;
                 row.onclick = () => openTeamModal(team);
                 row.style.cursor = 'pointer';
-                
+
+                let moveHtml = '';
+                if (movement.has(team.name)) {
+                    const mv = movement.get(team.name);
+                    if (mv > 0) moveHtml = `<span class="pos-move up" title="Up ${mv} since last round">&#9650;${mv}</span>`;
+                    else if (mv < 0) moveHtml = `<span class="pos-move down" title="Down ${-mv} since last round">&#9660;${-mv}</span>`;
+                    else moveHtml = `<span class="pos-move same" title="No change since last round">&ndash;</span>`;
+                }
+
                 row.innerHTML = `
-                    <td>${position}</td>
+                    <td>${position}${moveHtml}</td>
                     <td>
                         <div class="driver-name">${team.name}</div>
                     </td>
@@ -7294,6 +7619,8 @@
                 
                 tbody.appendChild(row);
             });
+
+            updateSortArrows('constructor');
         }
 
         // Show specific record type (driver or constructor)
@@ -10834,6 +11161,9 @@
             if (mobileNav) {
                 mobileNav.classList.remove('active');
             }
+
+            // Scroll back to the top when switching tabs
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
         function toggleMobileNav() {
@@ -10842,6 +11172,364 @@
                 mobileNav.classList.toggle('active');
             }
         }
+
+        /* ===================================================== */
+        /* ============ Interactivity upgrade layer ============ */
+        /* ===================================================== */
+
+        // ---------- Sortable standings ----------
+        const standingsSort = {
+            driver: { key: 'points', dir: -1 },
+            constructor: { key: 'points', dir: -1 }
+        };
+
+        const SORTABLE_COLUMNS = {
+            driver: [null, 'name', 'team', 'wins', 'podiums', 'points'],
+            constructor: [null, 'name', 'wins', 'podiums', 'points']
+        };
+
+        function initSortableStandings() {
+            const tables = {
+                driver: document.querySelector('#standingsBody')?.closest('table'),
+                constructor: document.querySelector('#constructorStandingsBody')?.closest('table')
+            };
+            Object.entries(tables).forEach(([type, table]) => {
+                if (!table) return;
+                const ths = table.querySelectorAll('thead th');
+                ths.forEach((th, i) => {
+                    const key = SORTABLE_COLUMNS[type][i];
+                    if (!key) return;
+                    th.classList.add('sortable');
+                    th.dataset.sortKey = key;
+                    th.dataset.sortType = type;
+                    const arrow = document.createElement('span');
+                    arrow.className = 'sort-arrow';
+                    arrow.innerHTML = '&#9660;';
+                    th.appendChild(arrow);
+                    th.addEventListener('click', () => sortStandingsBy(type, key));
+                });
+            });
+        }
+
+        function sortStandingsBy(type, key) {
+            const s = standingsSort[type];
+            if (s.key === key) {
+                s.dir = -s.dir;
+            } else {
+                s.key = key;
+                s.dir = key === 'name' || key === 'team' ? 1 : -1;
+            }
+            if (type === 'driver') updateDriverStandings();
+            else updateConstructorStandings();
+        }
+
+        function updateSortArrows(type) {
+            const s = standingsSort[type];
+            document.querySelectorAll(`th.sortable[data-sort-type="${type}"]`).forEach(th => {
+                const active = th.dataset.sortKey === s.key;
+                th.classList.toggle('sorted', active);
+                const arrow = th.querySelector('.sort-arrow');
+                if (arrow) arrow.innerHTML = active && s.dir === 1 ? '&#9650;' : '&#9660;';
+            });
+        }
+
+        // ---------- Position movement (vs previous round) ----------
+        function getCompletedRaceIndexes(season) {
+            return season.races
+                .map((r, i) => (r.status === 'completed' ? i : -1))
+                .filter(i => i >= 0);
+        }
+
+        function getDriverMovementMap() {
+            const map = new Map();
+            if (!allSeasonsData) return map;
+            const season = allSeasonsData.seasons[currentSeasonIndex];
+            const completed = getCompletedRaceIndexes(season);
+            if (completed.length < 2) return map;
+            const prev = calculateDriverStandingsUpToRace(season, completed[completed.length - 2]);
+            const prevPos = new Map(prev.map((d, i) => [d.id, i + 1]));
+            calculatedDriverStats.forEach((d, i) => {
+                if (prevPos.has(d.id)) map.set(d.id, prevPos.get(d.id) - (i + 1));
+            });
+            return map;
+        }
+
+        function getConstructorMovementMap() {
+            const map = new Map();
+            if (!allSeasonsData) return map;
+            const season = allSeasonsData.seasons[currentSeasonIndex];
+            const completed = getCompletedRaceIndexes(season);
+            if (completed.length < 2) return map;
+            const prev = calculateConstructorStandingsUpToRace(season, completed[completed.length - 2]);
+            const prevPos = new Map(prev.map((t, i) => [t.name, i + 1]));
+            calculatedTeamStats.forEach((t, i) => {
+                if (prevPos.has(t.name)) map.set(t.name, prevPos.get(t.name) - (i + 1));
+            });
+            return map;
+        }
+
+        // ---------- Championship battle chart ----------
+        let progressionChart = null;
+        let chartMode = 'drivers';
+
+        function setChartMode(mode) {
+            chartMode = mode;
+            document.getElementById('chartToggleDrivers').classList.toggle('active', mode === 'drivers');
+            document.getElementById('chartToggleConstructors').classList.toggle('active', mode === 'constructors');
+            updateProgressionChart();
+        }
+
+        function getTeamColor(teamName) {
+            const team = racingData.teams.find(t => t.name === teamName);
+            return team && team.color ? team.color : '#FFFFFF';
+        }
+
+        function updateProgressionChart() {
+            const section = document.getElementById('chartSection');
+            const canvas = document.getElementById('progressionChart');
+            if (!section || !canvas) return;
+
+            if (typeof Chart === 'undefined' || !allSeasonsData) {
+                section.style.display = 'none';
+                return;
+            }
+
+            const season = allSeasonsData.seasons[currentSeasonIndex];
+            const completed = getCompletedRaceIndexes(season);
+
+            if (completed.length === 0) {
+                section.style.display = 'none';
+                if (progressionChart) { progressionChart.destroy(); progressionChart = null; }
+                return;
+            }
+            section.style.display = '';
+
+            const labels = completed.map((idx, n) => `R${n + 1}`);
+            const raceNames = completed.map(idx => season.races[idx].name);
+            let datasets = [];
+
+            if (chartMode === 'drivers') {
+                const snapshots = completed.map(idx => calculateDriverStandingsUpToRace(season, idx));
+                const teamSeen = {};
+                const topDrivers = calculatedDriverStats.slice(0, 10);
+                datasets = topDrivers.map(driver => {
+                    const color = getTeamColor(driver.team);
+                    const dash = teamSeen[driver.team] ? [6, 4] : [];
+                    teamSeen[driver.team] = true;
+                    return {
+                        label: driver.name,
+                        data: snapshots.map(s => {
+                            const d = s.find(x => x.id == driver.id);
+                            return d ? d.points : 0;
+                        }),
+                        borderColor: color,
+                        backgroundColor: color,
+                        borderDash: dash,
+                        tension: 0.25,
+                        pointRadius: 3,
+                        pointHoverRadius: 6,
+                        borderWidth: 2.5
+                    };
+                });
+            } else {
+                const snapshots = completed.map(idx => calculateConstructorStandingsUpToRace(season, idx));
+                datasets = calculatedTeamStats.map(team => {
+                    const color = getTeamColor(team.name);
+                    return {
+                        label: team.name,
+                        data: snapshots.map(s => {
+                            const t = s.find(x => x.name === team.name);
+                            return t ? t.points : 0;
+                        }),
+                        borderColor: color,
+                        backgroundColor: color,
+                        tension: 0.25,
+                        pointRadius: 3,
+                        pointHoverRadius: 6,
+                        borderWidth: 2.5
+                    };
+                });
+            }
+
+            if (progressionChart) progressionChart.destroy();
+            progressionChart = new Chart(canvas, {
+                type: 'line',
+                data: { labels, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'nearest', intersect: false },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#B0B0B0',
+                                usePointStyle: true,
+                                pointStyle: 'line',
+                                font: { family: 'Barlow', weight: '600' }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(10, 10, 10, 0.92)',
+                            borderColor: '#2A2A2A',
+                            borderWidth: 1,
+                            titleColor: '#FFD700',
+                            bodyColor: '#FFFFFF',
+                            itemSort: (a, b) => b.parsed.y - a.parsed.y,
+                            callbacks: {
+                                title: items => raceNames[items[0].dataIndex] || items[0].label
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(42, 42, 42, 0.6)' },
+                            ticks: { color: '#B0B0B0', font: { family: 'Barlow' } }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(42, 42, 42, 0.6)' },
+                            ticks: { color: '#B0B0B0', font: { family: 'Barlow' } },
+                            title: { display: true, text: 'POINTS', color: '#B0B0B0', font: { family: 'Barlow', weight: '700' } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ---------- Driver search ----------
+        function applyDriverSearch() {
+            const input = document.getElementById('driverSearch');
+            const grid = document.getElementById('driversGrid');
+            const empty = document.getElementById('driverSearchEmpty');
+            if (!input || !grid) return;
+            const query = input.value.trim().toLowerCase();
+            let visible = 0;
+            grid.querySelectorAll('.driver-card').forEach(card => {
+                const match = !query || (card.dataset.search || '').includes(query);
+                card.style.display = match ? '' : 'none';
+                if (match) visible++;
+            });
+            if (empty) empty.style.display = visible === 0 ? 'block' : 'none';
+        }
+
+        // ---------- Head-to-head comparison ----------
+        function populateH2HSelectors() {
+            const selA = document.getElementById('h2hSelectA');
+            const selB = document.getElementById('h2hSelectB');
+            if (!selA || !selB || !calculatedDriverStats) return;
+
+            const prevA = selA.value;
+            const prevB = selB.value;
+
+            [selA, selB].forEach(sel => { sel.innerHTML = ''; });
+            calculatedDriverStats.forEach(driver => {
+                [selA, selB].forEach(sel => {
+                    const opt = document.createElement('option');
+                    opt.value = driver.id;
+                    opt.textContent = driver.name;
+                    sel.appendChild(opt);
+                });
+            });
+
+            const ids = calculatedDriverStats.map(d => String(d.id));
+            selA.value = ids.includes(prevA) ? prevA : String(calculatedDriverStats[0]?.id ?? '');
+            selB.value = ids.includes(prevB) && prevB !== selA.value
+                ? prevB
+                : String(calculatedDriverStats[1]?.id ?? calculatedDriverStats[0]?.id ?? '');
+        }
+
+        function updateHeadToHead() {
+            const selA = document.getElementById('h2hSelectA');
+            const selB = document.getElementById('h2hSelectB');
+            const results = document.getElementById('h2hResults');
+            if (!selA || !selB || !results || !calculatedDriverStats) return;
+
+            const driverA = calculatedDriverStats.find(d => d.id == selA.value);
+            const driverB = calculatedDriverStats.find(d => d.id == selB.value);
+            if (!driverA || !driverB) { results.style.display = 'none'; return; }
+
+            const colorA = getTeamColor(driverA.team);
+            const colorB = getTeamColor(driverB.team);
+
+            const stats = [
+                { label: 'POINTS', a: driverA.points, b: driverB.points },
+                { label: 'WINS', a: driverA.wins, b: driverB.wins },
+                { label: 'PODIUMS', a: driverA.podiums, b: driverB.podiums },
+                { label: 'POLES', a: driverA.poles || 0, b: driverB.poles || 0 },
+                { label: 'FASTEST LAPS', a: driverA.fastestLaps || 0, b: driverB.fastestLaps || 0 },
+                { label: 'AVG FINISH', a: calculateAvgFinish(driverA), b: calculateAvgFinish(driverB), lowerIsBetter: true, decimals: 1 }
+            ];
+
+            let html = `
+                <div class="h2h-names">
+                    <div class="h2h-name" style="color: ${colorA};">${driverA.name}<span class="h2h-team">${driverA.team}</span></div>
+                    <div class="h2h-name right" style="color: ${colorB};">${driverB.name}<span class="h2h-team">${driverB.team}</span></div>
+                </div>
+            `;
+
+            stats.forEach(stat => {
+                const fmt = v => (stat.decimals ? v.toFixed(stat.decimals) : v);
+                let pctA, pctB;
+                if (stat.lowerIsBetter) {
+                    const best = Math.min(stat.a, stat.b);
+                    pctA = stat.a > 0 ? (best / stat.a) * 100 : 0;
+                    pctB = stat.b > 0 ? (best / stat.b) * 100 : 0;
+                } else {
+                    const max = Math.max(stat.a, stat.b);
+                    pctA = max > 0 ? (stat.a / max) * 100 : 0;
+                    pctB = max > 0 ? (stat.b / max) * 100 : 0;
+                }
+                const aWins = stat.lowerIsBetter
+                    ? stat.a > 0 && (stat.b === 0 || stat.a < stat.b)
+                    : stat.a > stat.b;
+                const bWins = stat.lowerIsBetter
+                    ? stat.b > 0 && (stat.a === 0 || stat.b < stat.a)
+                    : stat.b > stat.a;
+                html += `
+                    <div class="h2h-stat-row">
+                        <div class="h2h-stat-label">${stat.label}</div>
+                        <div class="h2h-bars">
+                            <div class="h2h-value left ${aWins ? 'h2h-winner' : ''}">${fmt(stat.a)}</div>
+                            <div class="h2h-bar-track left"><div class="h2h-bar" data-width="${pctA}" style="background: ${colorA};"></div></div>
+                            <div class="h2h-bar-track"><div class="h2h-bar" data-width="${pctB}" style="background: ${colorB};"></div></div>
+                            <div class="h2h-value ${bWins ? 'h2h-winner' : ''}">${fmt(stat.b)}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            results.innerHTML = html;
+            results.style.display = 'block';
+
+            // Animate bars on next frame so the width transition runs
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    results.querySelectorAll('.h2h-bar').forEach(bar => {
+                        bar.style.width = bar.dataset.width + '%';
+                    });
+                });
+            });
+        }
+
+        // ---------- Animated stat counters ----------
+        function animateStatValues(container) {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            container.querySelectorAll('.stat-value').forEach(el => {
+                const target = parseInt(el.textContent, 10);
+                if (isNaN(target) || String(target) !== el.textContent.trim()) return;
+                const duration = 700;
+                const start = performance.now();
+                function tick(now) {
+                    const progress = Math.min((now - start) / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    el.textContent = Math.round(eased * target);
+                    if (progress < 1) requestAnimationFrame(tick);
+                }
+                requestAnimationFrame(tick);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', initSortableStandings);
 
         // Load data when page loads
         window.addEventListener('DOMContentLoaded', loadData);
